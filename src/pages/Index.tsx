@@ -8,12 +8,11 @@ import { SystemOverview, type ArchitecturePreview, type SystemStat } from "@/com
 import { resolveArchitectureRepo } from "@/data/architectureRepo";
 import { resolveProjectOrg, resolveProjectRepos } from "@/data/projectRepos";
 import { resolveApiOrg, isGentlApiRepoName } from "@/data/apiRepos";
-import { fetchArchitectureTopics, fetchTopicAssets, fetchTopicFile } from "@/lib/githubArchitecture";
+import { fetchArchitectureTopicDetail, fetchArchitectureTopics } from "@/lib/architectureApi";
 import { fetchDesigns } from "@/lib/githubDesigns";
 import { fetchOrgProjectsSummary, fetchProjectsByRepos } from "@/lib/githubProjects";
-import type { ArchitectureTopic } from "@/lib/githubArchitecture";
+import type { ArchitectureTopicListItem } from "@/lib/architectureApi";
 import type { OrgProjectsSummary, ProjectInfo } from "@/lib/githubProjects";
-import { flowDiagramToMermaid, parseFlowDiagram } from "@/components/architecture/FlowBuilder";
 import { Code2, GitBranch, Palette, FolderKanban } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -27,10 +26,15 @@ type ProjectsSnapshot = {
 };
 
 const Index = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const envArchRepo = import.meta.env.VITE_ARCH_REPO as string | undefined;
   const envProjectRepos = import.meta.env.VITE_PROJECT_REPOS as string | undefined;
   const envProjectOrg = import.meta.env.VITE_PROJECTS_ORG as string | undefined;
+
+  const locale = useMemo(
+    () => (i18n.language?.toLowerCase().startsWith("pt") ? "pt" : "en"),
+    [i18n.language],
+  );
 
   const repoConfig = useMemo(() => resolveArchitectureRepo(envArchRepo), [envArchRepo]);
   const projectRepos = useMemo(() => resolveProjectRepos(envProjectRepos), [envProjectRepos]);
@@ -67,29 +71,20 @@ const Index = () => {
     };
   }, [projectRepos, projectOrg]);
 
-  const loadRandomPreview = useCallback(async (topics: ArchitectureTopic[]): Promise<ArchitecturePreview | null> => {
+  const loadRandomPreview = useCallback(async (topics: ArchitectureTopicListItem[]): Promise<ArchitecturePreview | null> => {
     if (!topics.length) return null;
     const pool = [...topics];
-    const attempts = Math.min(pool.length, 6);
+    const attempts = Math.min(pool.length, 4);
 
     for (let i = 0; i < attempts; i += 1) {
       const index = Math.floor(Math.random() * pool.length);
       const [topic] = pool.splice(index, 1);
       try {
-        const assets = await fetchTopicAssets(repoConfig, topic.slug);
-        if (!assets.diagrams.length) continue;
-        const diagram = assets.diagrams[Math.floor(Math.random() * assets.diagrams.length)];
-        const raw = await fetchTopicFile(repoConfig, diagram.path);
-        let code = raw;
-        if (diagram.format === "builder") {
-          const parsed = parseFlowDiagram(raw);
-          if (parsed.error) continue;
-          code = flowDiagramToMermaid(parsed.diagram);
-        }
-        if (!code.trim()) continue;
+        const detail = await fetchArchitectureTopicDetail(topic.key, locale);
+        if (!detail.diagramMermaid?.trim()) continue;
         return {
-          title: `${topic.title}${diagram.name ? ` • ${diagram.name}` : ""}`,
-          code,
+          title: detail.title,
+          code: detail.diagramMermaid,
           href: "/architecture",
         };
       } catch {
@@ -97,7 +92,7 @@ const Index = () => {
       }
     }
     return null;
-  }, [repoConfig]);
+  }, [locale]);
 
   const loadHomeData = useCallback(async () => {
     const loadId = loadIdRef.current + 1;
@@ -106,7 +101,7 @@ const Index = () => {
     setError(null);
     try {
       const [topicsResult, designsResult, projectsResult] = await Promise.allSettled([
-        fetchArchitectureTopics(repoConfig),
+        fetchArchitectureTopics(locale),
         fetchDesigns(repoConfig),
         loadProjects(),
       ]);
@@ -145,7 +140,7 @@ const Index = () => {
           item: {
             type: "architecture",
             title: latestTopic.title,
-            description: latestTopic.description || t("home.activity.defaults.arch"),
+            description: latestTopic.summary || t("home.activity.defaults.arch"),
             time: formatRelative(latestTopic.updatedAt, t),
             href: "/architecture",
           },
@@ -259,6 +254,7 @@ const Index = () => {
     }
   }, [
     repoConfig,
+    locale,
     apiOrg,
     projectOrg,
     projectRepos.length,

@@ -12,7 +12,7 @@ export function DesignMarkdown({ content, className }: DesignMarkdownProps) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
-      className={cn("prose prose-invert prose-purple max-w-none", className)}
+      className={cn("docs-prose", className)}
       components={{
         pre({ children }) {
           return <>{children}</>;
@@ -32,7 +32,7 @@ export function DesignMarkdown({ content, className }: DesignMarkdownProps) {
 
           if (inline) {
             return (
-              <code className="px-1.5 py-0.5 rounded bg-muted text-sm text-pink-400">
+              <code className="px-1.5 py-0.5 rounded bg-muted text-sm text-primary">
                 {children}
               </code>
             );

@@ -1,40 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import mermaid from "mermaid";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-let mermaidInitialized = false;
-
-const mermaidConfig = {
-  startOnLoad: false,
-  theme: "dark",
-  themeVariables: {
-    primaryColor: "#a855f7",
-    primaryTextColor: "#fff",
-    primaryBorderColor: "#9333ea",
-    lineColor: "#ec4899",
-    secondaryColor: "#1e1b4b",
-    tertiaryColor: "#0f0a1e",
-    background: "#0a0812",
-    mainBkg: "#1a1625",
-    secondBkg: "#2d2640",
-    nodeBorder: "#9333ea",
-    clusterBkg: "#1e1b4b",
-    clusterBorder: "#7c3aed",
-    titleColor: "#f0abfc",
-    edgeLabelBackground: "#1a1625",
-    nodeTextColor: "#f5f5f5",
-  },
-  flowchart: {
-    curve: "basis",
-    padding: 20,
-  },
-  sequence: {
-    actorMargin: 50,
-    boxMargin: 10,
-    boxTextMargin: 5,
-  },
-};
+import { useTheme } from "@/context/ThemeContext";
+import { buildMermaidConfig, resolveMermaidTextColors } from "@/lib/mermaidTheme";
 
 interface MermaidPreviewProps {
   code: string;
@@ -49,6 +18,8 @@ export function MermaidPreview({
   interactive = false,
   showControls = false,
 }: MermaidPreviewProps) {
+  const { theme } = useTheme();
+  const { textOnBackground, textOnPrimary, edgeLabelBackground } = resolveMermaidTextColors(theme);
   const [svg, setSvg] = useState<string>("");
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -57,11 +28,8 @@ export function MermaidPreview({
   const panStartRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    if (!mermaidInitialized) {
-      mermaid.initialize(mermaidConfig);
-      mermaidInitialized = true;
-    }
-  }, []);
+    mermaid.initialize(buildMermaidConfig(theme));
+  }, [theme]);
 
   useEffect(() => {
     let cancelled = false;
@@ -86,7 +54,7 @@ export function MermaidPreview({
     return () => {
       cancelled = true;
     };
-  }, [code]);
+  }, [code, theme]);
 
   useEffect(() => {
     setZoom(1);
@@ -100,7 +68,18 @@ export function MermaidPreview({
 
   const content = (
     <div
-      className={cn("rounded-lg border border-border/50 bg-muted/10 p-4 overflow-auto", className)}
+      className={cn(
+        "mermaid-container rounded-lg border border-border/50 bg-muted/10 p-4 overflow-auto",
+        className,
+      )}
+      style={
+        {
+          "--mermaid-text": textOnBackground,
+          "--mermaid-node-text": textOnPrimary,
+          "--mermaid-edge-label-bg": edgeLabelBackground,
+          color: textOnBackground,
+        } as CSSProperties
+      }
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
@@ -148,7 +127,17 @@ export function MermaidPreview({
   };
 
   return (
-    <div className={cn("relative rounded-lg border border-border/50 bg-muted/10", className)}>
+    <div
+      className={cn("relative rounded-lg border border-border/50 bg-muted/10", className)}
+      style={
+        {
+          "--mermaid-text": textOnBackground,
+          "--mermaid-node-text": textOnPrimary,
+          "--mermaid-edge-label-bg": edgeLabelBackground,
+          color: textOnBackground,
+        } as CSSProperties
+      }
+    >
       <div
         ref={containerRef}
         className="relative h-full w-full overflow-hidden touch-none select-none"
@@ -160,7 +149,7 @@ export function MermaidPreview({
         style={{ cursor: isPanning ? "grabbing" : "grab" }}
       >
         <div
-          className="p-4"
+          className="mermaid-container p-4"
           style={{
             transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
             transformOrigin: "0 0",

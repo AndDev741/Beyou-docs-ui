@@ -1,36 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import mermaid from "mermaid";
-
-mermaid.initialize({
-  startOnLoad: false,
-  theme: "dark",
-  themeVariables: {
-    primaryColor: "#a855f7",
-    primaryTextColor: "#fff",
-    primaryBorderColor: "#9333ea",
-    lineColor: "#ec4899",
-    secondaryColor: "#1e1b4b",
-    tertiaryColor: "#0f0a1e",
-    background: "#0a0812",
-    mainBkg: "#1a1625",
-    secondBkg: "#2d2640",
-    nodeBorder: "#9333ea",
-    clusterBkg: "#1e1b4b",
-    clusterBorder: "#7c3aed",
-    titleColor: "#f0abfc",
-    edgeLabelBackground: "#1a1625",
-    nodeTextColor: "#f5f5f5",
-  },
-  flowchart: {
-    curve: "basis",
-    padding: 20,
-  },
-  sequence: {
-    actorMargin: 50,
-    boxMargin: 10,
-    boxTextMargin: 5,
-  },
-});
+import { useTheme } from "@/context/ThemeContext";
+import { buildMermaidConfig, resolveMermaidTextColors } from "@/lib/mermaidTheme";
 
 interface MermaidRendererProps {
   chart: string;
@@ -38,8 +9,13 @@ interface MermaidRendererProps {
 }
 
 export function MermaidRenderer({ chart, className = "" }: MermaidRendererProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
   const [svg, setSvg] = useState<string>("");
+  const { textOnBackground, textOnPrimary, edgeLabelBackground } = resolveMermaidTextColors(theme);
+
+  useEffect(() => {
+    mermaid.initialize(buildMermaidConfig(theme));
+  }, [theme]);
 
   useEffect(() => {
     const renderChart = async () => {
@@ -60,7 +36,7 @@ export function MermaidRenderer({ chart, className = "" }: MermaidRendererProps)
     };
 
     renderChart();
-  }, [chart]);
+  }, [chart, theme]);
 
   if (!svg) {
     return null;
@@ -68,8 +44,15 @@ export function MermaidRenderer({ chart, className = "" }: MermaidRendererProps)
 
   return (
     <div
-      ref={containerRef}
       className={`mermaid-container overflow-auto ${className}`}
+      style={
+        {
+          "--mermaid-text": textOnBackground,
+          "--mermaid-node-text": textOnPrimary,
+          "--mermaid-edge-label-bg": edgeLabelBackground,
+          color: textOnBackground,
+        } as CSSProperties
+      }
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );

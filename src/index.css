@@ -49,6 +49,8 @@
     --glow-pink: 190 90% 58%;
     --glass: 0 0% 98%;
     --glass-border: 210 16% 88%;
+
+    --font-docs: "Source Serif 4", "Iowan Old Style", "Times New Roman", serif;
   }
 
   .dark {
@@ -189,6 +191,60 @@
 
   .status-error {
     @apply bg-red-500/15 text-red-400;
+  }
+
+  .docs-prose {
+    @apply prose max-w-none;
+    font-family: var(--font-docs);
+    --tw-prose-body: hsl(var(--foreground));
+    --tw-prose-headings: hsl(var(--foreground));
+    --tw-prose-lead: hsl(var(--foreground));
+    --tw-prose-links: hsl(var(--primary));
+    --tw-prose-bold: hsl(var(--foreground));
+    --tw-prose-counters: hsl(var(--muted-foreground));
+    --tw-prose-bullets: hsl(var(--muted-foreground));
+    --tw-prose-hr: hsl(var(--border));
+    --tw-prose-quotes: hsl(var(--foreground));
+    --tw-prose-quote-borders: hsl(var(--border));
+    --tw-prose-captions: hsl(var(--muted-foreground));
+    --tw-prose-code: hsl(var(--foreground));
+    --tw-prose-pre-code: hsl(var(--foreground));
+    --tw-prose-pre-bg: hsl(var(--muted));
+    --tw-prose-th-borders: hsl(var(--border));
+    --tw-prose-td-borders: hsl(var(--border));
+  }
+}
+
+@layer components {
+  .mermaid-container {
+    color: var(--mermaid-text, hsl(var(--foreground)));
+  }
+
+  .mermaid-container svg .edgeLabel text,
+  .mermaid-container svg .edgeLabel tspan,
+  .mermaid-container svg .edgeLabel .label {
+    fill: var(--mermaid-text, hsl(var(--foreground))) !important;
+  }
+
+  .mermaid-container svg text,
+  .mermaid-container svg tspan {
+    fill: var(--mermaid-text, hsl(var(--foreground))) !important;
+  }
+
+  .mermaid-container svg .node text,
+  .mermaid-container svg .node tspan {
+    fill: var(--mermaid-node-text, hsl(var(--foreground))) !important;
+  }
+
+  .mermaid-container svg .edgeLabel rect,
+  .mermaid-container svg .edgeLabel polygon,
+  .mermaid-container svg .edgeLabel path {
+    fill: var(--mermaid-edge-label-bg, hsl(var(--muted))) !important;
+  }
+
+  .mermaid-container svg foreignObject,
+  .mermaid-container svg foreignObject * {
+    color: var(--mermaid-text, hsl(var(--foreground))) !important;
   }
 }
 

@@ -1,0 +1,468 @@
+{
+  "app": {
+    "name": "Beyou Docs",
+    "tagline": "Seu stack de habitos, documentado."
+  },
+  "nav": {
+    "home": "Inicio",
+    "gettingStarted": "Primeiros passos",
+    "architecture": "Arquitetura",
+    "design": "Design",
+    "apis": "APIs",
+    "projects": "Projetos",
+    "plan": "Plano",
+    "search": "Busca",
+    "settings": "Configuracoes",
+    "collapse": "Recolher"
+  },
+  "topbar": {
+    "searchPlaceholder": "Buscar nos docs...",
+    "theme": "Tema",
+    "language": "Idioma"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "refresh": "Atualizar",
+    "readOnly": "Somente leitura",
+    "back": "Voltar",
+    "openLink": "Abrir link",
+    "fullScreen": "Tela cheia",
+    "close": "Fechar",
+    "none": "Nenhum",
+    "comingSoon": "Em breve",
+    "empty": "Nada para mostrar ainda.",
+    "unknown": "Desconhecido",
+    "na": "N/D"
+  },
+  "home": {
+    "hero": {
+      "badge": "Documentacao Beyou",
+      "titleLine1": "Habitos, bem mapeados.",
+      "titleLine2": "Crescimento, explicado.",
+      "description": "Explore arquitetura, APIs, designs e projetos que movem o Beyou.",
+      "primaryCta": "Abrir Documentacao",
+      "secondaryCta": "Ver Arquitetura"
+    },
+    "quick": {
+      "title": "Acesso rapido",
+      "arch": {
+        "title": "Arquitetura",
+        "description": "Arquitetura do sistema e fluxos de habitos."
+      },
+      "design": {
+        "title": "Design",
+        "description": "Fluxos de UX e decisoes do produto."
+      },
+      "apis": {
+        "title": "APIs",
+        "description": "Endpoints de controllers e contratos."
+      },
+      "projects": {
+        "title": "Projetos",
+        "description": "Repos, servicos e ownership."
+      },
+      "plan": {
+        "title": "Plano",
+        "description": "Notas de roadmap e proximos passos.",
+        "badge": "Somente leitura"
+      }
+    },
+    "activity": {
+      "title": "Atividade recente",
+      "viewAll": "Ver tudo",
+      "loading": "Carregando atividade...",
+      "empty": "Sem atividade recente.",
+      "defaults": {
+        "arch": "Topico de arquitetura atualizado",
+        "design": "Design {{category}} atualizado",
+        "api": "Repositorio de API atualizado",
+        "project": "Repositorio atualizado"
+      }
+    },
+    "overview": {
+      "title": "Visao geral",
+      "loading": "Carregando visao geral...",
+      "status": {
+        "healthy": "Saudavel",
+        "warning": "Alerta",
+        "error": "Erro"
+      },
+      "previewTitle": "Preview da arquitetura",
+      "previewLink": "Ver diagrama completo →",
+      "previewEmpty": "Sem preview disponivel."
+    },
+    "stats": {
+      "architecture": "Topicos de arquitetura",
+      "designs": "Docs de design",
+      "apis": "Repos de API",
+      "projects": "Projetos",
+      "updated": "Atualizado {{time}}",
+      "noRecent": "Sem atualizacoes recentes",
+      "customRepos": "Lista de repos custom",
+      "org": "Org: {{org}}",
+      "sampled": "Amostra de {{count}} repos",
+      "latest": "Ultimos {{shown}} de {{total}}"
+    },
+    "errors": {
+      "load": "Falha ao carregar dados iniciais"
+    }
+  },
+  "design": {
+    "list": {
+      "title": "Designs",
+      "search": "Buscar designs...",
+      "loading": "Carregando designs...",
+      "empty": "Nenhum design encontrado",
+      "count": "{{count}} design(s)",
+      "category": {
+        "all": "Todos",
+        "flows": "Fluxos",
+        "wireframes": "Wireframes",
+        "specs": "Specs"
+      }
+    },
+    "viewer": {
+      "updated": "Atualizado {{date}}",
+      "project": "Projeto: {{project}}"
+    },
+    "empty": {
+      "title": "Selecione um design",
+      "description": "Escolha um design da lista para ver detalhes.",
+      "cards": {
+        "flows": {
+          "title": "Fluxos de usuario",
+          "body": "Documente jornadas"
+        },
+        "wireframes": {
+          "title": "Wireframes",
+          "body": "Especificacoes de layout"
+        },
+        "specs": {
+          "title": "Specs tecnicas",
+          "body": "Documentacao tecnica"
+        }
+      }
+    }
+  },
+  "architecture": {
+    "sidebar": {
+      "title": "Topicos de arquitetura",
+      "search": "Buscar topicos",
+      "tags": "Tags",
+      "allTags": "Todas as tags",
+      "project": "Projeto ligado",
+      "allProjects": "Todos os projetos",
+      "topicCount": "{{count}} topicos",
+      "loadingTopics": "Carregando topicos...",
+      "noTopics": "Nenhum topico corresponde ao filtro.",
+      "newTopic": "Novo topico"
+    },
+    "empty": "Selecione um topico para ver detalhes.",
+    "topic": {
+      "noDescription": "Sem descricao.",
+      "updated": "Atualizado {{date}}"
+    },
+    "tabs": {
+      "diagrams": "Diagramas",
+      "docs": "Docs",
+      "metadata": "Metadados"
+    },
+    "diagrams": {
+      "title": "Diagramas",
+      "loading": "Carregando diagramas...",
+      "empty": "Sem diagramas.",
+      "select": "Selecione um diagrama.",
+      "builder": "Builder",
+      "new": "Novo",
+      "mermaidPlaceholder": "Escreva Mermaid aqui..."
+    },
+    "docs": {
+      "title": "Docs",
+      "loading": "Carregando docs...",
+      "empty": "Sem docs.",
+      "select": "Selecione um doc.",
+      "noContent": "Sem conteudo.",
+      "new": "Novo"
+    },
+    "metadata": {
+      "title": "Titulo",
+      "description": "Descricao",
+      "tags": "Tags",
+      "projects": "Projetos ligados",
+      "viewProjects": "Ver projetos",
+      "empty": "Sem metadados."
+    },
+    "preview": {
+      "title": "Preview do diagrama",
+      "empty": "Nenhum diagrama selecionado.",
+      "select": "Selecione um diagrama para preview.",
+      "error": "Erro no diagrama: {{error}}"
+    },
+    "flow": {
+      "error": "Erro no builder: {{error}}. Corrija o JSON abaixo.",
+      "mermaidOutput": "Saida Mermaid",
+      "copyMermaid": "Copiar Mermaid",
+      "rawJson": "JSON bruto",
+      "placeholder": "JSON do diagrama"
+    },
+    "mermaid": {
+      "renderError": "Falha ao renderizar Mermaid.",
+      "error": "Erro Mermaid: {{error}}",
+      "empty": "O preview aparecera aqui.",
+      "reset": "Resetar"
+    },
+    "errors": {
+      "loadTopics": "Falha ao carregar topicos",
+      "loadProjects": "Falha ao carregar projetos",
+      "loadFile": "Falha ao carregar arquivo"
+    }
+  },
+  "apis": {
+    "dropdown": {
+      "all": "Todos os repos",
+      "none": "Sem repos",
+      "title": "Repos",
+      "count": "{{count}} repos",
+      "empty": "Nenhum repo de API encontrado."
+    },
+    "header": {
+      "title": "Catalogo de APIs",
+      "subtitleAll": "Paths e schemas combinados entre repos.",
+      "subtitleSingle": "Repositorio OpenAPI",
+      "paths": "{{count}} APIs",
+      "schemas": "{{count}} Schemas",
+      "spec": "Spec: {{spec}}",
+      "version": "Versao: {{version}}"
+    },
+    "search": "Filtrar APIs ou schemas",
+    "count": "{{paths}} APIs | {{schemas}} schemas",
+    "loading": {
+      "progress": "{{loaded}}/{{total}} repos carregados",
+      "paths": "Carregando paths...",
+      "schemas": "Carregando schemas...",
+      "details": "Carregando detalhes...",
+      "apiDetails": "Carregando detalhes da API...",
+      "schemaDetails": "Carregando detalhes do schema..."
+    },
+    "tokenMissing": "Token ausente",
+    "tabs": {
+      "paths": "APIs",
+      "schemas": "Schemas"
+    },
+    "empty": {
+      "paths": "Nenhum path corresponde ao filtro.",
+      "schemas": "Nenhum schema corresponde ao filtro.",
+      "select": "Selecione um item para ver detalhes.",
+      "items": "Nenhum item encontrado.",
+      "operations": "Sem operacoes para este path."
+    },
+    "errors": {
+      "title": "Repos com erro",
+      "loadRepos": "Falha ao carregar repos",
+      "loadRepo": "Falha ao carregar repo",
+      "loadApiDetails": "Falha ao carregar detalhes da API",
+      "loadSchemaDetails": "Falha ao carregar detalhes do schema",
+      "loadSchema": "Falha ao carregar schema",
+      "schemaSourceMissing": "Arquivo de schema indisponivel."
+    },
+    "detail": {
+      "pathLabel": "API Path",
+      "schemaLabel": "Schema",
+      "viewDefinition": "Ver definicao",
+      "viewSchema": "Ver schema",
+      "parameters": "Parametros",
+      "noParameters": "Sem parametros.",
+      "requestBody": "Request Body",
+      "responses": "Responses",
+      "noResponses": "Sem responses documentados.",
+      "noSchema": "Sem schema.",
+      "parameter": "parametro",
+      "ref": "ref",
+      "unknown": "desconhecido",
+      "in": "em {{location}}",
+      "noDescription": "Sem descricao.",
+      "schemaError": "Erro ao carregar schema: {{error}}",
+      "schemaUnavailable": "Schema indisponivel.",
+      "type": "Tipo: {{type}}",
+      "fieldsCount": "{{count}} campos",
+      "fields": "Campos",
+      "noFields": "Sem campos documentados."
+    }
+  },
+  "projects": {
+    "title": "Projetos",
+    "subtitle": "Repositorios e ownership do Beyou",
+    "search": "Buscar projetos...",
+    "count": "{{total}} repositorios • {{active}} ativos",
+    "filters": {
+      "status": "Status",
+      "allStatuses": "Todos os status",
+      "active": "Ativo",
+      "archived": "Arquivado",
+      "disabled": "Desativado",
+      "forks": "Forks",
+      "visibility": "Visibilidade",
+      "allVisibility": "Todas",
+      "public": "Publico",
+      "private": "Privado",
+      "internal": "Interno",
+      "language": "Linguagem",
+      "allLanguages": "Todas",
+      "sortBy": "Ordenar por",
+      "recentlyUpdated": "Atualizados recentemente",
+      "name": "Nome",
+      "mostCommits": "Mais commits",
+      "mostBranches": "Mais branches",
+      "mostTags": "Mais tags"
+    },
+    "errors": {
+      "load": "Falha ao carregar repositorios",
+      "title": "Repositorios com erro"
+    },
+    "loading": {
+      "initial": "Carregando repositorios...",
+      "more": "Carregando mais repositorios... ({{count}} carregados)"
+    },
+    "empty": {
+      "title": "Nenhum projeto encontrado",
+      "subtitle": "Tente ajustar a busca"
+    },
+    "status": {
+      "active": "ativo",
+      "archived": "arquivado",
+      "disabled": "desativado",
+      "fork": "Fork"
+    },
+    "noDescription": "Sem descricao.",
+    "openRepo": "Abrir repositorio",
+    "metrics": {
+      "commits": "{{count}} commits",
+      "branches": "{{count}} branches",
+      "tags": "{{count}} tags"
+    },
+    "branch": "branch: {{branch}}",
+    "owner": "Owner: {{owner}}",
+    "updated": "Atualizado {{date}}"
+  },
+  "search": {
+    "title": "Busca",
+    "subtitle": "Encontre conteudo em arquitetura, APIs, designs e projetos",
+    "placeholder": "Buscar documentacao...",
+    "recentTitle": "Buscas recentes",
+    "recent": {
+      "1": "regras de streak",
+      "2": "auth controller",
+      "3": "agendador de rotina",
+      "4": "tokens de tema"
+    },
+    "categories": {
+      "all": "Todos",
+      "architecture": "Arquitetura",
+      "apis": "APIs",
+      "designs": "Designs",
+      "projects": "Projetos"
+    },
+    "sample": {
+      "arch": {
+        "title": "Visao geral do backend",
+        "description": "Visao de servicos e fluxo de dados"
+      },
+      "api": {
+        "title": "POST /auth/login",
+        "description": "Autenticar usuario e retornar token"
+      },
+      "design": {
+        "title": "Fluxo de autenticacao",
+        "description": "Diagrama de autenticacao e sessao"
+      },
+      "project": {
+        "title": "Plataforma core",
+        "description": "Servicos e APIs principais"
+      }
+    }
+  },
+  "gettingStarted": {
+    "title": "Primeiros passos",
+    "description": "Estamos renovando esta pagina para o novo fluxo de primeiros passos.",
+    "checklist": "Checklist",
+    "step": "Passo {{number}}",
+    "steps": {
+      "token": {
+        "title": "Conecte sua fonte de dados",
+        "description": "Os docs serao carregados do banco quando disponiveis."
+      },
+      "env": {
+        "title": "Configure o ambiente",
+        "description": "Defina repo/org para o docs UI."
+      },
+      "next": {
+        "title": "Explore os docs",
+        "description": "Veja arquitetura, APIs e design."
+      }
+    },
+    "local": {
+      "title": "Ambiente local",
+      "description": "Ajuste preferencias e chaves em Configuracoes.",
+      "cta": "Abrir Configuracoes"
+    },
+    "links": {
+      "title": "Links rapidos",
+      "architecture": "Visao de arquitetura",
+      "apis": "Docs de API",
+      "design": "Sistema de design",
+      "plan": "Plano"
+    }
+  },
+  "plan": {
+    "title": "Plano",
+    "description": "Ideias em modo leitura para o que documentar depois.",
+    "cards": {
+      "arch": {
+        "title": "Arquitetura",
+        "body": "Topicos, diagramas e dependencias a incluir."
+      },
+      "design": {
+        "title": "Design",
+        "body": "Fluxos, specs e decisoes."
+      },
+      "api": {
+        "title": "APIs",
+        "body": "Controllers e notas de request/response."
+      }
+    }
+  },
+  "notFound": {
+    "message": "Ops! Pagina nao encontrada",
+    "cta": "Voltar ao inicio"
+  },
+  "settings": {
+    "title": "Configuracoes",
+    "description": "Ajuste sua experiencia.",
+    "appearance": "Aparencia",
+    "languageLabel": "Idioma",
+    "themeLabel": "Tema",
+    "compactMode": "Modo compacto",
+    "compactDescription": "Reduz o espaco na interface",
+    "aiKeys": "Chaves de IA",
+    "aiKeysDescription": "Guarde chaves e modelos padrao para assistencias.",
+    "keyStored": "Salva localmente",
+    "keyEnv": "Usando chave do ambiente",
+    "keyMissing": "Ausente",
+    "apiKey": "Chave de API",
+    "defaultModel": "Modelo padrao",
+    "envOverride": "Override do ambiente detectado.",
+    "defaultValue": "Padrao: {{model}}.",
+    "keysFooter": "As chaves ficam salvas neste navegador. Limpe um campo para remover o valor salvo."
+  },
+  "themes": {
+    "beYou": "beYou",
+    "beYouDark": "beYou Escuro",
+    "Sunset": "Por do Sol",
+    "Amethyst": "Ametista",
+    "Midnight": "Meia-noite",
+    "Cyberpunk": "Ciberpunk",
+    "Mocha": "Mocha",
+    "Polar": "Polar",
+    "Late Latte": "Latte Tarde"
+  }
+}

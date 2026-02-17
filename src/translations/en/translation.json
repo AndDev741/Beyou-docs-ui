@@ -1,0 +1,468 @@
+{
+  "app": {
+    "name": "Beyou Docs",
+    "tagline": "Your habit stack, documented."
+  },
+  "nav": {
+    "home": "Home",
+    "gettingStarted": "Getting Started",
+    "architecture": "Architecture",
+    "design": "Design",
+    "apis": "APIs",
+    "projects": "Projects",
+    "plan": "Plan",
+    "search": "Search",
+    "settings": "Settings",
+    "collapse": "Collapse"
+  },
+  "topbar": {
+    "searchPlaceholder": "Search docs...",
+    "theme": "Theme",
+    "language": "Language"
+  },
+  "common": {
+    "loading": "Loading...",
+    "refresh": "Refresh",
+    "readOnly": "Read-only",
+    "back": "Back",
+    "openLink": "Open link",
+    "fullScreen": "Full screen",
+    "close": "Close",
+    "none": "None",
+    "comingSoon": "Coming soon",
+    "empty": "Nothing to show yet.",
+    "unknown": "Unknown",
+    "na": "N/A"
+  },
+  "home": {
+    "hero": {
+      "badge": "Beyou documentation",
+      "titleLine1": "Habits, clearly mapped.",
+      "titleLine2": "Growth, explained.",
+      "description": "Explore architecture, APIs, designs, and projects that power Beyou.",
+      "primaryCta": "Open Documentation",
+      "secondaryCta": "View Architecture"
+    },
+    "quick": {
+      "title": "Quick Access",
+      "arch": {
+        "title": "Architecture",
+        "description": "System architecture and habit flows."
+      },
+      "design": {
+        "title": "Design",
+        "description": "UX flows and product decisions."
+      },
+      "apis": {
+        "title": "APIs",
+        "description": "Controller-based endpoints and contracts."
+      },
+      "projects": {
+        "title": "Projects",
+        "description": "Repos, services, and ownership."
+      },
+      "plan": {
+        "title": "Plan",
+        "description": "Roadmap notes and next steps.",
+        "badge": "Read-only"
+      }
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "viewAll": "View all",
+      "loading": "Loading recent activity...",
+      "empty": "No recent activity found.",
+      "defaults": {
+        "arch": "Architecture topic updated",
+        "design": "{{category}} design updated",
+        "api": "API repository updated",
+        "project": "Repository updated"
+      }
+    },
+    "overview": {
+      "title": "System Overview",
+      "loading": "Loading system overview...",
+      "status": {
+        "healthy": "Healthy",
+        "warning": "Warning",
+        "error": "Error"
+      },
+      "previewTitle": "Architecture Preview",
+      "previewLink": "View Full Diagram →",
+      "previewEmpty": "No architecture preview available."
+    },
+    "stats": {
+      "architecture": "Architecture Topics",
+      "designs": "Design Docs",
+      "apis": "API Repos",
+      "projects": "Projects",
+      "updated": "Updated {{time}}",
+      "noRecent": "No recent updates",
+      "customRepos": "Custom repo list",
+      "org": "Org: {{org}}",
+      "sampled": "Sampled {{count}} repos",
+      "latest": "Latest {{shown}} of {{total}}"
+    },
+    "errors": {
+      "load": "Failed to load home data"
+    }
+  },
+  "design": {
+    "list": {
+      "title": "Designs",
+      "search": "Search designs...",
+      "loading": "Loading designs...",
+      "empty": "No designs found",
+      "count": "{{count}} design(s)",
+      "category": {
+        "all": "All",
+        "flows": "Flows",
+        "wireframes": "Wireframes",
+        "specs": "Specs"
+      }
+    },
+    "viewer": {
+      "updated": "Updated {{date}}",
+      "project": "Project: {{project}}"
+    },
+    "empty": {
+      "title": "Select a design",
+      "description": "Choose a design from the list to view details.",
+      "cards": {
+        "flows": {
+          "title": "User Flows",
+          "body": "Document user journeys"
+        },
+        "wireframes": {
+          "title": "Wireframes",
+          "body": "Layout specifications"
+        },
+        "specs": {
+          "title": "Tech Specs",
+          "body": "Technical documentation"
+        }
+      }
+    }
+  },
+  "architecture": {
+    "sidebar": {
+      "title": "Architecture Topics",
+      "search": "Search topics",
+      "tags": "Tags",
+      "allTags": "All tags",
+      "project": "Linked project",
+      "allProjects": "All projects",
+      "topicCount": "{{count}} topics",
+      "loadingTopics": "Loading topics...",
+      "noTopics": "No topics match your filter.",
+      "newTopic": "New topic"
+    },
+    "empty": "Select a topic to view details.",
+    "topic": {
+      "noDescription": "No description yet.",
+      "updated": "Updated {{date}}"
+    },
+    "tabs": {
+      "diagrams": "Diagrams",
+      "docs": "Docs",
+      "metadata": "Metadata"
+    },
+    "diagrams": {
+      "title": "Diagrams",
+      "loading": "Loading diagrams...",
+      "empty": "No diagrams yet.",
+      "select": "Select a diagram to view.",
+      "builder": "Builder",
+      "new": "New",
+      "mermaidPlaceholder": "Write Mermaid syntax here..."
+    },
+    "docs": {
+      "title": "Docs",
+      "loading": "Loading docs...",
+      "empty": "No docs yet.",
+      "select": "Select a doc to view.",
+      "noContent": "No content yet.",
+      "new": "New"
+    },
+    "metadata": {
+      "title": "Title",
+      "description": "Description",
+      "tags": "Tags",
+      "projects": "Linked projects",
+      "viewProjects": "View projects",
+      "empty": "No metadata loaded."
+    },
+    "preview": {
+      "title": "Diagram preview",
+      "empty": "No diagram selected.",
+      "select": "Select a diagram to preview.",
+      "error": "Diagram error: {{error}}"
+    },
+    "flow": {
+      "error": "Builder error: {{error}}. Fix the JSON below to re-enable the builder.",
+      "mermaidOutput": "Mermaid output",
+      "copyMermaid": "Copy Mermaid",
+      "rawJson": "Raw builder JSON",
+      "placeholder": "Flow diagram JSON"
+    },
+    "mermaid": {
+      "renderError": "Failed to render Mermaid diagram.",
+      "error": "Mermaid error: {{error}}",
+      "empty": "Diagram preview will appear here.",
+      "reset": "Reset"
+    },
+    "errors": {
+      "loadTopics": "Failed to load topics",
+      "loadProjects": "Failed to load projects",
+      "loadFile": "Failed to load file"
+    }
+  },
+  "apis": {
+    "dropdown": {
+      "all": "All repositories",
+      "none": "No repositories",
+      "title": "Repositories",
+      "count": "{{count}} repositories",
+      "empty": "No API repositories found."
+    },
+    "header": {
+      "title": "API Catalog",
+      "subtitleAll": "Combined API paths and schemas across selected repositories.",
+      "subtitleSingle": "OpenAPI repository",
+      "paths": "{{count}} APIs",
+      "schemas": "{{count}} Schemas",
+      "spec": "Spec: {{spec}}",
+      "version": "Version: {{version}}"
+    },
+    "search": "Filter APIs or schemas",
+    "count": "{{paths}} APIs | {{schemas}} schemas",
+    "loading": {
+      "progress": "{{loaded}}/{{total}} repos loaded",
+      "paths": "Loading API paths...",
+      "schemas": "Loading schemas...",
+      "details": "Loading details...",
+      "apiDetails": "Loading API details...",
+      "schemaDetails": "Schema details loading..."
+    },
+    "tokenMissing": "Token missing",
+    "tabs": {
+      "paths": "APIs",
+      "schemas": "Schemas"
+    },
+    "empty": {
+      "paths": "No API paths match your filter.",
+      "schemas": "No schemas match your filter.",
+      "select": "Select an item to view details.",
+      "items": "No items found.",
+      "operations": "No operations found for this path."
+    },
+    "errors": {
+      "title": "Repositories with errors",
+      "loadRepos": "Failed to load repositories",
+      "loadRepo": "Failed to load repository",
+      "loadApiDetails": "Failed to load API details",
+      "loadSchemaDetails": "Failed to load schema details",
+      "loadSchema": "Failed to load schema",
+      "schemaSourceMissing": "Schema source file not available."
+    },
+    "detail": {
+      "pathLabel": "API Path",
+      "schemaLabel": "Schema",
+      "viewDefinition": "View definition",
+      "viewSchema": "View schema",
+      "parameters": "Parameters",
+      "noParameters": "No parameters.",
+      "requestBody": "Request Body",
+      "responses": "Responses",
+      "noResponses": "No responses documented.",
+      "noSchema": "No schema provided.",
+      "parameter": "parameter",
+      "ref": "ref",
+      "unknown": "unknown",
+      "in": "in {{location}}",
+      "noDescription": "No description provided.",
+      "schemaError": "Schema failed to load: {{error}}",
+      "schemaUnavailable": "Schema unavailable.",
+      "type": "Type: {{type}}",
+      "fieldsCount": "{{count}} fields",
+      "fields": "Fields",
+      "noFields": "No fields documented."
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Repositories and service ownership for Beyou",
+    "search": "Search projects...",
+    "count": "{{total}} repositories • {{active}} active",
+    "filters": {
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "active": "Active",
+      "archived": "Archived",
+      "disabled": "Disabled",
+      "forks": "Forks",
+      "visibility": "Visibility",
+      "allVisibility": "All visibility",
+      "public": "Public",
+      "private": "Private",
+      "internal": "Internal",
+      "language": "Language",
+      "allLanguages": "All languages",
+      "sortBy": "Sort by",
+      "recentlyUpdated": "Recently updated",
+      "name": "Name",
+      "mostCommits": "Most commits",
+      "mostBranches": "Most branches",
+      "mostTags": "Most tags"
+    },
+    "errors": {
+      "load": "Failed to load repositories",
+      "title": "Repositories with errors"
+    },
+    "loading": {
+      "initial": "Loading repositories...",
+      "more": "Loading more repositories... ({{count}} loaded)"
+    },
+    "empty": {
+      "title": "No projects found",
+      "subtitle": "Try adjusting your search criteria"
+    },
+    "status": {
+      "active": "active",
+      "archived": "archived",
+      "disabled": "disabled",
+      "fork": "Fork"
+    },
+    "noDescription": "No description available.",
+    "openRepo": "Open repository",
+    "metrics": {
+      "commits": "{{count}} commits",
+      "branches": "{{count}} branches",
+      "tags": "{{count}} tags"
+    },
+    "branch": "branch: {{branch}}",
+    "owner": "Owner: {{owner}}",
+    "updated": "Updated {{date}}"
+  },
+  "search": {
+    "title": "Search",
+    "subtitle": "Find anything across architecture, APIs, designs, and projects",
+    "placeholder": "Search documentation...",
+    "recentTitle": "Recent Searches",
+    "recent": {
+      "1": "habit streak rules",
+      "2": "auth controller",
+      "3": "routine scheduler",
+      "4": "theme tokens"
+    },
+    "categories": {
+      "all": "All",
+      "architecture": "Architecture",
+      "apis": "APIs",
+      "designs": "Designs",
+      "projects": "Projects"
+    },
+    "sample": {
+      "arch": {
+        "title": "Backend Architecture Overview",
+        "description": "System overview of services and data flow"
+      },
+      "api": {
+        "title": "POST /auth/login",
+        "description": "Authenticate user and return access token"
+      },
+      "design": {
+        "title": "Authentication Flow",
+        "description": "User authentication and session flow diagram"
+      },
+      "project": {
+        "title": "Core Platform",
+        "description": "Main platform services and APIs"
+      }
+    }
+  },
+  "gettingStarted": {
+    "title": "Getting Started",
+    "description": "We are refreshing this page for the new onboarding flow.",
+    "checklist": "Setup Checklist",
+    "step": "Step {{number}}",
+    "steps": {
+      "token": {
+        "title": "Connect your data source",
+        "description": "Docs will load from the database when available."
+      },
+      "env": {
+        "title": "Configure environment",
+        "description": "Set repo/org config for the docs UI."
+      },
+      "next": {
+        "title": "Explore the docs",
+        "description": "Jump into architecture, APIs, and design references."
+      }
+    },
+    "local": {
+      "title": "Local environment",
+      "description": "Update preferences and keys in Settings.",
+      "cta": "Open Settings"
+    },
+    "links": {
+      "title": "Quick Links",
+      "architecture": "Architecture Overview",
+      "apis": "API Documentation",
+      "design": "Design System",
+      "plan": "Plan"
+    }
+  },
+  "plan": {
+    "title": "Plan",
+    "description": "Read-only roadmap ideas for what we want to document next.",
+    "cards": {
+      "arch": {
+        "title": "Architecture",
+        "body": "Topics, diagrams, and dependencies to add."
+      },
+      "design": {
+        "title": "Design",
+        "body": "Flows, UX specs, and decision records."
+      },
+      "api": {
+        "title": "APIs",
+        "body": "Controller endpoints and request/response notes."
+      }
+    }
+  },
+  "notFound": {
+    "message": "Oops! Page not found",
+    "cta": "Return to Home"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Tune your experience.",
+    "appearance": "Appearance",
+    "languageLabel": "Language",
+    "themeLabel": "Theme",
+    "compactMode": "Compact mode",
+    "compactDescription": "Reduce spacing in the UI",
+    "aiKeys": "AI Keys",
+    "aiKeysDescription": "Store provider keys and default models for assist features.",
+    "keyStored": "Stored locally",
+    "keyEnv": "Using env key",
+    "keyMissing": "Missing",
+    "apiKey": "API Key",
+    "defaultModel": "Default Model",
+    "envOverride": "Environment override detected.",
+    "defaultValue": "Default: {{model}}.",
+    "keysFooter": "Keys are stored locally in this browser. Clear a field to remove the stored value."
+  },
+  "themes": {
+    "beYou": "beYou",
+    "beYouDark": "beYou Dark",
+    "Sunset": "Sunset",
+    "Amethyst": "Amethyst",
+    "Midnight": "Midnight",
+    "Cyberpunk": "Cyberpunk",
+    "Mocha": "Mocha",
+    "Polar": "Polar",
+    "Late Latte": "Late Latte"
+  }
+}

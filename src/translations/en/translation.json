@@ -74,7 +74,7 @@
       "empty": "No recent activity found.",
       "defaults": {
         "arch": "Architecture topic updated",
-        "design": "{{category}} design updated",
+        "design": "Design updated",
         "api": "API repository updated",
         "project": "Repository updated"
       }
@@ -108,40 +108,24 @@
     }
   },
   "design": {
-    "list": {
-      "title": "Designs",
-      "search": "Search designs...",
-      "loading": "Loading designs...",
-      "empty": "No designs found",
-      "count": "{{count}} design(s)",
-      "category": {
-        "all": "All",
-        "flows": "Flows",
-        "wireframes": "Wireframes",
-        "specs": "Specs"
-      }
+    "sidebar": {
+      "title": "Design Docs",
+      "search": "Search designs",
+      "topicCount": "{{count}} topics",
+      "loadingTopics": "Loading topics...",
+      "noTopics": "No topics match your search."
     },
-    "viewer": {
-      "updated": "Updated {{date}}",
-      "project": "Project: {{project}}"
+    "empty": "Select a design to view details.",
+    "topic": {
+      "noDescription": "No description yet.",
+      "updated": "Updated {{date}}"
     },
-    "empty": {
-      "title": "Select a design",
-      "description": "Choose a design from the list to view details.",
-      "cards": {
-        "flows": {
-          "title": "User Flows",
-          "body": "Document user journeys"
-        },
-        "wireframes": {
-          "title": "Wireframes",
-          "body": "Layout specifications"
-        },
-        "specs": {
-          "title": "Tech Specs",
-          "body": "Technical documentation"
-        }
-      }
+    "docs": {
+      "noContent": "No content yet."
+    },
+    "errors": {
+      "loadTopics": "Failed to load design topics.",
+      "loadDetail": "Failed to load design detail."
     }
   },
   "architecture": {

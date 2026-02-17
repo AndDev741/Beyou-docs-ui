@@ -5,13 +5,13 @@ import { HeroSection } from "@/components/dashboard/HeroSection";
 import { QuickAccessCards } from "@/components/dashboard/QuickAccessCards";
 import { RecentActivity, type ActivityItem } from "@/components/dashboard/RecentActivity";
 import { SystemOverview, type ArchitecturePreview, type SystemStat } from "@/components/dashboard/SystemOverview";
-import { resolveArchitectureRepo } from "@/data/architectureRepo";
 import { resolveProjectOrg, resolveProjectRepos } from "@/data/projectRepos";
 import { resolveApiOrg, isGentlApiRepoName } from "@/data/apiRepos";
 import { fetchArchitectureTopicDetail, fetchArchitectureTopics } from "@/lib/architectureApi";
-import { fetchDesigns } from "@/lib/githubDesigns";
+import { fetchDesignTopics } from "@/lib/designApi";
 import { fetchOrgProjectsSummary, fetchProjectsByRepos } from "@/lib/githubProjects";
 import type { ArchitectureTopicListItem } from "@/lib/architectureApi";
+import type { DesignTopicListItem } from "@/lib/designApi";
 import type { OrgProjectsSummary, ProjectInfo } from "@/lib/githubProjects";
 import { Code2, GitBranch, Palette, FolderKanban } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -27,7 +27,6 @@ type ProjectsSnapshot = {
 
 const Index = () => {
   const { t, i18n } = useTranslation();
-  const envArchRepo = import.meta.env.VITE_ARCH_REPO as string | undefined;
   const envProjectRepos = import.meta.env.VITE_PROJECT_REPOS as string | undefined;
   const envProjectOrg = import.meta.env.VITE_PROJECTS_ORG as string | undefined;
 
@@ -36,7 +35,6 @@ const Index = () => {
     [i18n.language],
   );
 
-  const repoConfig = useMemo(() => resolveArchitectureRepo(envArchRepo), [envArchRepo]);
   const projectRepos = useMemo(() => resolveProjectRepos(envProjectRepos), [envProjectRepos]);
   const projectOrg = useMemo(() => resolveProjectOrg(envProjectOrg), [envProjectOrg]);
   const apiOrg = useMemo(() => resolveApiOrg(envProjectOrg), [envProjectOrg]);
@@ -102,14 +100,14 @@ const Index = () => {
     try {
       const [topicsResult, designsResult, projectsResult] = await Promise.allSettled([
         fetchArchitectureTopics(locale),
-        fetchDesigns(repoConfig),
+        fetchDesignTopics(locale),
         loadProjects(),
       ]);
 
       if (loadIdRef.current !== loadId) return;
 
       const topics = topicsResult.status === "fulfilled" ? topicsResult.value : [];
-      const designs = designsResult.status === "fulfilled" ? designsResult.value : [];
+      const designs: DesignTopicListItem[] = designsResult.status === "fulfilled" ? designsResult.value : [];
       const projectsSnapshot = projectsResult.status === "fulfilled"
         ? projectsResult.value
         : { projects: [], sampled: false };
@@ -128,7 +126,7 @@ const Index = () => {
       const totalProjects = projectsSnapshot.totalCount ?? projects.length;
       const totalApis = projectsSnapshot.apiCount ?? apiRepos.length;
 
-      const latestDesign = designs[0];
+      const latestDesign = pickLatest(designs, (item) => item.updatedAt);
       const latestProject = pickLatest(projects, (item) => item.updatedAt ?? item.pushedAt);
       const latestApi = pickLatest(apiRepos, (item) => item.updatedAt ?? item.pushedAt);
       const latestTopic = pickLatest(topics, (item) => item.updatedAt);
@@ -153,7 +151,7 @@ const Index = () => {
           item: {
             type: "design",
             title: latestDesign.title,
-            description: t("home.activity.defaults.design", { category: latestDesign.category }),
+            description: latestDesign.summary || t("home.activity.defaults.design"),
             time: formatRelative(latestDesign.updatedAt, t),
             href: "/design",
           },
@@ -253,7 +251,6 @@ const Index = () => {
       }
     }
   }, [
-    repoConfig,
     locale,
     apiOrg,
     projectOrg,

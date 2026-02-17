@@ -45,7 +45,7 @@ export default function SearchPage() {
         type: "architecture",
         title: t("search.sample.arch.title"),
         description: t("search.sample.arch.description"),
-        path: "/architecture/backend",
+        path: "/architecture?topic=overview",
       },
       {
         type: "api",
@@ -57,7 +57,7 @@ export default function SearchPage() {
         type: "design",
         title: t("search.sample.design.title"),
         description: t("search.sample.design.description"),
-        path: "/design/auth-flow",
+        path: "/design?topic=user-flow",
       },
       {
         type: "project",

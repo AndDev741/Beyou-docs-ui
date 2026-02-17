@@ -74,7 +74,7 @@
       "empty": "Sem atividade recente.",
       "defaults": {
         "arch": "Topico de arquitetura atualizado",
-        "design": "Design {{category}} atualizado",
+        "design": "Design atualizado",
         "api": "Repositorio de API atualizado",
         "project": "Repositorio atualizado"
       }
@@ -108,40 +108,24 @@
     }
   },
   "design": {
-    "list": {
-      "title": "Designs",
-      "search": "Buscar designs...",
-      "loading": "Carregando designs...",
-      "empty": "Nenhum design encontrado",
-      "count": "{{count}} design(s)",
-      "category": {
-        "all": "Todos",
-        "flows": "Fluxos",
-        "wireframes": "Wireframes",
-        "specs": "Specs"
-      }
+    "sidebar": {
+      "title": "Docs de design",
+      "search": "Buscar designs",
+      "topicCount": "{{count}} topicos",
+      "loadingTopics": "Carregando topicos...",
+      "noTopics": "Nenhum topico encontrado."
     },
-    "viewer": {
-      "updated": "Atualizado {{date}}",
-      "project": "Projeto: {{project}}"
+    "empty": "Selecione um design para ver detalhes.",
+    "topic": {
+      "noDescription": "Sem descricao.",
+      "updated": "Atualizado {{date}}"
     },
-    "empty": {
-      "title": "Selecione um design",
-      "description": "Escolha um design da lista para ver detalhes.",
-      "cards": {
-        "flows": {
-          "title": "Fluxos de usuario",
-          "body": "Documente jornadas"
-        },
-        "wireframes": {
-          "title": "Wireframes",
-          "body": "Especificacoes de layout"
-        },
-        "specs": {
-          "title": "Specs tecnicas",
-          "body": "Documentacao tecnica"
-        }
-      }
+    "docs": {
+      "noContent": "Sem conteudo."
+    },
+    "errors": {
+      "loadTopics": "Falha ao carregar topicos de design.",
+      "loadDetail": "Falha ao carregar detalhe do design."
     }
   },
   "architecture": {

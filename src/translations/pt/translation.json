@@ -367,7 +367,11 @@
   },
   "gettingStarted": {
     "title": "Primeiros passos",
-    "description": "Estamos renovando esta pagina para o novo fluxo de primeiros passos.",
+    "description": "Aqui você verá a motivação para construir o Beyou, como executar todos os projetos localmente, como colaborar com o aplicativo e outras informações.",
+    "whyBeyou": {
+      "title": "Porque o Beyou",
+      "paragraph": "Sempre tive dificuldade em manter minhas tarefas organizadas. Também queria ver se estava progredindo em certas áreas da minha vida. Para cada aplicativo que testei, apenas uma dessas coisas estava presente. Então comecei a construir meu próprio aplicativo pessoal de organização de hábitos e rotinas, mais para aprender programação, mas também para finalmente ter o produto que sempre quis, onde posso facilmente criar hábitos e tarefas com categorias de vida e ver a evolução ao longo do tempo, sem mencionar a facilidade de criar rotinas diárias personalizadas e metas para sempre manter o foco."
+    },
     "checklist": "Checklist",
     "step": "Passo {{number}}",
     "steps": {

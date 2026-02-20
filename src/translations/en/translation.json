@@ -367,7 +367,11 @@
   },
   "gettingStarted": {
     "title": "Getting Started",
-    "description": "We are refreshing this page for the new onboarding flow.",
+    "description": "Here you're going to see the motivation to build beyou, how to run all projects locally, how to collaborate with the app and other stuffs.",
+    "whyBeyou": {
+      "title": "Why Beyou",
+      "paragraph": "I've always had trouble keeping my tasks organized. I also wanted to see if I was progressing in certain areas of my life. For every app I tested, only one of those things was there. So I started building my own personal habit and routine organization app, more to learn programming, but also to ultimately have the product I always wanted, where I can easily create habits and tasks with life categories and see the evolution over time, not to mention the ease of creating customized daily routines and goals to always stay on track."
+    },
     "checklist": "Setup Checklist",
     "step": "Step {{number}}",
     "steps": {

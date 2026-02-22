@@ -302,7 +302,8 @@
       "name": "Name",
       "mostCommits": "Most commits",
       "mostBranches": "Most branches",
-      "mostTags": "Most tags"
+      "mostTags": "Most tags",
+      "order": "Order"
     },
     "errors": {
       "load": "Failed to load repositories",
@@ -331,7 +332,17 @@
     },
     "branch": "branch: {{branch}}",
     "owner": "Owner: {{owner}}",
-    "updated": "Updated {{date}}"
+    "updated": "Updated {{date}}",
+    "viewDetails": "View details",
+    "order": "Order: {{order}}",
+    "detail": {
+      "notFound": "Project details not found",
+      "repository": "Repository",
+      "design": "Design",
+      "architecture": "Architecture",
+      "diagram": "Diagram",
+      "documentation": "Documentation"
+    }
   },
   "search": {
     "title": "Search",

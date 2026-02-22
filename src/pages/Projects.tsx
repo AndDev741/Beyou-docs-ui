@@ -8,6 +8,12 @@ import {
   Search,
   Tag,
   ExternalLink,
+  Eye,
+  FileText,
+  GitFork,
+  Layers,
+  Code,
+  Link,
 } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Input } from "@/components/ui/input";
@@ -20,36 +26,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { resolveProjectOrg, resolveProjectRepos } from "@/data/projectRepos";
-import type { ProjectEntry, ProjectInfo } from "@/lib/githubProjects";
-import { fetchOrgProjects, fetchProjectsByRepos } from "@/lib/githubProjects";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { DesignMarkdown } from "@/components/design/DesignMarkdown";
+import { MermaidBlock } from "@/components/design/MermaidBlock";
 import { useTranslation } from "react-i18next";
-
-const envProjectRepos = import.meta.env.VITE_PROJECT_REPOS as string | undefined;
-const envProjectOrg = import.meta.env.VITE_PROJECTS_ORG as string | undefined;
+import { fetchProjectTopics, fetchProjectTopicDetail, parseTags, type ProjectTopicListItem, type ProjectTopicDetail } from "@/lib/projectApi";
 
 const statusColors: Record<string, string> = {
   active: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-  disabled: "bg-amber-500/20 text-amber-400 border-amber-500/30",
   archived: "bg-gray-500/20 text-gray-400 border-gray-500/30",
+  draft: "bg-amber-500/20 text-amber-400 border-amber-500/30",
 };
 
-type StatusFilter = "all" | "active" | "archived" | "disabled" | "fork";
-type VisibilityFilter = "all" | "public" | "private" | "internal";
-type SortOption = "name" | "updated" | "commits" | "branches" | "tags";
+type StatusFilter = "all" | "active" | "archived" | "draft";
+type SortOption = "title" | "updated" | "order";
 
 export default function Projects() {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [projects, setProjects] = useState<ProjectEntry[]>([]);
+  const [topics, setTopics] = useState<ProjectTopicListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [visibilityFilter, setVisibilityFilter] = useState<VisibilityFilter>("all");
-  const [languageFilter, setLanguageFilter] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<SortOption>("updated");
-  const repoConfigs = useMemo(() => resolveProjectRepos(envProjectRepos), [envProjectRepos]);
-  const orgName = useMemo(() => resolveProjectOrg(envProjectOrg), [envProjectOrg]);
+  const [sortBy, setSortBy] = useState<SortOption>("order");
+  const [selectedTopicKey, setSelectedTopicKey] = useState<string | null>(null);
+  const [detail, setDetail] = useState<ProjectTopicDetail | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
   const loadIdRef = useRef(0);
 
   useEffect(() => {
@@ -58,51 +67,16 @@ export default function Projects() {
     };
   }, []);
 
-  const loadProjects = useCallback(async () => {
+  const loadTopics = useCallback(async () => {
     const loadId = loadIdRef.current + 1;
     loadIdRef.current = loadId;
     setLoading(true);
     setError(null);
-    setProjects([]);
+    setTopics([]);
     try {
-      if (repoConfigs.length) {
-        const repoOrder = new Map(
-          repoConfigs.map((repo, index) => [repo.id ?? repo.repo, index]),
-        );
-        const data = await fetchProjectsByRepos(repoConfigs, undefined, {
-          concurrency: 4,
-          onProgress: (entry) => {
-            if (loadIdRef.current !== loadId) return;
-            const entryId = entry.repo.id ?? entry.repo.repo;
-            setProjects((prev) => {
-              const existingIndex = prev.findIndex(
-                (item) => (item.repo.id ?? item.repo.repo) === entryId,
-              );
-              const next = existingIndex >= 0 ? [...prev] : [...prev, entry];
-              if (existingIndex >= 0) {
-                next[existingIndex] = entry;
-              }
-              next.sort((a, b) => {
-                const aIndex = repoOrder.get(a.repo.id ?? a.repo.repo) ?? 0;
-                const bIndex = repoOrder.get(b.repo.id ?? b.repo.repo) ?? 0;
-                return aIndex - bIndex;
-              });
-              return next;
-            });
-          },
-        });
-        if (loadIdRef.current !== loadId) return;
-        setProjects(data);
-      } else {
-        const data = await fetchOrgProjects(orgName, undefined, {
-          onProgress: (entries) => {
-            if (loadIdRef.current !== loadId) return;
-            setProjects((prev) => [...prev, ...entries]);
-          },
-        });
-        if (loadIdRef.current !== loadId) return;
-        setProjects(data);
-      }
+      const data = await fetchProjectTopics();
+      if (loadIdRef.current !== loadId) return;
+      setTopics(data);
     } catch (loadError) {
       if (loadIdRef.current !== loadId) return;
       setError(loadError instanceof Error ? loadError.message : t("projects.errors.load"));
@@ -111,77 +85,69 @@ export default function Projects() {
         setLoading(false);
       }
     }
-  }, [repoConfigs, orgName]);
+  }, []);
 
   useEffect(() => {
-    void loadProjects();
-  }, [loadProjects]);
+    void loadTopics();
+  }, [loadTopics]);
 
-  const projectInfos = useMemo(
-    () => projects.map((project) => project.info).filter((info): info is ProjectInfo => Boolean(info)),
-    [projects],
-  );
+  const loadDetail = useCallback(async (key: string) => {
+    setDetailLoading(true);
+    try {
+      const data = await fetchProjectTopicDetail(key);
+      console.log("DATA => ", data);
+      setDetail(data);
+    } catch (err) {
+      console.error("Failed to load project detail", err);
+    } finally {
+      setDetailLoading(false);
+    }
+  }, []);
 
-  const languageOptions = useMemo(() => {
+  useEffect(() => {
+    if (selectedTopicKey) {
+      void loadDetail(selectedTopicKey);
+    }
+  }, [selectedTopicKey, loadDetail]);
+
+  const tagOptions = useMemo(() => {
     const set = new Set<string>();
-    projectInfos.forEach((project) => {
-      if (project.language) {
-        set.add(project.language);
-      }
+    topics.forEach((topic) => {
+      const tags = parseTags(topic.tags);
+      tags.forEach(tag => set.add(tag));
     });
     return ["all", ...Array.from(set).sort((a, b) => a.localeCompare(b))];
-  }, [projectInfos]);
+  }, [topics]);
 
-  const filteredProjects = useMemo(() => {
+  const filteredTopics = useMemo(() => {
     const trimmed = searchQuery.trim().toLowerCase();
-    const filtered = projectInfos.filter((project) => {
-      const status = project.archived ? "archived" : project.disabled ? "disabled" : "active";
-      if (statusFilter === "fork" && !project.fork) return false;
-      if (statusFilter !== "all" && statusFilter !== "fork" && status !== statusFilter) return false;
-      const visibility = project.visibility?.toLowerCase() ?? "public";
-      if (visibilityFilter !== "all" && visibility !== visibilityFilter) return false;
-      if (languageFilter !== "all" && project.language !== languageFilter) return false;
+    const filtered = topics.filter((topic) => {
+      if (statusFilter !== "all" && topic.status.toLowerCase() !== statusFilter) return false;
       if (!trimmed) return true;
       const searchFields = [
-        project.name,
-        project.description ?? "",
-        project.owner.login,
-        project.fullName,
-        project.language ?? "",
-        ...(project.topics ?? []),
+        topic.title,
+        topic.summary,
+        ...parseTags(topic.tags),
       ];
       return searchFields.some((field) => field.toLowerCase().includes(trimmed));
     });
 
     const sorted = [...filtered].sort((a, b) => {
-      if (sortBy === "name") {
-        return a.name.localeCompare(b.name);
+      if (sortBy === "title") {
+        return a.title.localeCompare(b.title);
       }
       if (sortBy === "updated") {
-        return new Date(b.updatedAt ?? 0).getTime() - new Date(a.updatedAt ?? 0).getTime();
+        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
       }
-      const getMetric = (project: ProjectInfo) => {
-        if (sortBy === "commits") return project.commits ?? -1;
-        if (sortBy === "branches") return project.branches ?? -1;
-        if (sortBy === "tags") return project.tags ?? -1;
-        return -1;
-      };
-      return getMetric(b) - getMetric(a);
+      // order
+      return a.orderIndex - b.orderIndex;
     });
 
     return sorted;
-  }, [
-    projectInfos,
-    searchQuery,
-    statusFilter,
-    visibilityFilter,
-    languageFilter,
-    sortBy,
-  ]);
+  }, [topics, searchQuery, statusFilter, sortBy]);
 
-  const repoErrors = projects.filter((project) => project.error);
-  const totalProjects = projectInfos.length;
-  const activeProjects = projectInfos.filter((project) => !project.archived && !project.disabled).length;
+  const totalTopics = topics.length;
+  const activeTopics = topics.filter(t => t.status === "ACTIVE").length;
 
   return (
     <MainLayout>
@@ -204,7 +170,7 @@ export default function Projects() {
                 </p>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={loadProjects} aria-label={t("common.refresh")}>
+            <Button variant="ghost" size="icon" onClick={loadTopics} aria-label={t("common.refresh")}>
               <RefreshCcw className="w-4 h-4" />
             </Button>
           </div>
@@ -222,7 +188,7 @@ export default function Projects() {
                 />
               </div>
               <div className="text-xs text-muted-foreground">
-                {t("projects.count", { total: totalProjects, active: activeProjects })}
+                {t("projects.count", { total: totalTopics, active: activeTopics })}
               </div>
             </div>
 
@@ -235,33 +201,7 @@ export default function Projects() {
                   <SelectItem value="all">{t("projects.filters.allStatuses")}</SelectItem>
                   <SelectItem value="active">{t("projects.filters.active")}</SelectItem>
                   <SelectItem value="archived">{t("projects.filters.archived")}</SelectItem>
-                  <SelectItem value="disabled">{t("projects.filters.disabled")}</SelectItem>
-                  <SelectItem value="fork">{t("projects.filters.forks")}</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={visibilityFilter} onValueChange={(value) => setVisibilityFilter(value as VisibilityFilter)}>
-                <SelectTrigger className="w-36 bg-white/5 border-glass-border/30">
-                  <SelectValue placeholder={t("projects.filters.visibility")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t("projects.filters.allVisibility")}</SelectItem>
-                  <SelectItem value="public">{t("projects.filters.public")}</SelectItem>
-                  <SelectItem value="private">{t("projects.filters.private")}</SelectItem>
-                  <SelectItem value="internal">{t("projects.filters.internal")}</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={languageFilter} onValueChange={setLanguageFilter}>
-                <SelectTrigger className="w-44 bg-white/5 border-glass-border/30">
-                  <SelectValue placeholder={t("projects.filters.language")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {languageOptions.map((language) => (
-                    <SelectItem key={language} value={language}>
-                      {language === "all" ? t("projects.filters.allLanguages") : language}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="draft">{t("projects.filters.draft")}</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -270,11 +210,9 @@ export default function Projects() {
                   <SelectValue placeholder={t("projects.filters.sortBy")} />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="order">{t("projects.filters.order")}</SelectItem>
+                  <SelectItem value="title">{t("projects.filters.name")}</SelectItem>
                   <SelectItem value="updated">{t("projects.filters.recentlyUpdated")}</SelectItem>
-                  <SelectItem value="name">{t("projects.filters.name")}</SelectItem>
-                  <SelectItem value="commits">{t("projects.filters.mostCommits")}</SelectItem>
-                  <SelectItem value="branches">{t("projects.filters.mostBranches")}</SelectItem>
-                  <SelectItem value="tags">{t("projects.filters.mostTags")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -286,36 +224,27 @@ export default function Projects() {
             </div>
           )}
 
-          {!!repoErrors.length && (
-            <div className="glass-panel rounded-xl p-4 space-y-2 mb-6">
-              <p className="text-sm font-medium text-foreground">{t("projects.errors.title")}</p>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                {repoErrors.map((project) => (
-                  <div key={project.repo.id ?? project.repo.repo} className="flex items-center justify-between">
-                    <span>{project.repo.label ?? `${project.repo.owner}/${project.repo.repo}`}</span>
-                    <span>{project.error}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {loading && (
             <div className="text-sm text-muted-foreground mb-6">
-              {projects.length
-                ? t("projects.loading.more", { count: projects.length })
+              {topics.length
+                ? t("projects.loading.more", { count: topics.length })
                 : t("projects.loading.initial")}
             </div>
           )}
 
           {/* Projects Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredProjects.map((project, index) => (
-              <ProjectCard key={project.fullName} project={project} index={index} />
+            {filteredTopics.map((topic, index) => (
+              <ProjectTopicCard
+                key={topic.key}
+                topic={topic}
+                index={index}
+                onViewDetails={() => setSelectedTopicKey(topic.key)}
+              />
             ))}
           </div>
 
-          {filteredProjects.length === 0 && (
+          {filteredTopics.length === 0 && !loading && (
             <div className="text-center py-16">
               <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
                 <FolderKanban className="w-8 h-8 text-muted-foreground" />
@@ -330,19 +259,106 @@ export default function Projects() {
           )}
         </motion.div>
       </div>
+
+      {/* Detail Modal */}
+      <Dialog open={!!selectedTopicKey} onOpenChange={(open) => !open && setSelectedTopicKey(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          {detailLoading ? (
+            <div className="p-8 text-center text-muted-foreground">
+              {t("common.loading")}
+            </div>
+          ) : detail ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl">{detail.title}</DialogTitle>
+                <DialogDescription>
+                  Last updated: {formatDate(detail.updatedAt, t)}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-6">
+                {/* Links */}
+                <div className="flex flex-wrap gap-4">
+                  {detail.repositoryUrl && (
+                    <a
+                      href={detail.repositoryUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-sm transition-colors"
+                    >
+                      <Code className="w-4 h-4" />
+                      {t("projects.detail.repository")}
+                    </a>
+                  )}
+                  {detail.designTopicKey && (
+                    <a
+                      href={`/design/${detail.designTopicKey}`}
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-sm transition-colors"
+                    >
+                      <Layers className="w-4 h-4" />
+                      {t("projects.detail.design")}
+                    </a>
+                  )}
+                  {detail.architectureTopicKey && (
+                    <a
+                      href={`/architecture/${detail.architectureTopicKey}`}
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-sm transition-colors"
+                    >
+                      <GitFork className="w-4 h-4" />
+                      {t("projects.detail.architecture")}
+                    </a>
+                  )}
+                </div>
+
+                {/* Mermaid diagram */}
+                {detail.diagramMermaid && (
+                  <div className="rounded-lg border border-glass-border/30 p-4">
+                    <h3 className="text-lg font-semibold mb-2">{t("projects.detail.diagram")}</h3>
+                    <MermaidBlock code={detail.diagramMermaid} />
+                  </div>
+                )}
+
+                {/* Markdown documentation */}
+                <div className="rounded-lg border border-glass-border/30 p-4">
+                  <h3 className="text-lg font-semibold mb-2">{t("projects.detail.documentation")}</h3>
+                  <DesignMarkdown content={detail.docMarkdown} />
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2">
+                  {parseTags(detail.tags).map(tag => (
+                    <Badge key={tag} variant="secondary" className="bg-white/10 text-foreground">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="p-8 text-center text-muted-foreground">
+              {t("projects.detail.notFound")}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </MainLayout>
   );
 }
 
-function ProjectCard({ project, index }: { project: ProjectInfo; index: number }) {
+interface ProjectTopicCardProps {
+  topic: ProjectTopicListItem;
+  index: number;
+  onViewDetails: () => void;
+}
+
+function ProjectTopicCard({ topic, index, onViewDetails }: ProjectTopicCardProps) {
   const { t } = useTranslation();
-  const status = project.archived ? "archived" : project.disabled ? "disabled" : "active";
-  const updatedLabel = formatDate(project.updatedAt, t);
-  const topics = project.topics?.slice(0, 6) ?? [];
+  const status = topic.status.toLowerCase();
+  const updatedLabel = formatDate(topic.updatedAt, t);
+  const tags = parseTags(topic.tags).slice(0, 6);
 
   return (
     <motion.div
-      key={project.fullName}
+      key={topic.key}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
@@ -352,41 +368,34 @@ function ProjectCard({ project, index }: { project: ProjectInfo; index: number }
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="flex-1 space-y-2">
           <div className="flex items-center flex-wrap gap-2">
-            <h3 className="text-lg font-semibold text-foreground">{project.name}</h3>
+            <h3 className="text-lg font-semibold text-foreground">{topic.title}</h3>
             <Badge variant="outline" className={statusColors[status]}>
               {t(`projects.status.${status}`)}
             </Badge>
-            {project.fork && (
-              <Badge variant="outline" className="border-white/20 text-muted-foreground">
-                {t("projects.status.fork")}
-              </Badge>
-            )}
           </div>
           <p className="text-sm text-muted-foreground">
-            {project.description ?? t("projects.noDescription")}
+            {topic.summary || t("projects.noDescription")}
           </p>
           <p className="text-xs text-muted-foreground">
-            {project.fullName}
+            {topic.key}
           </p>
         </div>
-        {status === "active" && (
-          <a
-            href={project.htmlUrl}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={t("projects.openRepo")}
-            className="p-1 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ExternalLink className="w-4 h-4" />
-          </a>
-        )}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onViewDetails}
+          aria-label={t("projects.viewDetails")}
+          className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <Eye className="w-4 h-4" />
+        </Button>
       </div>
 
-      {topics.length > 0 && (
+      {tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
-          {topics.map((topic) => (
-            <Badge key={topic} variant="secondary" className="bg-white/10 text-foreground">
-              {topic}
+          {tags.map((tag) => (
+            <Badge key={tag} variant="secondary" className="bg-white/10 text-foreground">
+              {tag}
             </Badge>
           ))}
         </div>
@@ -394,60 +403,33 @@ function ProjectCard({ project, index }: { project: ProjectInfo; index: number }
 
       <div className="flex flex-wrap items-center gap-4 text-sm">
         <div className="flex items-center gap-2 text-muted-foreground">
-          <GitCommit className="w-4 h-4" />
-          <span>{t("projects.metrics.commits", { count: formatNumber(project.commits, t) })}</span>
-        </div>
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <GitBranch className="w-4 h-4" />
-          <span>{t("projects.metrics.branches", { count: formatNumber(project.branches, t) })}</span>
+          <FileText className="w-4 h-4" />
+          <span>{t("projects.order", { order: topic.orderIndex })}</span>
         </div>
         <div className="flex items-center gap-2 text-muted-foreground">
           <Tag className="w-4 h-4" />
-          <span>{t("projects.metrics.tags", { count: formatNumber(project.tags, t) })}</span>
+          <span>{tags.length} tags</span>
         </div>
-      </div>
-
-      <div className="flex flex-wrap gap-2 mt-4">
-        {project.language && (
-          <Badge variant="outline" className="bg-white/5 border-glass-border/30">
-            {project.language}
-          </Badge>
-        )}
-        {project.visibility && (
-          <Badge variant="outline" className="bg-white/5 border-glass-border/30">
-            {project.visibility}
-          </Badge>
-        )}
-        {project.defaultBranch && (
-          <Badge variant="outline" className="bg-white/5 border-glass-border/30">
-            {t("projects.branch", { branch: project.defaultBranch })}
-          </Badge>
-        )}
-        {project.license && (
-          <Badge variant="outline" className="bg-white/5 border-glass-border/30">
-            {project.license}
-          </Badge>
-        )}
       </div>
 
       <div className="mt-4 pt-4 border-t border-glass-border/30 flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
-          {t("projects.owner", { owner: project.owner.login })}
-        </span>
-        <span className="text-xs text-muted-foreground">
           {t("projects.updated", { date: updatedLabel })}
         </span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onViewDetails}
+          className="text-xs"
+        >
+          {t("projects.viewDetails")}
+        </Button>
       </div>
     </motion.div>
   );
 }
 
-function formatNumber(value: number | undefined, t: (key: string) => string): string {
-  if (typeof value !== "number") return t("common.na");
-  return value.toLocaleString("en-US");
-}
-
-function formatDate(value: string | undefined, t: (key: string) => string): string {
+function formatDate(value: string, t: (key: string) => string): string {
   if (!value) return t("common.unknown");
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return t("common.unknown");

@@ -233,16 +233,12 @@
       "paths": "APIs",
       "schemas": "Schemas"
     },
-    "empty": {
-      "paths": "No API paths match your filter.",
-      "schemas": "No schemas match your filter.",
-      "select": "Select an item to view details.",
-      "items": "No items found.",
-      "operations": "No operations found for this path."
-    },
+    "empty": "Select a controller to view details.",
     "errors": {
       "title": "Repositories with errors",
       "loadRepos": "Failed to load repositories",
+      "loadControllers": "Failed to load controllers",
+      "loadControllerDetail": "Failed to load controller detail",
       "loadRepo": "Failed to load repository",
       "loadApiDetails": "Failed to load API details",
       "loadSchemaDetails": "Failed to load schema details",
@@ -271,6 +267,15 @@
       "fieldsCount": "{{count}} fields",
       "fields": "Fields",
       "noFields": "No fields documented."
+    },
+    "controller": {
+      "noDescription": "No description yet.",
+      "requestBody": "Request Body",
+      "response": "Response",
+      "select": "Select a controller",
+      "noApiCatalog": "No API catalog available.",
+      "noEndpoints": "No endpoints found for this controller.",
+      "parameters": "Parameters"
     }
   },
   "projects": {

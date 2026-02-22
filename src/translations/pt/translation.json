@@ -233,16 +233,12 @@
       "paths": "APIs",
       "schemas": "Schemas"
     },
-    "empty": {
-      "paths": "Nenhum path corresponde ao filtro.",
-      "schemas": "Nenhum schema corresponde ao filtro.",
-      "select": "Selecione um item para ver detalhes.",
-      "items": "Nenhum item encontrado.",
-      "operations": "Sem operacoes para este path."
-    },
+    "empty": "Selecione um controlador para ver detalhes.",
     "errors": {
       "title": "Repos com erro",
       "loadRepos": "Falha ao carregar repos",
+      "loadControllers": "Falha ao carregar controladores",
+      "loadControllerDetail": "Falha ao carregar detalhes do controlador",
       "loadRepo": "Falha ao carregar repo",
       "loadApiDetails": "Falha ao carregar detalhes da API",
       "loadSchemaDetails": "Falha ao carregar detalhes do schema",
@@ -271,6 +267,15 @@
       "fieldsCount": "{{count}} campos",
       "fields": "Campos",
       "noFields": "Sem campos documentados."
+    },
+    "controller": {
+      "noDescription": "Sem descrição ainda.",
+      "requestBody": "Request Body",
+      "response": "Response",
+      "select": "Selecionar um controlador",
+      "noApiCatalog": "Nenhum catálogo de API disponível.",
+      "noEndpoints": "Nenhum endpoint encontrado para este controlador.",
+      "parameters": "Parâmetros"
     }
   },
   "projects": {

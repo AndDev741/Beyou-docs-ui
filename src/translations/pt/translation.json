@@ -379,7 +379,10 @@
         "title": "Plataforma core",
         "description": "Servicos e APIs principais"
       }
-    }
+    },
+    "loading": "Buscando...",
+    "error": "Falha ao carregar resultados",
+    "noResults": "Nenhum resultado encontrado"
   },
   "gettingStarted": {
     "title": "Primeiros passos",

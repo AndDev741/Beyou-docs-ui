@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -8,66 +8,146 @@ import {
   FolderKanban,
   Clock,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Input } from "@/components/ui/input";
+import { fetchSearchResults, type SearchResult } from "@/lib/searchApi";
 
 export default function SearchPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const recentSearches = useMemo(
-    () => [
-      t("search.recent.1"),
-      t("search.recent.2"),
-      t("search.recent.3"),
-      t("search.recent.4"),
-    ],
-    [t],
-  );
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("beyou-docs-recent-searches");
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {
+          return [];
+        }
+      }
+    }
+    return [];
+  });
+
+  const addRecentSearch = useCallback((query: string) => {
+    if (!query.trim()) return;
+    setRecentSearches((prev) => {
+      const filtered = prev.filter((q) => q !== query);
+      const updated = [query, ...filtered].slice(0, 5);
+      localStorage.setItem("beyou-docs-recent-searches", JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
 
   const categories = useMemo(
     () => [
       { id: "all", label: t("search.categories.all"), icon: Search },
       { id: "architecture", label: t("search.categories.architecture"), icon: Layers },
-      { id: "apis", label: t("search.categories.apis"), icon: Code2 },
-      { id: "designs", label: t("search.categories.designs"), icon: FileText },
-      { id: "projects", label: t("search.categories.projects"), icon: FolderKanban },
+      { id: "api", label: t("search.categories.apis"), icon: Code2 },
+      { id: "design", label: t("search.categories.designs"), icon: FileText },
+      { id: "project", label: t("search.categories.projects"), icon: FolderKanban },
     ],
-    [t],
+  [t],
   );
 
-  const sampleResults = useMemo(
-    () => [
-      {
-        type: "architecture",
-        title: t("search.sample.arch.title"),
-        description: t("search.sample.arch.description"),
-        path: "/architecture?topic=overview",
-      },
-      {
-        type: "api",
-        title: t("search.sample.api.title"),
-        description: t("search.sample.api.description"),
-        path: "/apis/auth/login",
-      },
-      {
-        type: "design",
-        title: t("search.sample.design.title"),
-        description: t("search.sample.design.description"),
-        path: "/design?topic=user-flow",
-      },
-      {
-        type: "project",
-        title: t("search.sample.project.title"),
-        description: t("search.sample.project.description"),
-        path: "/projects/core-platform",
-      },
-    ],
-    [t],
-  );
+  const HighlightedText = ({ fragments }: { fragments: string[] }) => {
+    if (!fragments || fragments.length === 0) return null;
+    const html = fragments.join('');
+    return <span dangerouslySetInnerHTML={{ __html: html }} />;
+  };
+
+  const performSearch = useCallback(async (searchQuery: string, category: string) => {
+    if (searchQuery.trim().length < 2) {
+      setResults([]);
+      setError(null);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await fetchSearchResults(
+        searchQuery,
+        i18n.language, // locale from i18n
+        category === "all" ? undefined : category,
+        10,
+        0
+      );
+      setResults(data);
+      addRecentSearch(searchQuery);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+      setResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [i18n, addRecentSearch]);
+
+  useEffect(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (query.trim().length === 0) {
+      setResults([]);
+      setError(null);
+      return;
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      performSearch(query, selectedCategory);
+    }, 300);
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [query, selectedCategory, performSearch]);
+
+  const handleCategoryClick = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    // Trigger search immediately when category changes (debounce already handles)
+  };
+
+  const getIconForType = (type: SearchResult["type"]) => {
+    switch (type) {
+      case "architecture":
+        return Layers;
+      case "api":
+        return Code2;
+      case "design":
+        return FileText;
+      case "project":
+        return FolderKanban;
+      default:
+        return Search;
+    }
+  };
+
+  const getPathForResult = (result: SearchResult) => {
+    switch (result.type) {
+      case "architecture":
+        return `/architecture?topic=${result.key}`;
+      case "design":
+        return `/design?topic=${result.key}`;
+      case "api":
+        return `/apis?controller=${result.key}`;
+      case "project":
+        return `/projects`;
+      default:
+        return "/";
+    }
+  };
 
   return (
     <MainLayout>
@@ -95,12 +175,12 @@ export default function SearchPage() {
             </kbd>
           </div>
 
-          <div className="flex justify-center gap-2 mb-8">
+          <div className="flex flex-wrap justify-center gap-2 mb-8">
             {categories.map((cat) => (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                onClick={() => handleCategoryClick(cat.id)}
+                className={`flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   selectedCategory === cat.id
                     ? "bg-gradient-to-r from-primary/20 to-accent/20 text-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-white/5"
@@ -134,37 +214,58 @@ export default function SearchPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {sampleResults.map((result, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="glass-panel rounded-xl p-4 cursor-pointer hover:bg-white/5 transition-colors gradient-border"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 rounded-lg bg-white/5">
-                      {result.type === "architecture" && (
-                        <Layers className="w-4 h-4 text-primary" />
-                      )}
-                      {result.type === "api" && (
-                        <Code2 className="w-4 h-4 text-primary" />
-                      )}
-                      {result.type === "design" && (
-                        <FileText className="w-4 h-4 text-accent" />
-                      )}
-                      {result.type === "project" && (
-                        <FolderKanban className="w-4 h-4 text-amber-400" />
-                      )}
+              {isLoading && (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  <span className="ml-2 text-muted-foreground">{t("search.loading")}</span>
+                </div>
+              )}
+
+              {error && (
+                <div className="glass-panel rounded-xl p-4 border border-destructive/30">
+                  <p className="text-destructive text-sm">{t("search.error")}: {error}</p>
+                </div>
+              )}
+
+              {!isLoading && !error && results.length === 0 && query.trim().length >= 2 && (
+                <div className="glass-panel rounded-xl p-8 text-center">
+                  <p className="text-muted-foreground">{t("search.noResults")}</p>
+                </div>
+              )}
+
+              {!isLoading && !error && results.length > 0 && results.map((result, i) => {
+                const Icon = getIconForType(result.type);
+                const path = getPathForResult(result);
+                return (
+                  <motion.div
+                    key={`${result.type}-${result.key}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="glass-panel rounded-xl p-4 cursor-pointer hover:bg-white/5 transition-colors gradient-border"
+                    onClick={() => window.open(path, "_self")}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="p-2 rounded-lg bg-white/5">
+                        <Icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-medium text-foreground mb-1"><HighlightedText fragments={result.highlight.title} /></h3>
+                        <p className="text-sm text-muted-foreground"><HighlightedText fragments={result.highlight.summary} /></p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className="text-xs px-2 py-0.5 rounded bg-white/10 text-muted-foreground">
+                            {result.type}
+                          </span>
+                          <span className="text-xs text-muted-foreground/60">
+                            {result.updatedAt ? new Date(result.updatedAt).toLocaleDateString() : ""}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground/60 mt-1">{path}</p>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-medium text-foreground mb-1">{result.title}</h3>
-                      <p className="text-sm text-muted-foreground">{result.description}</p>
-                      <p className="text-xs text-muted-foreground/60 mt-2">{result.path}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
           )}
         </motion.div>

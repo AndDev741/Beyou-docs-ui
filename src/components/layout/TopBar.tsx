@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 interface TopBarProps {
   onOpenSidebar?: () => void;
@@ -16,6 +18,19 @@ interface TopBarProps {
 export function TopBar({ onOpenSidebar }: TopBarProps) {
   const { theme, setThemeByMode, availableThemes } = useTheme();
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "k") {
+        event.preventDefault();
+        navigate("/search");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [navigate]);
+
   const themeLabel = (mode: string) => t(`themes.${mode}`, { defaultValue: mode });
   const languageOptions = [
     { id: "en", label: "English", short: "EN" },
@@ -38,13 +53,6 @@ export function TopBar({ onOpenSidebar }: TopBarProps) {
           </button>
           <span className="md:hidden text-sm font-semibold text-foreground">{t("app.name")}</span>
         </div>
-
-        {/* Center - Command Palette Hint */}
-        <button className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-muted-foreground">
-          <Command className="w-4 h-4" />
-          <span className="text-sm">{t("topbar.searchPlaceholder")}</span>
-          <kbd className="ml-2 px-2 py-0.5 text-xs bg-white/10 rounded">⌘K</kbd>
-        </button>
 
         {/* Right Section */}
         <div className="flex items-center gap-2 md:gap-3">

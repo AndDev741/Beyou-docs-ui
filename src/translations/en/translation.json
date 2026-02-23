@@ -379,7 +379,10 @@
         "title": "Core Platform",
         "description": "Main platform services and APIs"
       }
-    }
+    },
+    "loading": "Searching...",
+    "error": "Failed to load results",
+    "noResults": "No results found"
   },
   "gettingStarted": {
     "title": "Getting Started",

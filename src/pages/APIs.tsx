@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useToast } from "@/hooks/use-toast";
 import { ChevronDown, Play, Copy, ChevronRight } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,7 @@ export default function APIs() {
     [i18n.language],
   );
   const [searchParams, setSearchParams] = useSearchParams();
+  const { toast } = useToast();
 
   const [controllers, setControllers] = useState<ApiControllerListItem[]>([]);
   const [controllersLoading, setControllersLoading] = useState(true);
@@ -182,20 +184,30 @@ export default function APIs() {
   }, [selectedEndpoint]);
 
   // Format schema to JSON string for display
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formatSchema = (schema: any): string => {
     if (!schema) return "{}";
     const simplified = simplifySchema(schema);
     return JSON.stringify(simplified, null, 2);
   };
 
+  // Copy to clipboard with toast feedback
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied to clipboard",
+      description: "Schema copied to clipboard",
+    });
+  };
+
   return (
     <MainLayout>
-      <div className="flex h-[calc(100vh-64px)]">
+      <div className="flex flex-col md:flex-row md:h-[calc(100vh-64px)]">
         {/* Left Sidebar - Endpoints */}
         <motion.aside
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-80 border-r border-glass-border/30 glass-panel flex flex-col"
+          className="w-full md:w-80 border-b md:border-b-0 md:border-r border-glass-border/30 glass-panel flex flex-col max-h-[50vh] md:max-h-none"
         >
           {/* Service Selector */}
           <div className="p-4 border-b border-glass-border/30 overflow-auto">
@@ -211,17 +223,17 @@ export default function APIs() {
                 <DropdownMenuTrigger asChild>
                   <button className="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                     <div className="text-left">
-                      <p className="text-sm font-medium text-foreground">
+                      <p className="text-sm font-medium text-foreground break-words whitespace-normal">
                         {selectedController?.title || t("apis.controller.select")}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-foreground break-words whitespace-normal">
                         {selectedController?.summary || ""}
                       </p>
                     </div>
                     <ChevronDown className="w-4 h-4 text-muted-foreground" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-72 bg-popover border-glass-border max-h-60 lg:max-h-[800px] overflow-y-auto">
+                <DropdownMenuContent align="start" className="w-full md:w-72 bg-popover border-glass-border max-h-60 lg:max-h-[800px] overflow-y-auto">
                   {controllers.map((controller) => (
                     <DropdownMenuItem
                       key={controller.key}
@@ -229,8 +241,8 @@ export default function APIs() {
                       className="cursor-pointer"
                     >
                       <div>
-                        <p className="font-medium">{controller.title}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="font-medium break-words whitespace-normal">{controller.title}</p>
+                        <p className="text-xs text-muted-foreground break-words whitespace-normal w-[80%] md:w-full">
                           {controller.summary || t("apis.controller.noDescription")}
                         </p>
                       </div>
@@ -290,7 +302,7 @@ export default function APIs() {
         </motion.aside>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-auto p-8">
+        <div className="flex-1 overflow-auto p-4 md:p-8">
           {!selectedController ? (
             <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
               {t("apis.empty")}
@@ -347,7 +359,7 @@ export default function APIs() {
                     <h3 className="text-sm font-semibold text-foreground">
                       {t("apis.controller.requestBody")}
                     </h3>
-                    <button className="p-1.5 rounded hover:bg-white/5 transition-colors text-muted-foreground">
+                    <button onClick={() => handleCopy(formatSchema(requestBodySchema))} className="p-1.5 rounded hover:bg-white/5 transition-colors text-muted-foreground" title="Copy request body schema">
                       <Copy className="w-4 h-4" />
                     </button>
                   </div>
@@ -370,7 +382,7 @@ export default function APIs() {
                         200 OK
                       </span>
                     </div>
-                    <button className="p-1.5 rounded hover:bg-white/5 transition-colors text-muted-foreground">
+                    <button onClick={() => handleCopy(formatSchema(responseSchema))} className="p-1.5 rounded hover:bg-white/5 transition-colors text-muted-foreground" title="Copy response schema">
                       <Copy className="w-4 h-4" />
                     </button>
                   </div>

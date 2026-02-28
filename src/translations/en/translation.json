@@ -37,8 +37,8 @@
   "home": {
     "hero": {
       "badge": "Beyou documentation",
-      "titleLine1": "Habits, clearly mapped.",
-      "titleLine2": "Growth, explained.",
+      "titleLine1": "What is behind,",
+      "titleLine2": "The beyou web app.",
       "description": "Explore architecture, APIs, designs, and projects that power Beyou.",
       "primaryCta": "Open Documentation",
       "secondaryCta": "View Architecture"
@@ -47,11 +47,11 @@
       "title": "Quick Access",
       "arch": {
         "title": "Architecture",
-        "description": "System architecture and habit flows."
+        "description": "System architecture and decisions."
       },
       "design": {
         "title": "Design",
-        "description": "UX flows and product decisions."
+        "description": "UX and System designs."
       },
       "apis": {
         "title": "APIs",
@@ -59,7 +59,7 @@
       },
       "projects": {
         "title": "Projects",
-        "description": "Repos, services, and ownership."
+        "description": "Repositories and informations."
       },
       "plan": {
         "title": "Plan",

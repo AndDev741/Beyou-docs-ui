@@ -274,10 +274,10 @@ const Index = () => {
       <div className="fade-in">
         <HeroSection />
         <QuickAccessCards />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+        {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
           <RecentActivity items={activity} loading={loading} error={error} />
           <SystemOverview stats={stats} preview={preview} loading={loading} error={error} />
-        </div>
+        </div> */}
       </div>
     </MainLayout>
   );

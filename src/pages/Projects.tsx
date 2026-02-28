@@ -38,6 +38,7 @@ import { DesignMarkdown } from "@/components/design/DesignMarkdown";
 import { MermaidBlock } from "@/components/design/MermaidBlock";
 import { useTranslation } from "react-i18next";
 import { fetchProjectTopics, fetchProjectTopicDetail, parseTags, type ProjectTopicListItem, type ProjectTopicDetail } from "@/lib/projectApi";
+import i18n from "@/translations/i18n";
 
 const statusColors: Record<string, string> = {
   active: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
@@ -50,6 +51,10 @@ type SortOption = "title" | "updated" | "order";
 
 export default function Projects() {
   const { t } = useTranslation();
+  const locale = useMemo(
+    () => (i18n.language?.toLowerCase().startsWith("pt") ? "pt" : "en"),
+    [i18n.language],
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [topics, setTopics] = useState<ProjectTopicListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -74,7 +79,7 @@ export default function Projects() {
     setError(null);
     setTopics([]);
     try {
-      const data = await fetchProjectTopics();
+      const data = await fetchProjectTopics(locale);
       if (loadIdRef.current !== loadId) return;
       setTopics(data);
     } catch (loadError) {
@@ -94,7 +99,7 @@ export default function Projects() {
   const loadDetail = useCallback(async (key: string) => {
     setDetailLoading(true);
     try {
-      const data = await fetchProjectTopicDetail(key);
+      const data = await fetchProjectTopicDetail(key, locale);
       console.log("DATA => ", data);
       setDetail(data);
     } catch (err) {

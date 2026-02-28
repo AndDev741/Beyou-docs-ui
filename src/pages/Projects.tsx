@@ -201,7 +201,7 @@ export default function Projects() {
                   <SelectItem value="all">{t("projects.filters.allStatuses")}</SelectItem>
                   <SelectItem value="active">{t("projects.filters.active")}</SelectItem>
                   <SelectItem value="archived">{t("projects.filters.archived")}</SelectItem>
-                  <SelectItem value="draft">{t("projects.filters.draft")}</SelectItem>
+                  {/* <SelectItem value="draft">{t("projects.filters.draft")}</SelectItem> */}
                 </SelectContent>
               </Select>
 

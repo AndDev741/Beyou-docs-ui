@@ -32,7 +32,9 @@
     "comingSoon": "Coming soon",
     "empty": "Nothing to show yet.",
     "unknown": "Unknown",
-    "na": "N/A"
+    "na": "N/A",
+    "copy": "Copy",
+    "copied": "Copied"
   },
   "home": {
     "hero": {
@@ -418,6 +420,65 @@
       "apis": "API Documentation",
       "design": "Design System",
       "plan": "Plan"
+    },
+    "localExecution": {
+      "title": "How to execute the project locally",
+      "description": "Follow this step‑by‑step guide to set up Beyou on your machine.",
+      "steps": {
+        "createFolder": {
+          "title": "Create a dedicated folder",
+          "description": "Create a folder where all projects will stay, like a 'beyou' folder."
+        },
+        "cloneBackendFrontend": {
+          "title": "Clone the backend and frontend",
+          "description": "Clone the repositories using git:",
+          "code": "git clone https://github.com/AndDev741/Beyou-backend-spring.git\ngit clone https://github.com/AndDev741/Beyou-Frontend.git"
+        },
+        "installDependencies": {
+          "title": "Install dependencies",
+          "description": "Go to each project folder and execute:",
+          "codeBackend": "mvn clean install",
+          "codeFrontend": "npm install"
+        },
+        "cloneDevEnv": {
+          "title": "Clone the development environment orchestrator",
+          "description": "Go back to the main folder and clone the dev‑env repository:",
+          "code": "git clone https://github.com/AndDev741/Beyou-dev-env.git"
+        },
+        "createEnvFile": {
+          "title": "Create the .env file",
+          "description": "Copy the content of .env.example inside a new .env file and fill your own values. At the end of this topic you will find a detailed explanation of each variable."
+        },
+        "runScripts": {
+          "title": "Run the orchestration scripts",
+          "description": "You can choose between development mode (hot‑reload) or production‑like mode (optimized). Use the provided scripts:",
+          "scriptDev": "./scripts/up-dev.sh",
+          "scriptProd": "./scripts/up-prod.sh"
+        }
+      },
+      "scriptsExplanation": {
+        "title": "What each script does",
+        "upDev": "up‑dev.sh – starts the stack in development mode with hot‑reload for backend and frontend.",
+        "upProd": "up‑prod.sh – starts the stack in production‑like mode (builds the images and serves frontend via Nginx).",
+        "down": "down.sh – stops the stack (specify 'dev' or 'prod' mode).",
+        "resetDb": "reset‑db.sh – removes the PostgreSQL volume to reset the database."
+      },
+      "envExplanation": {
+        "title": "Environment variables (.env)",
+        "description": "Below are the required variables and how to fill them:",
+        "postgresDb": "POSTGRES_DB – name of the database (default: beyou).",
+        "postgresUser": "POSTGRES_USER – database user (default: postgres).",
+        "postgresPassword": "POSTGRES_PASSWORD – database password (default: 1516).",
+        "postgresPort": "POSTGRES_PORT – port where PostgreSQL will be exposed (default: 5490).",
+        "tokenSecret": "TOKEN_SECRET – a secret string used to sign JWT tokens; change it to a strong random value.",
+        "googleClientId": "GOOGLE_CLIENT_ID – if you want Google OAuth, provide your OAuth 2.0 client ID.",
+        "googleClientSecret": "GOOGLE_CLIENT_SECRET – corresponding client secret.",
+        "cookieSecure": "COOKIE_SECURE – set to 'true' for HTTPS, 'false' for local development.",
+        "corsAllowedPattern": "CORS_ALLOWED_PATTERN – CORS allowed origin pattern (default: '*').",
+        "mailSettings": "Mail settings (optional) – fill if you want email functionality.",
+        "frontendUrl": "FRONTEND_URL – URL of the frontend (default: http://localhost:3000/).",
+        "docsImportSettings": "Docs import settings – used by the documentation import feature."
+      }
     }
   },
   "plan": {

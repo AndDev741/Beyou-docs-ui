@@ -32,7 +32,9 @@
     "comingSoon": "Em breve",
     "empty": "Nada para mostrar ainda.",
     "unknown": "Desconhecido",
-    "na": "N/D"
+    "na": "N/D",
+    "copy": "Copiar",
+    "copied": "Copiado"
   },
   "home": {
     "hero": {
@@ -418,6 +420,65 @@
       "apis": "Docs de API",
       "design": "Sistema de design",
       "plan": "Plano"
+    },
+    "localExecution": {
+      "title": "Como executar o projeto localmente",
+      "description": "Siga este guia passo a passo para configurar o Beyou na sua máquina.",
+      "steps": {
+        "createFolder": {
+          "title": "Crie uma pasta dedicada",
+          "description": "Crie uma pasta onde todos os projetos ficarão, por exemplo uma pasta 'beyou'."
+        },
+        "cloneBackendFrontend": {
+          "title": "Clone o backend e frontend",
+          "description": "Clone os repositórios usando git:",
+          "code": "git clone https://github.com/AndDev741/Beyou-backend-spring.git\ngit clone https://github.com/AndDev741/Beyou-Frontend.git"
+        },
+        "installDependencies": {
+          "title": "Instale as dependências",
+          "description": "Vá para cada pasta do projeto e execute:",
+          "codeBackend": "mvn clean install",
+          "codeFrontend": "npm install"
+        },
+        "cloneDevEnv": {
+          "title": "Clone o orquestrador de ambiente de desenvolvimento",
+          "description": "Volte para a pasta principal e clone o repositório dev‑env:",
+          "code": "git clone https://github.com/AndDev741/Beyou-dev-env.git"
+        },
+        "createEnvFile": {
+          "title": "Crie o arquivo .env",
+          "description": "Copie o conteúdo de .env.example para um novo arquivo .env e preencha com seus próprios valores. No final deste tópico você encontrará uma explicação detalhada de cada variável."
+        },
+        "runScripts": {
+          "title": "Execute os scripts de orquestração",
+          "description": "Você pode escolher entre modo de desenvolvimento (hot‑reload) ou modo tipo produção (otimizado). Use os scripts fornecidos:",
+          "scriptDev": "./scripts/up-dev.sh",
+          "scriptProd": "./scripts/up-prod.sh"
+        }
+      },
+      "scriptsExplanation": {
+        "title": "O que cada script faz",
+        "upDev": "up‑dev.sh – inicia a stack em modo de desenvolvimento com hot‑reload para backend e frontend.",
+        "upProd": "up‑prod.sh – inicia a stack em modo tipo produção (constrói as imagens e serve o frontend via Nginx).",
+        "down": "down.sh – para a stack (especifique o modo 'dev' ou 'prod').",
+        "resetDb": "reset‑db.sh – remove o volume do PostgreSQL para resetar o banco de dados."
+      },
+      "envExplanation": {
+        "title": "Variáveis de ambiente (.env)",
+        "description": "Abaixo estão as variáveis necessárias e como preenchê‑las:",
+        "postgresDb": "POSTGRES_DB – nome do banco de dados (padrão: beyou).",
+        "postgresUser": "POSTGRES_USER – usuário do banco de dados (padrão: postgres).",
+        "postgresPassword": "POSTGRES_PASSWORD – senha do banco de dados (padrão: 1516).",
+        "postgresPort": "POSTGRES_PORT – porta onde o PostgreSQL será exposto (padrão: 5490).",
+        "tokenSecret": "TOKEN_SECRET – uma string secreta usada para assinar tokens JWT; altere para um valor aleatório forte.",
+        "googleClientId": "GOOGLE_CLIENT_ID – se você deseja Google OAuth, forneça seu ID de cliente OAuth 2.0.",
+        "googleClientSecret": "GOOGLE_CLIENT_SECRET – segredo do cliente correspondente.",
+        "cookieSecure": "COOKIE_SECURE – defina como 'true' para HTTPS, 'false' para desenvolvimento local.",
+        "corsAllowedPattern": "CORS_ALLOWED_PATTERN – padrão de origem permitida para CORS (padrão: '*').",
+        "mailSettings": "Configurações de e‑mail (opcional) – preencha se quiser funcionalidade de e‑mail.",
+        "frontendUrl": "FRONTEND_URL – URL do frontend (padrão: http://localhost:3000/).",
+        "docsImportSettings": "Configurações de importação de documentação – usadas pelo recurso de importação de documentação."
+      }
     }
   },
   "plan": {

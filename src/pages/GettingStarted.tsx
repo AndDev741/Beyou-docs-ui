@@ -12,6 +12,14 @@ import {
   FileCode,
   Play,
   ChevronRight,
+  Users,
+  Code,
+  BookOpen,
+  Languages,
+  ExternalLink,
+  CheckCircle,
+  GitFork,
+  GitPullRequest,
 } from "lucide-react";
 
 export default function GettingStarted() {
@@ -219,7 +227,8 @@ export default function GettingStarted() {
               {t("gettingStarted.localExecution.envExplanation.description")}
             </p>
             <div className="glass-panel overflow-hidden">
-              <table className="w-full text-sm">
+              {/* Desktop table */}
+              <table className="hidden md:table w-full text-sm">
                 <thead>
                   <tr className="border-b border-border/60">
                     <th className="px-5 py-3 text-left font-medium text-muted-foreground uppercase text-xs tracking-wider">
@@ -268,8 +277,172 @@ export default function GettingStarted() {
                   })}
                 </tbody>
               </table>
+              {/* Mobile stacked layout */}
+              <div className="md:hidden divide-y divide-border/30">
+                {[
+                  "postgresDb",
+                  "postgresUser",
+                  "postgresPassword",
+                  "postgresPort",
+                  "tokenSecret",
+                  "googleClientId",
+                  "googleClientSecret",
+                  "cookieSecure",
+                  "corsAllowedPattern",
+                  "mailSettings",
+                  "frontendUrl",
+                  "docsImportSettings",
+                ].map((key, i) => {
+                  const text = t(
+                    `gettingStarted.localExecution.envExplanation.${key}`
+                  );
+                  const [variable, ...rest] = text.split(" – ");
+                  const description = rest.join(" – ");
+                  return (
+                    <div
+                      key={key}
+                      className={`px-4 py-3 ${i % 2 === 0 ? "bg-muted/5" : ""}`}
+                    >
+                      <div className="font-mono text-sm text-primary/80 mb-1">
+                        {variable}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {description}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
+        </section>
+
+        {/* How to Collaborate Section */}
+        <section className="mt-16">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-purple-500/10">
+              <Users className="w-5 h-5 text-purple-400" />
+            </div>
+            <h2 className="text-2xl font-semibold text-foreground">
+              {t("gettingStarted.collaboration.title")}
+            </h2>
+          </div>
+          <p className="text-muted-foreground leading-relaxed mb-8 pl-[52px]">
+            {t("gettingStarted.collaboration.description")}
+          </p>
+
+          {/* Where to Contribute — 3-card grid */}
+          <div className="mb-10">
+            <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+              <ChevronRight className="w-5 h-5 text-purple-400" />
+              {t("gettingStarted.collaboration.areas.title")}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                { key: "code", icon: Code, color: "text-blue-400", bg: "bg-blue-500/10" },
+                { key: "docs", icon: BookOpen, color: "text-amber-400", bg: "bg-amber-500/10" },
+                { key: "translations", icon: Languages, color: "text-emerald-400", bg: "bg-emerald-500/10" },
+              ].map(({ key, icon: Icon, color, bg }) => (
+                <div key={key} className="glass-panel gradient-border p-5 transition-all duration-200 hover:neon-glow">
+                  <div className="flex items-center gap-2.5 mb-2">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-lg ${bg}`}>
+                      <Icon className={`w-4 h-4 ${color}`} />
+                    </div>
+                    <h4 className="text-base font-semibold text-foreground">
+                      {t(`gettingStarted.collaboration.areas.${key}.title`)}
+                    </h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {t(`gettingStarted.collaboration.areas.${key}.description`)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Contribution Workflow */}
+          <div className="mb-10">
+            <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+              <ChevronRight className="w-5 h-5 text-purple-400" />
+              {t("gettingStarted.collaboration.workflow.title")}
+            </h3>
+            <div className="glass-panel p-5">
+              <ol className="space-y-3">
+                {[
+                  { key: "step1", icon: GitFork },
+                  { key: "step2", icon: GitBranch },
+                  { key: "step3", icon: Play },
+                  { key: "step4", icon: GitPullRequest },
+                ].map(({ key, icon: Icon }, index) => (
+                  <li key={key} className="flex items-start gap-3">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/15 text-purple-400 text-xs font-bold shrink-0 mt-0.5">
+                      {index + 1}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Icon className="w-4 h-4 text-purple-400/70 shrink-0" />
+                      <span className="text-sm text-muted-foreground">
+                        {t(`gettingStarted.collaboration.workflow.${key}`)}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+
+          {/* Guidelines */}
+          <div className="mb-10">
+            <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+              <ChevronRight className="w-5 h-5 text-purple-400" />
+              {t("gettingStarted.collaboration.guidelines.title")}
+            </h3>
+            <div className="glass-panel gradient-border p-5">
+              <ul className="space-y-2.5">
+                {["bilingual", "tests", "patterns", "smallPrs"].map((key) => (
+                  <li key={key} className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <span className="text-sm text-muted-foreground">
+                      {t(`gettingStarted.collaboration.guidelines.${key}`)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Project Repositories */}
+          <div className="mb-10">
+            <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+              <ChevronRight className="w-5 h-5 text-purple-400" />
+              {t("gettingStarted.collaboration.repos.title")}
+            </h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              {t("gettingStarted.collaboration.repos.description")}
+            </p>
+            <div className="glass-panel p-5">
+              <ul className="space-y-2">
+                {["frontend", "backend", "docsUi", "archDesign", "devEnv"].map((key) => (
+                  <li key={key} className="flex items-start gap-2.5">
+                    <Package className="w-4 h-4 text-purple-400/70 shrink-0 mt-0.5" />
+                    <span className="text-sm text-muted-foreground">
+                      {t(`gettingStarted.collaboration.repos.${key}`)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* GitHub Link */}
+          <a
+            href={t("gettingStarted.collaboration.github.url")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20 transition-all duration-200"
+          >
+            <ExternalLink className="w-4 h-4" />
+            {t("gettingStarted.collaboration.github.label")}
+          </a>
         </section>
       </div>
     </MainLayout>

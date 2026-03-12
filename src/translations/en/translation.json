@@ -479,6 +479,52 @@
         "frontendUrl": "FRONTEND_URL – URL of the frontend (default: http://localhost:3000/).",
         "docsImportSettings": "Docs import settings – used by the documentation import feature."
       }
+    },
+    "collaboration": {
+      "title": "How to Collaborate",
+      "description": "Beyou is open-source under the Apache 2.0 license. Contributions are welcome — here's how to get involved.",
+      "repos": {
+        "title": "Project Repositories",
+        "description": "The project is split across 5 repositories under the AndDev741 GitHub organization:",
+        "frontend": "Beyou-Frontend — Main React app (habits, goals, tasks UI)",
+        "backend": "Beyou-backend-spring — Spring Boot API (auth, domain logic, persistence)",
+        "docsUi": "Beyou-docs-ui — This documentation viewer app",
+        "archDesign": "Beyou-arch-design — OpenAPI specs & architecture docs",
+        "devEnv": "Beyou-dev-env — Docker Compose orchestration for local dev"
+      },
+      "workflow": {
+        "title": "Contribution Workflow",
+        "step1": "Fork the repository you want to contribute to",
+        "step2": "Create a feature branch from main",
+        "step3": "Make your changes and run tests locally",
+        "step4": "Open a Pull Request to main with a clear description"
+      },
+      "areas": {
+        "title": "Where to Contribute",
+        "code": {
+          "title": "Code",
+          "description": "Fix bugs, add features, or improve performance in the backend (Java/Spring) or frontend (React/TypeScript)."
+        },
+        "docs": {
+          "title": "Documentation",
+          "description": "Improve or add architecture docs, API specs, and design documents in the arch-design repo (Markdown)."
+        },
+        "translations": {
+          "title": "Translations",
+          "description": "Help keep English and Portuguese translations complete and accurate in the JSON translation files. New languages are welcome too!"
+        }
+      },
+      "guidelines": {
+        "title": "Guidelines",
+        "bilingual": "Keep all user-facing text bilingual — add both en and pt translations.",
+        "tests": "Run tests before submitting a PR (npm run test / ./mvnw test).",
+        "patterns": "Follow existing code patterns and conventions in the repository.",
+        "smallPrs": "Prefer small, focused PRs over large sweeping changes."
+      },
+      "github": {
+        "label": "View on GitHub",
+        "url": "https://github.com/AndDev741"
+      }
     }
   },
   "plan": {

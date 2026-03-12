@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import {
   Lightbulb,
@@ -20,10 +20,163 @@ import {
   CheckCircle,
   GitFork,
   GitPullRequest,
+  Rocket,
+  ArrowUp,
 } from "lucide-react";
 
+type Priority = "high" | "medium" | "low";
+
+interface FutureIdea {
+  nameEn: string;
+  namePt: string;
+  priority: Priority;
+  descriptionEn: string;
+  descriptionPt: string;
+}
+
+const futureIdeas: FutureIdea[] = [
+  {
+    nameEn: "Custom user store & credits for completed tasks",
+    namePt: "Loja customizada pelo usuário e créditos por tarefas concluídas",
+    priority: "high",
+    descriptionEn: "Will help a lot with gamification and user engagement",
+    descriptionPt: "Irá ajudar muito na gamificação e engajamento do app pelos usuários",
+  },
+  {
+    nameEn: "Weekly, monthly and yearly XP leaderboards",
+    namePt: "Ranks semanais, mensais e anuais de ganho de XP por usuários",
+    priority: "high",
+    descriptionEn: "Will help build a community and boost user engagement",
+    descriptionPt: "Vai ajudar muito na construção de uma comunidade e no engajamento dos usuários",
+  },
+  {
+    nameEn: "Pomodoro",
+    namePt: "Pomodoro",
+    priority: "high",
+    descriptionEn: "Pomodoro timer for routine tasks",
+    descriptionPt: "Pomodoro para as tarefas da rotina",
+  },
+  {
+    nameEn: "Small fixed/temporary tasks in Pomodoro mode",
+    namePt: "Adição de pequenas tasks fixas ou temporárias no modo pomodoro",
+    priority: "high",
+    descriptionEn: "Small tasks during Pomodoro breaks and normal time",
+    descriptionPt: "Pequenas tasks durante os breaks do pomodoro e durante o tempo normal",
+  },
+  {
+    nameEn: "Focus mode showing only the routine",
+    namePt: "Modo foco mostrando somente a rotina",
+    priority: "high",
+    descriptionEn: "Focus on the current routine linked with Pomodoro for tasks",
+    descriptionPt: "Foco na rotina atual e pomodoro",
+  },
+  {
+    nameEn: "Ultra-focus mode with only the current task",
+    namePt: "Modo ultrafoco com apenas a tarefa do horário",
+    priority: "high",
+    descriptionEn: "Only the current task to be done with optional Pomodoro",
+    descriptionPt: "Somente a tarefa atual a ser feita e pomodoro opcional",
+  },
+  {
+    nameEn: "New routine type without sections, just today's task",
+    namePt: "Implementar novo tipo de rotina sem seções, apenas com a tarefa do dia",
+    priority: "high",
+    descriptionEn: "",
+    descriptionPt: "",
+  },
+  {
+    nameEn: "Nested goals",
+    namePt: "Metas aninhadas",
+    priority: "medium",
+    descriptionEn: "Big goals broken into medium and small ones leading to the big goal",
+    descriptionPt: "Grandes metas e diversas médias e pequenas até chegar na grande",
+  },
+  {
+    nameEn: "Achievements by level",
+    namePt: "Conquistas por level",
+    priority: "medium",
+    descriptionEn: "Goals by level (e.g. level 50: Senior, level 100: Specialist)",
+    descriptionPt: "Metas por level (ex: level 50: Senior, level 100: Especialista)",
+  },
+  {
+    nameEn: "Emotions & daily journal",
+    namePt: "Diário de emoções e do dia a dia",
+    priority: "medium",
+    descriptionEn: "",
+    descriptionPt: "",
+  },
+  {
+    nameEn: "Recommended habits & tasks based on user averages",
+    namePt: "Hábitos e tarefas recomendados com base na média dos usuários",
+    priority: "medium",
+    descriptionEn: "",
+    descriptionPt: "",
+  },
+  {
+    nameEn: "Rest mode for idle screen",
+    namePt: "Modo descanso para deixar a tela parada",
+    priority: "medium",
+    descriptionEn: "A calm background with optional routine display and ultra-focus mode",
+    descriptionPt: "Somente um background tranquilo com opcional para mostrar a rotina e modo ultrafoco",
+  },
+  {
+    nameEn: "Previous day achievements & upcoming tasks",
+    namePt: "Lista de conquistas do dia anterior e do dia que está por vir",
+    priority: "low",
+    descriptionEn: "On app open, show yesterday's completed tasks (maybe with AI summary linking to habits/goals progress) and today's key tasks",
+    descriptionPt: "Ao entrar no app, mostrará as tarefas feitas do dia anterior (talvez com resumo de IA, linkando com quais hábitos e metas estão progredindo) e as principais tarefas do dia que está por vir",
+  },
+];
+
+const sectionIds = ["why-beyou", "local-execution", "collaboration", "future-ideas"] as const;
+
 export default function GettingStarted() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isPt = i18n.language?.startsWith("pt");
+
+  const [activeSection, setActiveSection] = useState<string>(sectionIds[0]);
+  const navRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // The scroll container is the <main> with overflow-auto
+    const scrollParent = navRef.current?.closest("main");
+    if (!scrollParent) return;
+
+    const handleScroll = () => {
+      const containerRect = scrollParent.getBoundingClientRect();
+      const threshold = containerRect.top + 80;
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sectionIds[i]);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= threshold) {
+          setActiveSection(sectionIds[i]);
+          return;
+        }
+      }
+      setActiveSection(sectionIds[0]);
+    };
+
+    scrollParent.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => scrollParent.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const scrollParent = navRef.current?.closest("main");
+    if (!scrollParent) return;
+    const navHeight = navRef.current?.offsetHeight ?? 0;
+    const elTop = el.getBoundingClientRect().top - scrollParent.getBoundingClientRect().top + scrollParent.scrollTop;
+    scrollParent.scrollTo({ top: elTop - navHeight, behavior: "smooth" });
+  };
+
+  const navItems = [
+    { id: "why-beyou", icon: Lightbulb, key: "whyBeyou", color: "text-primary" },
+    { id: "local-execution", icon: Terminal, key: "localExecution", color: "text-accent" },
+    { id: "collaboration", icon: Users, key: "collaboration", color: "text-purple-400" },
+    { id: "future-ideas", icon: Rocket, key: "futureIdeas", color: "text-rose-400" },
+  ];
 
   const CopyButton = ({ text }: { text: string }) => {
     const [copied, setCopied] = useState(false);
@@ -75,8 +228,36 @@ export default function GettingStarted() {
     "runScripts",
   ] as const;
 
+  const priorityConfig: Record<Priority, { color: string; bg: string }> = {
+    high: { color: "text-rose-400", bg: "bg-rose-500/15" },
+    medium: { color: "text-amber-400", bg: "bg-amber-500/15" },
+    low: { color: "text-sky-400", bg: "bg-sky-500/15" },
+  };
+
   return (
     <MainLayout>
+      {/* Section Navigation — sticky pill bar */}
+      <div ref={navRef} className="sticky top-0 z-30 bg-background/80 backdrop-blur-lg border-b border-border/40">
+        <div className="max-w-3xl mx-auto px-4 md:px-8">
+          <nav className="flex items-center gap-1 py-2 overflow-x-auto scrollbar-hide">
+            {navItems.map(({ id, icon: Icon, key, color }) => (
+              <button
+                key={id}
+                onClick={() => scrollTo(id)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-all duration-200 ${
+                  activeSection === id
+                    ? `${color} bg-white/10 border border-white/10`
+                    : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {t(`gettingStarted.nav.${key}`)}
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
+
       <div className="fade-in max-w-3xl mx-auto px-4 md:px-8 py-12 md:py-16">
         {/* Header */}
         <div className="mb-12">
@@ -89,7 +270,7 @@ export default function GettingStarted() {
         </div>
 
         {/* Why Beyou Section */}
-        <section className="mb-12">
+        <section id="why-beyou" className="mb-12">
           <div className="glass-panel gradient-border p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
@@ -106,7 +287,7 @@ export default function GettingStarted() {
         </section>
 
         {/* Local Execution Section */}
-        <section>
+        <section id="local-execution" className="scroll-mt-0">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/10">
               <Terminal className="w-5 h-5 text-accent" />
@@ -318,7 +499,7 @@ export default function GettingStarted() {
         </section>
 
         {/* How to Collaborate Section */}
-        <section className="mt-16">
+        <section id="collaboration" className="mt-16">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-purple-500/10">
               <Users className="w-5 h-5 text-purple-400" />
@@ -444,6 +625,100 @@ export default function GettingStarted() {
             {t("gettingStarted.collaboration.github.label")}
           </a>
         </section>
+
+        {/* Future Ideas Section */}
+        <section id="future-ideas" className="mt-16">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-rose-500/10">
+              <Rocket className="w-5 h-5 text-rose-400" />
+            </div>
+            <h2 className="text-2xl font-semibold text-foreground">
+              {t("gettingStarted.futureIdeas.title")}
+            </h2>
+          </div>
+          <p className="text-muted-foreground leading-relaxed mb-8 pl-[52px]">
+            {t("gettingStarted.futureIdeas.description")}
+          </p>
+
+          {/* Desktop table */}
+          <div className="hidden md:block glass-panel overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border/60">
+                  <th className="px-5 py-3 text-left font-medium text-muted-foreground uppercase text-xs tracking-wider">
+                    {t("gettingStarted.futureIdeas.columns.idea")}
+                  </th>
+                  <th className="px-5 py-3 text-left font-medium text-muted-foreground uppercase text-xs tracking-wider w-24">
+                    {t("gettingStarted.futureIdeas.columns.priority")}
+                  </th>
+                  <th className="px-5 py-3 text-left font-medium text-muted-foreground uppercase text-xs tracking-wider">
+                    {t("gettingStarted.futureIdeas.columns.description")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {futureIdeas.map((idea, i) => {
+                  const cfg = priorityConfig[idea.priority];
+                  const name = isPt ? idea.namePt : idea.nameEn;
+                  const desc = isPt ? idea.descriptionPt : idea.descriptionEn;
+                  return (
+                    <tr
+                      key={i}
+                      className={`border-b border-border/30 last:border-b-0 transition-colors hover:bg-primary/5 ${
+                        i % 2 === 0 ? "bg-muted/5" : ""
+                      }`}
+                    >
+                      <td className="px-5 py-3 text-foreground/90 font-medium">
+                        {name}
+                      </td>
+                      <td className="px-5 py-3">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${cfg.bg} ${cfg.color}`}>
+                          {t(`gettingStarted.futureIdeas.priority.${idea.priority}`)}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-muted-foreground">
+                        {desc}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile card layout */}
+          <div className="md:hidden space-y-3">
+            {futureIdeas.map((idea, i) => {
+              const cfg = priorityConfig[idea.priority];
+              const name = isPt ? idea.namePt : idea.nameEn;
+              const desc = isPt ? idea.descriptionPt : idea.descriptionEn;
+              return (
+                <div key={i} className="glass-panel p-4">
+                  <div className="flex items-start justify-between gap-3 mb-1.5">
+                    <span className="text-sm font-medium text-foreground/90">{name}</span>
+                    <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${cfg.bg} ${cfg.color}`}>
+                      {t(`gettingStarted.futureIdeas.priority.${idea.priority}`)}
+                    </span>
+                  </div>
+                  {desc && (
+                    <p className="text-xs text-muted-foreground">{desc}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Back to top */}
+        <div className="mt-12 flex justify-center">
+          <button
+            onClick={() => navRef.current?.closest("main")?.scrollTo({ top: 0, behavior: "smooth" })}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-full bg-white/5 hover:bg-white/10 border border-border/40 transition-all duration-200"
+          >
+            <ArrowUp className="w-3 h-3" />
+            {isPt ? "Voltar ao topo" : "Back to top"}
+          </button>
+        </div>
       </div>
     </MainLayout>
   );

@@ -525,6 +525,27 @@
         "label": "Ver no GitHub",
         "url": "https://github.com/AndDev741"
       }
+    },
+    "futureIdeas": {
+      "title": "Ideias para o Futuro",
+      "description": "Ideias para futuras atualizações do app — funcionalidades que adoraríamos construir.",
+      "columns": {
+        "idea": "Ideia",
+        "priority": "Prioridade",
+        "status": "Status",
+        "description": "Descrição"
+      },
+      "priority": {
+        "high": "Alta",
+        "medium": "Média",
+        "low": "Baixa"
+      }
+    },
+    "nav": {
+      "whyBeyou": "Por que Beyou",
+      "localExecution": "Execução Local",
+      "collaboration": "Colaboração",
+      "futureIdeas": "Ideias para o Futuro"
     }
   },
   "plan": {

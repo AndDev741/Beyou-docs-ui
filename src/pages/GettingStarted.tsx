@@ -137,14 +137,27 @@ export default function GettingStarted() {
   const [activeSection, setActiveSection] = useState<string>(sectionIds[0]);
   const navRef = useRef<HTMLDivElement>(null);
 
+  // Find the actual scroll container (could be <main>, or a parent element)
+  const getScrollParent = (): Element | null => {
+    let el: HTMLElement | null = navRef.current;
+    while (el) {
+      const style = getComputedStyle(el);
+      if (style.overflow === "auto" || style.overflow === "scroll" ||
+        style.overflowY === "auto" || style.overflowY === "scroll") {
+        return el;
+      }
+      el = el.parentElement;
+    }
+    return document.documentElement;
+  };
+
   useEffect(() => {
-    // The scroll container is the <main> with overflow-auto
-    const scrollParent = navRef.current?.closest("main");
+    const scrollParent = getScrollParent();
     if (!scrollParent) return;
 
     const handleScroll = () => {
-      const containerRect = scrollParent.getBoundingClientRect();
-      const threshold = containerRect.top + 80;
+      const navHeight = navRef.current?.offsetHeight ?? 0;
+      const threshold = navHeight + 20;
       for (let i = sectionIds.length - 1; i >= 0; i--) {
         const el = document.getElementById(sectionIds[i]);
         if (!el) continue;
@@ -164,11 +177,18 @@ export default function GettingStarted() {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-    const scrollParent = navRef.current?.closest("main");
-    if (!scrollParent) return;
-    const navHeight = navRef.current?.offsetHeight ?? 0;
-    const elTop = el.getBoundingClientRect().top - scrollParent.getBoundingClientRect().top + scrollParent.scrollTop;
-    scrollParent.scrollTo({ top: elTop - navHeight, behavior: "smooth" });
+    el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToTop = () => {
+    // Try the detected scroll parent first
+    const scrollParent = getScrollParent();
+    if (scrollParent) {
+      scrollParent.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    // Also try <main> directly and window as fallbacks
+    navRef.current?.closest("main")?.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const navItems = [
@@ -188,11 +208,10 @@ export default function GettingStarted() {
     return (
       <button
         onClick={handleCopy}
-        className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-md transition-all duration-200 ${
-          copied
-            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-            : "bg-white/5 text-muted-foreground border border-border/50 hover:bg-white/10 hover:text-foreground"
-        }`}
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-md transition-all duration-200 ${copied
+          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+          : "bg-white/5 text-muted-foreground border border-border/50 hover:bg-white/10 hover:text-foreground"
+          }`}
         aria-label="Copy to clipboard"
       >
         {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
@@ -244,11 +263,10 @@ export default function GettingStarted() {
               <button
                 key={id}
                 onClick={() => scrollTo(id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-all duration-200 ${
-                  activeSection === id
-                    ? `${color} bg-white/10 border border-white/10`
-                    : "text-muted-foreground hover:text-foreground hover:bg-white/5"
-                }`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-all duration-200 ${activeSection === id
+                  ? `${color} bg-white/10 border border-white/10`
+                  : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                  }`}
               >
                 <Icon className="w-3.5 h-3.5" />
                 {t(`gettingStarted.nav.${key}`)}
@@ -270,7 +288,7 @@ export default function GettingStarted() {
         </div>
 
         {/* Why Beyou Section */}
-        <section id="why-beyou" className="mb-12">
+        <section id="why-beyou" className="mb-12 scroll-mt-14">
           <div className="glass-panel gradient-border p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
@@ -287,7 +305,7 @@ export default function GettingStarted() {
         </section>
 
         {/* Local Execution Section */}
-        <section id="local-execution" className="scroll-mt-0">
+        <section id="local-execution" className="scroll-mt-14">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/10">
               <Terminal className="w-5 h-5 text-accent" />
@@ -380,9 +398,8 @@ export default function GettingStarted() {
                     return (
                       <tr
                         key={key}
-                        className={`border-b border-border/30 last:border-b-0 transition-colors hover:bg-primary/5 ${
-                          i % 2 === 0 ? "bg-muted/5" : ""
-                        }`}
+                        className={`border-b border-border/30 last:border-b-0 transition-colors hover:bg-primary/5 ${i % 2 === 0 ? "bg-muted/5" : ""
+                          }`}
                       >
                         <td className="px-5 py-3 font-mono text-sm text-primary/80">
                           {script}
@@ -443,9 +460,8 @@ export default function GettingStarted() {
                     return (
                       <tr
                         key={key}
-                        className={`border-b border-border/30 last:border-b-0 transition-colors hover:bg-primary/5 ${
-                          i % 2 === 0 ? "bg-muted/5" : ""
-                        }`}
+                        className={`border-b border-border/30 last:border-b-0 transition-colors hover:bg-primary/5 ${i % 2 === 0 ? "bg-muted/5" : ""
+                          }`}
                       >
                         <td className="px-5 py-3 font-mono text-sm text-primary/80 whitespace-nowrap">
                           {variable}
@@ -499,7 +515,7 @@ export default function GettingStarted() {
         </section>
 
         {/* How to Collaborate Section */}
-        <section id="collaboration" className="mt-16">
+        <section id="collaboration" className="mt-16 scroll-mt-14">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-purple-500/10">
               <Users className="w-5 h-5 text-purple-400" />
@@ -627,7 +643,7 @@ export default function GettingStarted() {
         </section>
 
         {/* Future Ideas Section */}
-        <section id="future-ideas" className="mt-16">
+        <section id="future-ideas" className="mt-16 scroll-mt-14">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-rose-500/10">
               <Rocket className="w-5 h-5 text-rose-400" />
@@ -664,9 +680,8 @@ export default function GettingStarted() {
                   return (
                     <tr
                       key={i}
-                      className={`border-b border-border/30 last:border-b-0 transition-colors hover:bg-primary/5 ${
-                        i % 2 === 0 ? "bg-muted/5" : ""
-                      }`}
+                      className={`border-b border-border/30 last:border-b-0 transition-colors hover:bg-primary/5 ${i % 2 === 0 ? "bg-muted/5" : ""
+                        }`}
                     >
                       <td className="px-5 py-3 text-foreground/90 font-medium">
                         {name}
@@ -712,7 +727,7 @@ export default function GettingStarted() {
         {/* Back to top */}
         <div className="mt-12 flex justify-center">
           <button
-            onClick={() => navRef.current?.closest("main")?.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={scrollToTop}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-full bg-white/5 hover:bg-white/10 border border-border/40 transition-all duration-200"
           >
             <ArrowUp className="w-3 h-3" />

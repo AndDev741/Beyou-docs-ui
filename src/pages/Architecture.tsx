@@ -215,13 +215,16 @@ export default function Architecture() {
         if (topicsLoadId.current !== loadId) return;
         setTopics(data);
 
-        const preferred =
-          initialTopicParam && data.some((topic) => topic.key === initialTopicParam)
-            ? initialTopicParam
-            : data[0]?.key ?? null;
-
-        setSelectedTopicKey(preferred);
-        syncTopicParam(preferred);
+        // Only set a default topic on first load — never overwrite user selection
+        setSelectedTopicKey((current) => {
+          if (current && data.some((topic) => topic.key === current)) return current;
+          const preferred =
+            initialTopicParam && data.some((topic) => topic.key === initialTopicParam)
+              ? initialTopicParam
+              : data[0]?.key ?? null;
+          syncTopicParam(preferred);
+          return preferred;
+        });
       })
       .catch((error) => {
         if (topicsLoadId.current !== loadId) return;

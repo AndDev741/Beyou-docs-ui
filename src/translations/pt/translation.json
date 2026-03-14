@@ -141,12 +141,25 @@
       "topicCount": "{{count}} topicos",
       "loadingTopics": "Carregando topicos...",
       "noTopics": "Nenhum topico corresponde ao filtro.",
-      "newTopic": "Novo topico"
+      "newTopic": "Novo topico",
+      "clearFilters": "Limpar"
     },
     "empty": "Selecione um topico para ver detalhes.",
     "topic": {
       "noDescription": "Sem descricao.",
-      "updated": "Atualizado {{date}}"
+      "updated": "Atualizado {{date}}",
+      "readingTime": "{{count}} min de leitura",
+      "viewProject": "Ver projeto"
+    },
+    "status": {
+      "active": "Ativo",
+      "draft": "Rascunho",
+      "archived": "Arquivado"
+    },
+    "toc": {
+      "title": "Sumario",
+      "section": "secao",
+      "sections": "secoes"
     },
     "tabs": {
       "diagrams": "Diagramas",

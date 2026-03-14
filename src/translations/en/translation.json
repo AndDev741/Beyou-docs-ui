@@ -141,12 +141,25 @@
       "topicCount": "{{count}} topics",
       "loadingTopics": "Loading topics...",
       "noTopics": "No topics match your filter.",
-      "newTopic": "New topic"
+      "newTopic": "New topic",
+      "clearFilters": "Clear"
     },
     "empty": "Select a topic to view details.",
     "topic": {
       "noDescription": "No description yet.",
-      "updated": "Updated {{date}}"
+      "updated": "Updated {{date}}",
+      "readingTime": "{{count}} min read",
+      "viewProject": "View project"
+    },
+    "status": {
+      "active": "Active",
+      "draft": "Draft",
+      "archived": "Archived"
+    },
+    "toc": {
+      "title": "Table of Contents",
+      "section": "section",
+      "sections": "sections"
     },
     "tabs": {
       "diagrams": "Diagrams",

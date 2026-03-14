@@ -1,7 +1,26 @@
+import type { ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { MermaidBlock } from "./MermaidBlock";
 import { cn } from "@/lib/utils";
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .trim();
+}
+
+function headingComponent(level: number) {
+  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+  return function Heading({ children }: { children?: ReactNode }) {
+    const text = typeof children === "string" ? children : String(children ?? "");
+    const id = slugify(text);
+    return <Tag id={id}>{children}</Tag>;
+  };
+}
 
 interface DesignMarkdownProps {
   content: string;
@@ -14,6 +33,9 @@ export function DesignMarkdown({ content, className }: DesignMarkdownProps) {
       remarkPlugins={[remarkGfm]}
       className={cn("docs-prose", className)}
       components={{
+        h1: headingComponent(1),
+        h2: headingComponent(2),
+        h3: headingComponent(3),
         pre({ children }) {
           return <>{children}</>;
         },

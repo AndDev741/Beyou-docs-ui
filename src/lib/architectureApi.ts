@@ -20,6 +20,9 @@ export type ArchitectureTopicListItem = {
   summary?: string | null;
   orderIndex: number;
   updatedAt?: string | null;
+  status: string;
+  tags?: string | null;
+  projectKey?: string | null;
 };
 
 export type ArchitectureTopicDetail = {
@@ -28,7 +31,27 @@ export type ArchitectureTopicDetail = {
   diagramMermaid: string;
   docMarkdown: string;
   updatedAt?: string | null;
+  status: string;
+  tags?: string | null;
+  projectKey?: string | null;
 };
+
+export function estimateReadingTime(markdown: string): number {
+  if (!markdown) return 1;
+  const words = markdown.trim().split(/\s+/).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
+export function formatRelativeDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / 86_400_000);
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 30) return `${diffDays}d ago`;
+  return date.toLocaleDateString();
+}
 
 const buildUrl = (path: string, locale?: string): string => {
   const base = getBaseUrl();

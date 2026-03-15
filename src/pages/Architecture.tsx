@@ -193,16 +193,15 @@ export default function Architecture() {
   const detailLoadId = useRef(0);
   const detailPanelRef = useRef<HTMLDivElement>(null);
 
-  const syncTopicParam = useCallback(
-    (key: string | null) => {
+  // Sync URL param whenever selected topic changes
+  useEffect(() => {
+    const currentParam = searchParams.get("topic");
+    if (selectedTopicKey !== currentParam) {
       const next = new URLSearchParams();
-      if (key) {
-        next.set("topic", key);
-      }
+      if (selectedTopicKey) next.set("topic", selectedTopicKey);
       setSearchParams(next, { replace: true });
-    },
-    [setSearchParams],
-  );
+    }
+  }, [selectedTopicKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const loadId = topicsLoadId.current + 1;
@@ -222,7 +221,6 @@ export default function Architecture() {
             initialTopicParam && data.some((topic) => topic.key === initialTopicParam)
               ? initialTopicParam
               : data[0]?.key ?? null;
-          syncTopicParam(preferred);
           return preferred;
         });
       })
@@ -235,7 +233,7 @@ export default function Architecture() {
           setTopicsLoading(false);
         }
       });
-  }, [initialTopicParam, locale, syncTopicParam, t]);
+  }, [initialTopicParam, locale, t]);
 
   useEffect(() => {
     if (!selectedTopicKey) {
@@ -247,6 +245,7 @@ export default function Architecture() {
 
     const loadId = detailLoadId.current + 1;
     detailLoadId.current = loadId;
+    // Keep previous detail visible while loading (no setDetail(null))
     setDetailLoading(true);
     setDetailError(null);
 
@@ -341,9 +340,9 @@ export default function Architecture() {
   const handleSelectTopic = useCallback(
     (key: string) => {
       setSelectedTopicKey(key);
-      syncTopicParam(key);
+      detailPanelRef.current?.scrollTo({ top: 0 });
     },
-    [syncTopicParam],
+    [],
   );
 
   const toggleTag = useCallback((tag: string) => {
@@ -477,7 +476,7 @@ export default function Architecture() {
                   )}
                   {topic.updatedAt && (
                     <div className="text-[10px] text-muted-foreground/60 mt-1.5">
-                      {formatRelativeDate(topic.updatedAt)}
+                      {formatRelativeDate(topic.updatedAt, locale)}
                     </div>
                   )}
                 </button>
@@ -496,7 +495,8 @@ export default function Architecture() {
 
           {selectedTopicKey && (
             <div className="max-w-4xl mx-auto px-4 md:px-8 py-10 md:py-12">
-              {detailLoading && (
+              {/* Show loading only on first load (no detail yet) */}
+              {detailLoading && !detail && (
                 <div className="glass-panel rounded-xl p-6 text-sm text-muted-foreground">
                   {t("common.loading")}
                 </div>
@@ -506,8 +506,11 @@ export default function Architecture() {
                   {detailError}
                 </div>
               )}
-              {!detailLoading && !detailError && detail && (
-                <>
+              {detail && (
+                <div className={cn(
+                  "transition-opacity duration-300",
+                  detailLoading ? "opacity-40 pointer-events-none" : "opacity-100",
+                )}>
                   {/* rich header */}
                   <div className="mb-6">
                     <div className="flex items-center gap-3 flex-wrap">
@@ -523,7 +526,7 @@ export default function Architecture() {
                     </div>
                     <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                       {detail.updatedAt && (
-                        <span>{t("architecture.topic.updated", { date: formatRelativeDate(detail.updatedAt) })}</span>
+                        <span>{t("architecture.topic.updated", { date: formatRelativeDate(detail.updatedAt, locale) })}</span>
                       )}
                       {detail.docMarkdown && (
                         <>
@@ -581,7 +584,7 @@ export default function Architecture() {
                       </div>
                     )}
                   </div>
-                </>
+                </div>
               )}
             </div>
           )}

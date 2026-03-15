@@ -36,6 +36,13 @@ export function DesignMarkdown({ content, className }: DesignMarkdownProps) {
         h1: headingComponent(1),
         h2: headingComponent(2),
         h3: headingComponent(3),
+        table({ children }) {
+          return (
+            <div className="overflow-x-auto -mx-2 px-2 my-4">
+              <table className="min-w-full">{children}</table>
+            </div>
+          );
+        },
         pre({ children }) {
           return <>{children}</>;
         },

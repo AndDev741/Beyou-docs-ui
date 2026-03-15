@@ -42,15 +42,16 @@ export function estimateReadingTime(markdown: string): number {
   return Math.max(1, Math.round(words / 200));
 }
 
-export function formatRelativeDate(dateStr: string): string {
+export function formatRelativeDate(dateStr: string, locale?: string): string {
   const date = new Date(dateStr);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffDays = Math.floor(diffMs / 86_400_000);
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 30) return `${diffDays}d ago`;
-  return date.toLocaleDateString();
+  const isPt = locale?.startsWith("pt");
+  if (diffDays === 0) return isPt ? "Hoje" : "Today";
+  if (diffDays === 1) return isPt ? "Ontem" : "Yesterday";
+  if (diffDays < 30) return isPt ? `${diffDays}d atrás` : `${diffDays}d ago`;
+  return date.toLocaleDateString(isPt ? "pt-BR" : "en-US");
 }
 
 const buildUrl = (path: string, locale?: string): string => {

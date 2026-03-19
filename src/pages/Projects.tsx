@@ -34,8 +34,8 @@ import {
   DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { DesignMarkdown } from "@/components/design/DesignMarkdown";
-import { MermaidBlock } from "@/components/design/MermaidBlock";
+import { MarkdownContent } from "@/components/markdown/MarkdownContent";
+import { MermaidBlock } from "@/components/markdown/MermaidBlock";
 import { useTranslation } from "react-i18next";
 import { fetchProjectTopics, fetchProjectTopicDetail, parseTags, type ProjectTopicListItem, type ProjectTopicDetail } from "@/lib/projectApi";
 import i18n from "@/translations/i18n";
@@ -325,7 +325,7 @@ export default function Projects() {
                 {/* Markdown documentation */}
                 <div className="rounded-lg border border-glass-border/30 p-4">
                   <h3 className="text-lg font-semibold mb-2">{t("projects.detail.documentation")}</h3>
-                  <DesignMarkdown content={detail.docMarkdown} />
+                  <MarkdownContent content={detail.docMarkdown} />
                 </div>
 
                 {/* Tags */}

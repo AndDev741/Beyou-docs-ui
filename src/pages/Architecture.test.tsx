@@ -5,7 +5,7 @@ import Architecture from "@/pages/Architecture";
 import { fetchArchitectureTopicDetail, fetchArchitectureTopics } from "@/lib/architectureApi";
 import { RoleProvider } from "@/context/RoleContext";
 
-vi.mock("@/components/design/MermaidBlock", () => ({
+vi.mock("@/components/markdown/MermaidBlock", () => ({
   MermaidBlock: ({ code }: { code: string }) => <div>{code}</div>,
 }));
 

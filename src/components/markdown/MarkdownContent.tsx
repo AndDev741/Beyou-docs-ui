@@ -22,12 +22,12 @@ function headingComponent(level: number) {
   };
 }
 
-interface DesignMarkdownProps {
+interface MarkdownContentProps {
   content: string;
   className?: string;
 }
 
-export function DesignMarkdown({ content, className }: DesignMarkdownProps) {
+export function MarkdownContent({ content, className }: MarkdownContentProps) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}

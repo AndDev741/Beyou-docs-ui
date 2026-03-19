@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { MermaidBlock } from "@/components/design/MermaidBlock";
-import { DesignMarkdown } from "@/components/design/DesignMarkdown";
+import { MermaidBlock } from "@/components/markdown/MermaidBlock";
+import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 import { cn } from "@/lib/utils";
 import {
   fetchArchitectureTopicDetail,
@@ -577,7 +577,7 @@ export default function Architecture() {
                   {/* documentation */}
                   <div className="glass-panel rounded-2xl p-6 md:p-8">
                     {detail.docMarkdown?.trim() ? (
-                      <DesignMarkdown content={detail.docMarkdown} />
+                      <MarkdownContent content={detail.docMarkdown} />
                     ) : (
                       <div className="text-sm text-muted-foreground">
                         {t("architecture.docs.noContent")}

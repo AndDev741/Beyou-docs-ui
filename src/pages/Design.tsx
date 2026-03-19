@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Input } from "@/components/ui/input";
-import { DesignMarkdown } from "@/components/design/DesignMarkdown";
+import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 import { cn } from "@/lib/utils";
 import {
   fetchDesignTopicDetail,
@@ -214,7 +214,7 @@ export default function Design() {
 
                   <div className="glass-panel rounded-2xl p-6 md:p-8">
                     {detail.docMarkdown?.trim() ? (
-                      <DesignMarkdown content={detail.docMarkdown} />
+                      <MarkdownContent content={detail.docMarkdown} />
                     ) : (
                       <div className="text-sm text-muted-foreground">
                         {t("design.docs.noContent")}

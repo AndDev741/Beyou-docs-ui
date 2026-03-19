@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Activity } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { MermaidBlock } from "@/components/design/MermaidBlock";
+import { MermaidBlock } from "@/components/markdown/MermaidBlock";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 

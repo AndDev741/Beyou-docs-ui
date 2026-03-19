@@ -7,7 +7,6 @@
     "home": "Home",
     "gettingStarted": "Getting Started",
     "architecture": "Architecture",
-    "design": "Design",
     "blog": "Blog",
     "apis": "APIs",
     "projects": "Projects",
@@ -42,7 +41,7 @@
       "badge": "Beyou documentation",
       "titleLine1": "What is behind",
       "titleLine2": "The beyou web app.",
-      "description": "Explore architecture, APIs, designs, and projects that power Beyou.",
+      "description": "Explore architecture, APIs, blog posts, and projects that power Beyou.",
       "primaryCta": "Open Documentation",
       "secondaryCta": "View Architecture"
     },
@@ -52,9 +51,9 @@
         "title": "Architecture",
         "description": "System architecture and decisions."
       },
-      "design": {
-        "title": "Design",
-        "description": "UX and System designs."
+      "blog": {
+        "title": "Blog",
+        "description": "Posts and articles about the project."
       },
       "apis": {
         "title": "APIs",
@@ -77,7 +76,7 @@
       "empty": "No recent activity found.",
       "defaults": {
         "arch": "Architecture topic updated",
-        "design": "Design updated",
+        "blog": "Blog post updated",
         "api": "API repository updated",
         "project": "Repository updated"
       }
@@ -96,7 +95,7 @@
     },
     "stats": {
       "architecture": "Architecture Topics",
-      "designs": "Design Docs",
+      "blogPosts": "Blog Posts",
       "apis": "API Repos",
       "projects": "Projects",
       "updated": "Updated {{time}}",
@@ -361,7 +360,7 @@
     "detail": {
       "notFound": "Project details not found",
       "repository": "Repository",
-      "design": "Design",
+      "blog": "Blog",
       "architecture": "Architecture",
       "diagram": "Diagram",
       "documentation": "Documentation"
@@ -369,7 +368,7 @@
   },
   "search": {
     "title": "Search",
-    "subtitle": "Find anything across architecture, APIs, designs, and projects",
+    "subtitle": "Find anything across architecture, APIs, blog posts, and projects",
     "placeholder": "Search documentation...",
     "recentTitle": "Recent Searches",
     "recent": {
@@ -382,7 +381,7 @@
       "all": "All",
       "architecture": "Architecture",
       "apis": "APIs",
-      "designs": "Designs",
+      "blog": "Blog",
       "projects": "Projects"
     },
     "sample": {
@@ -394,7 +393,7 @@
         "title": "POST /auth/login",
         "description": "Authenticate user and return access token"
       },
-      "design": {
+      "blog": {
         "title": "Authentication Flow",
         "description": "User authentication and session flow diagram"
       },
@@ -427,7 +426,7 @@
       },
       "next": {
         "title": "Explore the docs",
-        "description": "Jump into architecture, APIs, and design references."
+        "description": "Jump into architecture, APIs, and blog posts."
       }
     },
     "local": {
@@ -439,7 +438,7 @@
       "title": "Quick Links",
       "architecture": "Architecture Overview",
       "apis": "API Documentation",
-      "design": "Design System",
+      "blog": "Blog",
       "plan": "Plan"
     },
     "localExecution": {
@@ -577,9 +576,9 @@
         "title": "Architecture",
         "body": "Topics, diagrams, and dependencies to add."
       },
-      "design": {
-        "title": "Design",
-        "body": "Flows, UX specs, and decision records."
+      "blog": {
+        "title": "Blog",
+        "body": "Posts, articles, and decision records."
       },
       "api": {
         "title": "APIs",

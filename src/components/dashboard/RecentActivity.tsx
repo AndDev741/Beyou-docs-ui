@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-import { Clock, GitBranch, FileCode, Box, Palette } from "lucide-react";
+import { Clock, GitBranch, FileCode, Box, Newspaper } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
 export type ActivityItem = {
-  type: "project" | "api" | "architecture" | "design";
+  type: "project" | "api" | "architecture" | "blog";
   title: string;
   description: string;
   time: string;
@@ -22,7 +22,7 @@ const typeConfig: Record<ActivityItem["type"], { icon: typeof Box; color: string
   project: { icon: Box, color: "text-primary" },
   api: { icon: FileCode, color: "text-primary" },
   architecture: { icon: GitBranch, color: "text-emerald-400" },
-  design: { icon: Palette, color: "text-accent" },
+  blog: { icon: Newspaper, color: "text-accent" },
 };
 
 export function RecentActivity({ items = [], loading = false, error = null }: RecentActivityProps) {

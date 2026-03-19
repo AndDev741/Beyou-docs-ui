@@ -4,7 +4,7 @@ import {
   Search,
   Layers,
   Code2,
-  FileText,
+  Newspaper,
   FolderKanban,
   Clock,
   ArrowRight,
@@ -53,7 +53,7 @@ export default function SearchPage() {
       { id: "all", label: t("search.categories.all"), icon: Search },
       { id: "architecture", label: t("search.categories.architecture"), icon: Layers },
       { id: "api", label: t("search.categories.apis"), icon: Code2 },
-      { id: "design", label: t("search.categories.designs"), icon: FileText },
+      { id: "blog", label: t("search.categories.blog"), icon: Newspaper },
       { id: "project", label: t("search.categories.projects"), icon: FolderKanban },
     ],
   [t],
@@ -125,8 +125,8 @@ export default function SearchPage() {
         return Layers;
       case "api":
         return Code2;
-      case "design":
-        return FileText;
+      case "blog":
+        return Newspaper;
       case "project":
         return FolderKanban;
       default:
@@ -138,8 +138,8 @@ export default function SearchPage() {
     switch (result.type) {
       case "architecture":
         return `/architecture?topic=${result.key}`;
-      case "design":
-        return `/design?topic=${result.key}`;
+      case "blog":
+        return `/blog?post=${result.key}`;
       case "api":
         return `/apis?controller=${result.key}`;
       case "project":

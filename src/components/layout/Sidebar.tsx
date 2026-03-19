@@ -5,7 +5,7 @@ import {
   Home,
   BookOpen,
   Layers,
-  PenLine,
+  Newspaper,
   Code2,
   FolderKanban,
   Search,
@@ -21,7 +21,7 @@ const navItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: BookOpen, label: "Getting Started", path: "/getting-started" },
   { icon: Layers, label: "Architecture", path: "/architecture" },
-  { icon: PenLine, label: "Blog", path: "/blog" },
+  { icon: Newspaper, label: "Blog", path: "/blog" },
   { icon: Code2, label: "APIs", path: "/apis" },
   { icon: FolderKanban, label: "Projects", path: "/projects" },
 ];

@@ -7,7 +7,6 @@
     "home": "Inicio",
     "gettingStarted": "Primeiros passos",
     "architecture": "Arquitetura",
-    "design": "Design",
     "blog": "Blog",
     "apis": "APIs",
     "projects": "Projetos",
@@ -42,7 +41,7 @@
       "badge": "Documentacao Beyou",
       "titleLine1": "O que está por trás",
       "titleLine2": "Do web app Beyou.",
-      "description": "Explore arquitetura, APIs, designs e projetos que movem o Beyou.",
+      "description": "Explore arquitetura, APIs, posts de blog e projetos que movem o Beyou.",
       "primaryCta": "Abrir Documentacao",
       "secondaryCta": "Ver Arquitetura"
     },
@@ -52,9 +51,9 @@
         "title": "Arquitetura",
         "description": "Arquitetura do sistema e decisões."
       },
-      "design": {
-        "title": "Design",
-        "description": "UX e System designs."
+      "blog": {
+        "title": "Blog",
+        "description": "Posts e artigos sobre o projeto."
       },
       "apis": {
         "title": "APIs",
@@ -77,7 +76,7 @@
       "empty": "Sem atividade recente.",
       "defaults": {
         "arch": "Topico de arquitetura atualizado",
-        "design": "Design atualizado",
+        "blog": "Post de blog atualizado",
         "api": "Repositorio de API atualizado",
         "project": "Repositorio atualizado"
       }
@@ -96,7 +95,7 @@
     },
     "stats": {
       "architecture": "Topicos de arquitetura",
-      "designs": "Docs de design",
+      "blogPosts": "Posts de Blog",
       "apis": "Repos de API",
       "projects": "Projetos",
       "updated": "Atualizado {{time}}",
@@ -361,7 +360,7 @@
     "detail": {
       "notFound": "Detalhes do projeto não encontrados",
       "repository": "Repositório",
-      "design": "Design",
+      "blog": "Blog",
       "architecture": "Arquitetura",
       "diagram": "Diagrama",
       "documentation": "Documentação"
@@ -369,7 +368,7 @@
   },
   "search": {
     "title": "Busca",
-    "subtitle": "Encontre conteudo em arquitetura, APIs, designs e projetos",
+    "subtitle": "Encontre conteudo em arquitetura, APIs, posts de blog e projetos",
     "placeholder": "Buscar documentacao...",
     "recentTitle": "Buscas recentes",
     "recent": {
@@ -382,7 +381,7 @@
       "all": "Todos",
       "architecture": "Arquitetura",
       "apis": "APIs",
-      "designs": "Designs",
+      "blog": "Blog",
       "projects": "Projetos"
     },
     "sample": {
@@ -394,7 +393,7 @@
         "title": "POST /auth/login",
         "description": "Autenticar usuario e retornar token"
       },
-      "design": {
+      "blog": {
         "title": "Fluxo de autenticacao",
         "description": "Diagrama de autenticacao e sessao"
       },
@@ -427,7 +426,7 @@
       },
       "next": {
         "title": "Explore os docs",
-        "description": "Veja arquitetura, APIs e design."
+        "description": "Veja arquitetura, APIs e posts de blog."
       }
     },
     "local": {
@@ -439,7 +438,7 @@
       "title": "Links rapidos",
       "architecture": "Visao de arquitetura",
       "apis": "Docs de API",
-      "design": "Sistema de design",
+      "blog": "Blog",
       "plan": "Plano"
     },
     "localExecution": {
@@ -577,9 +576,9 @@
         "title": "Arquitetura",
         "body": "Topicos, diagramas e dependencias a incluir."
       },
-      "design": {
-        "title": "Design",
-        "body": "Fluxos, specs e decisoes."
+      "blog": {
+        "title": "Blog",
+        "body": "Posts, artigos e decisoes."
       },
       "api": {
         "title": "APIs",

@@ -8,12 +8,12 @@ import { SystemOverview, type ArchitecturePreview, type SystemStat } from "@/com
 import { resolveProjectOrg, resolveProjectRepos } from "@/data/projectRepos";
 import { resolveApiOrg, isGentlApiRepoName } from "@/data/apiRepos";
 import { fetchArchitectureTopicDetail, fetchArchitectureTopics } from "@/lib/architectureApi";
-import { fetchDesignTopics } from "@/lib/designApi";
+import { fetchBlogTopics } from "@/lib/blogApi";
 import { fetchOrgProjectsSummary, fetchProjectsByRepos } from "@/lib/githubProjects";
 import type { ArchitectureTopicListItem } from "@/lib/architectureApi";
-import type { DesignTopicListItem } from "@/lib/designApi";
+import type { BlogTopicListItem } from "@/lib/blogApi";
 import type { OrgProjectsSummary, ProjectInfo } from "@/lib/githubProjects";
-import { Code2, GitBranch, Palette, FolderKanban } from "lucide-react";
+import { Code2, GitBranch, Newspaper, FolderKanban } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const ORG_PREVIEW_LIMIT = 12;
@@ -98,27 +98,27 @@ const Index = () => {
     setLoading(true);
     setError(null);
     try {
-      const [topicsResult, designsResult, projectsResult] = await Promise.allSettled([
+      const [topicsResult, blogPostsResult, projectsResult] = await Promise.allSettled([
         fetchArchitectureTopics(locale),
-        fetchDesignTopics(locale),
+        fetchBlogTopics(locale),
         loadProjects(),
       ]);
 
       if (loadIdRef.current !== loadId) return;
 
       const topics = topicsResult.status === "fulfilled" ? topicsResult.value : [];
-      const designs: DesignTopicListItem[] = designsResult.status === "fulfilled" ? designsResult.value : [];
+      const blogPosts: BlogTopicListItem[] = blogPostsResult.status === "fulfilled" ? blogPostsResult.value : [];
       const projectsSnapshot = projectsResult.status === "fulfilled"
         ? projectsResult.value
         : { projects: [], sampled: false };
       const projects = projectsSnapshot.projects;
 
-      const failures = [topicsResult, designsResult, projectsResult]
+      const failures = [topicsResult, blogPostsResult, projectsResult]
         .filter((result) => result.status === "rejected")
         .map((result) => (result as PromiseRejectedResult).reason)
         .map((reason) => (reason instanceof Error ? reason.message : t("home.errors.load")));
 
-      if (failures.length && !topics.length && !designs.length && !projects.length) {
+      if (failures.length && !topics.length && !blogPosts.length && !projects.length) {
         setError(failures[0]);
       }
 
@@ -126,7 +126,7 @@ const Index = () => {
       const totalProjects = projectsSnapshot.totalCount ?? projects.length;
       const totalApis = projectsSnapshot.apiCount ?? apiRepos.length;
 
-      const latestDesign = pickLatest(designs, (item) => item.updatedAt);
+      const latestBlogPost = pickLatest(blogPosts, (item) => item.updatedAt);
       const latestProject = pickLatest(projects, (item) => item.updatedAt ?? item.pushedAt);
       const latestApi = pickLatest(apiRepos, (item) => item.updatedAt ?? item.pushedAt);
       const latestTopic = pickLatest(topics, (item) => item.updatedAt);
@@ -145,15 +145,15 @@ const Index = () => {
           time: timestamp ?? 0,
         });
       }
-      if (latestDesign) {
-        const timestamp = toDate(latestDesign.updatedAt)?.getTime();
+      if (latestBlogPost) {
+        const timestamp = toDate(latestBlogPost.updatedAt)?.getTime();
         activityItems.push({
           item: {
-            type: "design",
-            title: latestDesign.title,
-            description: latestDesign.summary || t("home.activity.defaults.design"),
-            time: formatRelative(latestDesign.updatedAt, t),
-            href: "/design",
+            type: "blog",
+            title: latestBlogPost.title,
+            description: latestBlogPost.summary || t("home.activity.defaults.blog"),
+            time: formatRelative(latestBlogPost.updatedAt, t),
+            href: "/blog",
           },
           time: timestamp ?? 0,
         });
@@ -200,13 +200,13 @@ const Index = () => {
           status: topics.length ? "healthy" : "warning",
         },
         {
-          icon: Palette,
-          label: t("home.stats.designs"),
-          value: designs.length.toString(),
-          subtext: latestDesign?.updatedAt
-            ? t("home.stats.updated", { time: formatRelative(latestDesign.updatedAt, t) })
+          icon: Newspaper,
+          label: t("home.stats.blogPosts"),
+          value: blogPosts.length.toString(),
+          subtext: latestBlogPost?.updatedAt
+            ? t("home.stats.updated", { time: formatRelative(latestBlogPost.updatedAt, t) })
             : t("home.stats.noRecent"),
-          status: designs.length ? "healthy" : "warning",
+          status: blogPosts.length ? "healthy" : "warning",
         },
         {
           icon: Code2,

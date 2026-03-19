@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   Layers,
-  Palette,
+  Newspaper,
   Code2,
   FolderKanban,
 } from "lucide-react";
@@ -18,10 +18,10 @@ const cards = [
     gradient: "from-primary to-accent",
   },
   {
-    icon: Palette,
-    titleKey: "home.quick.design.title",
-    descriptionKey: "home.quick.design.description",
-    path: "/design",
+    icon: Newspaper,
+    titleKey: "home.quick.blog.title",
+    descriptionKey: "home.quick.blog.description",
+    path: "/blog",
     gradient: "from-accent to-primary",
   },
   {

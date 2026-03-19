@@ -30,7 +30,7 @@ const parseErrorMessage = async (response: Response): Promise<string> => {
 };
 
 export type SearchResult = {
-  type: "architecture" | "design" | "api" | "project";
+  type: "architecture" | "blog" | "api" | "project";
   key: string;
   title: string;
   summary: string | null;

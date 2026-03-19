@@ -8,6 +8,7 @@
     "gettingStarted": "Primeiros passos",
     "architecture": "Arquitetura",
     "design": "Design",
+    "blog": "Blog",
     "apis": "APIs",
     "projects": "Projetos",
     "plan": "Plano",
@@ -109,25 +110,32 @@
       "load": "Falha ao carregar dados iniciais"
     }
   },
-  "design": {
-    "sidebar": {
-      "title": "Docs de design",
-      "search": "Buscar designs",
-      "topicCount": "{{count}} topicos",
-      "loadingTopics": "Carregando topicos...",
-      "noTopics": "Nenhum topico encontrado."
+  "blog": {
+    "landing": {
+      "title": "Blog",
+      "postCount": "{{count}} posts",
+      "noPosts": "Nenhum post ainda.",
+      "noMatches": "Nenhum post corresponde aos filtros.",
+      "clearFilters": "Limpar filtros",
+      "search": "Buscar posts...",
+      "readMore": "Ler mais",
+      "featured": "Destaque",
+      "minRead": "{{count}} min de leitura"
     },
-    "empty": "Selecione um design para ver detalhes.",
-    "topic": {
-      "noDescription": "Sem descricao.",
-      "updated": "Atualizado {{date}}"
+    "filters": {
+      "all": "Todos",
+      "technical": "Tecnico",
+      "planning": "Planejamento"
     },
-    "docs": {
+    "reading": {
+      "back": "Voltar ao blog",
+      "loading": "Carregando post...",
+      "error": "Falha ao carregar post.",
       "noContent": "Sem conteudo."
     },
     "errors": {
-      "loadTopics": "Falha ao carregar topicos de design.",
-      "loadDetail": "Falha ao carregar detalhe do design."
+      "loadTopics": "Falha ao carregar posts do blog.",
+      "loadDetail": "Falha ao carregar post do blog."
     }
   },
   "architecture": {

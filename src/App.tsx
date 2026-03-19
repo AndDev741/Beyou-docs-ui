@@ -8,7 +8,7 @@ import Index from "./pages/Index";
 import Architecture from "./pages/Architecture";
 import APIs from "./pages/APIs";
 import GettingStarted from "./pages/GettingStarted";
-import Design from "./pages/Design";
+import Blog from "./pages/Blog";
 import Projects from "./pages/Projects";
 import SearchPage from "./pages/SearchPage";
 import Settings from "./pages/Settings";
@@ -27,7 +27,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/getting-started" element={<GettingStarted />} />
             <Route path="/architecture" element={<Architecture />} />
-            <Route path="/design" element={<Design />} />
+            <Route path="/blog" element={<Blog />} />
             <Route path="/apis" element={<APIs />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/search" element={<SearchPage />} />

@@ -5,7 +5,7 @@ import {
   Home,
   BookOpen,
   Layers,
-  Palette,
+  PenLine,
   Code2,
   FolderKanban,
   Search,
@@ -21,7 +21,7 @@ const navItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: BookOpen, label: "Getting Started", path: "/getting-started" },
   { icon: Layers, label: "Architecture", path: "/architecture" },
-  { icon: Palette, label: "Design", path: "/design" },
+  { icon: PenLine, label: "Blog", path: "/blog" },
   { icon: Code2, label: "APIs", path: "/apis" },
   { icon: FolderKanban, label: "Projects", path: "/projects" },
 ];
@@ -105,8 +105,8 @@ export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
               ? t("nav.gettingStarted")
               : item.path === "/architecture"
               ? t("nav.architecture")
-              : item.path === "/design"
-              ? t("nav.design")
+              : item.path === "/blog"
+              ? t("nav.blog")
               : item.path === "/apis"
               ? t("nav.apis")
               : item.path === "/projects"

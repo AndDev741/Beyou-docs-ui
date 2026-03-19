@@ -8,6 +8,7 @@
     "gettingStarted": "Getting Started",
     "architecture": "Architecture",
     "design": "Design",
+    "blog": "Blog",
     "apis": "APIs",
     "projects": "Projects",
     "plan": "Plan",
@@ -109,25 +110,32 @@
       "load": "Failed to load home data"
     }
   },
-  "design": {
-    "sidebar": {
-      "title": "Design Docs",
-      "search": "Search designs",
-      "topicCount": "{{count}} topics",
-      "loadingTopics": "Loading topics...",
-      "noTopics": "No topics match your search."
+  "blog": {
+    "landing": {
+      "title": "Blog",
+      "postCount": "{{count}} posts",
+      "noPosts": "No blog posts yet.",
+      "noMatches": "No posts match your filters.",
+      "clearFilters": "Clear filters",
+      "search": "Search posts...",
+      "readMore": "Read more",
+      "featured": "Featured",
+      "minRead": "{{count}} min read"
     },
-    "empty": "Select a design to view details.",
-    "topic": {
-      "noDescription": "No description yet.",
-      "updated": "Updated {{date}}"
+    "filters": {
+      "all": "All",
+      "technical": "Technical",
+      "planning": "Planning"
     },
-    "docs": {
+    "reading": {
+      "back": "Back to blog",
+      "loading": "Loading post...",
+      "error": "Failed to load post.",
       "noContent": "No content yet."
     },
     "errors": {
-      "loadTopics": "Failed to load design topics.",
-      "loadDetail": "Failed to load design detail."
+      "loadTopics": "Failed to load blog posts.",
+      "loadDetail": "Failed to load blog post."
     }
   },
   "architecture": {

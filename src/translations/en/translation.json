@@ -229,7 +229,14 @@
       "none": "No repositories",
       "title": "Repositories",
       "count": "{{count}} repositories",
-      "empty": "No API repositories found."
+      "empty": "No API repositories found.",
+      "search": "Search controllers..."
+    },
+    "groups": {
+      "domain": "Domain",
+      "documentation": "Documentation",
+      "auth": "Auth & User",
+      "other": "Other"
     },
     "header": {
       "title": "API Catalog",

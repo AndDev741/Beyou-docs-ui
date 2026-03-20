@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
-import { ChevronDown, Play, Copy, ChevronRight } from "lucide-react";
+import { ChevronDown, Play, Copy, ChevronRight, Search } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { cn } from "@/lib/utils";
 import {
@@ -11,6 +11,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import {
   fetchApiControllers,
@@ -32,6 +35,21 @@ const methodColors: Record<string, string> = {
   OPTIONS: "method-get",
 };
 
+const controllerGroups = [
+  {
+    label: "apis.groups.domain",
+    keys: ["category", "goal", "habit", "routine", "task", "schedule"],
+  },
+  {
+    label: "apis.groups.documentation",
+    keys: ["architecture-docs", "blog-docs", "project-docs", "api-docs", "docs-import"],
+  },
+  {
+    label: "apis.groups.auth",
+    keys: ["authentication", "user"],
+  },
+];
+
 export default function APIs() {
   const { t, i18n } = useTranslation();
   const locale = useMemo(
@@ -52,6 +70,7 @@ export default function APIs() {
 
   const [endpoints, setEndpoints] = useState<Endpoint[]>([]);
   const [selectedEndpoint, setSelectedEndpoint] = useState<Endpoint | null>(null);
+  const [dropdownSearch, setDropdownSearch] = useState("");
 
   const controllersLoadId = useRef(0);
   const detailLoadId = useRef(0);
@@ -160,6 +179,49 @@ export default function APIs() {
     setSelectedEndpoint(endpoint);
   }, []);
 
+  // Build grouped controller lists for the dropdown
+  const groupedControllers = useMemo(() => {
+    const searchTerm = dropdownSearch.trim().toLowerCase();
+
+    // If searching, return flat filtered results
+    if (searchTerm) {
+      return null; // signal to render flat search results
+    }
+
+    // Group controllers
+    const grouped: { label: string; items: ApiControllerListItem[] }[] = [];
+    const assignedKeys = new Set<string>();
+
+    for (const group of controllerGroups) {
+      const items = group.keys
+        .map((key) => controllers.find((c) => c.key === key))
+        .filter((c): c is ApiControllerListItem => c !== undefined);
+      if (items.length > 0) {
+        grouped.push({ label: group.label, items });
+        items.forEach((c) => assignedKeys.add(c.key));
+      }
+    }
+
+    // "Other" group for controllers that don't match any group
+    const other = controllers.filter((c) => !assignedKeys.has(c.key));
+    if (other.length > 0) {
+      grouped.push({ label: "apis.groups.other", items: other });
+    }
+
+    return grouped;
+  }, [controllers, dropdownSearch]);
+
+  const filteredControllers = useMemo(() => {
+    const searchTerm = dropdownSearch.trim().toLowerCase();
+    if (!searchTerm) return controllers;
+    return controllers.filter(
+      (c) =>
+        c.title.toLowerCase().includes(searchTerm) ||
+        (c.summary && c.summary.toLowerCase().includes(searchTerm)) ||
+        c.key.toLowerCase().includes(searchTerm),
+    );
+  }, [controllers, dropdownSearch]);
+
   // Determine request body schema
   const requestBodySchema = useMemo(() => {
     if (!selectedEndpoint) return null;
@@ -219,7 +281,7 @@ export default function APIs() {
             ) : controllersError ? (
               <div className="text-sm text-red-200 p-2">{controllersError}</div>
             ) : (
-              <DropdownMenu>
+              <DropdownMenu onOpenChange={(open) => { if (!open) setDropdownSearch(""); }}>
                 <DropdownMenuTrigger asChild>
                   <button className="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                     <div className="text-left">
@@ -233,21 +295,76 @@ export default function APIs() {
                     <ChevronDown className="w-4 h-4 text-muted-foreground" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-full md:w-72 bg-popover border-glass-border max-h-60 lg:max-h-[800px] overflow-y-auto">
-                  {controllers.map((controller) => (
-                    <DropdownMenuItem
-                      key={controller.key}
-                      onClick={() => handleSelectController(controller)}
-                      className="cursor-pointer"
-                    >
-                      <div>
-                        <p className="font-medium break-words whitespace-normal">{controller.title}</p>
-                        <p className="text-xs text-muted-foreground break-words whitespace-normal w-[80%] md:w-full">
-                          {controller.summary || t("apis.controller.noDescription")}
-                        </p>
+                <DropdownMenuContent align="start" className="w-full md:w-72 bg-popover border-glass-border max-h-72 lg:max-h-[600px] overflow-y-auto">
+                  {/* Search input */}
+                  <div className="px-2 py-2 border-b border-glass-border/30">
+                    <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-white/5">
+                      <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      <input
+                        type="text"
+                        value={dropdownSearch}
+                        onChange={(e) => setDropdownSearch(e.target.value)}
+                        onKeyDown={(e) => e.stopPropagation()}
+                        placeholder={t("apis.dropdown.search")}
+                        className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Grouped or filtered results */}
+                  {groupedControllers ? (
+                    // Grouped view (no search active)
+                    groupedControllers.map((group, groupIndex) => (
+                      <DropdownMenuGroup key={group.label}>
+                        {groupIndex > 0 && <DropdownMenuSeparator />}
+                        <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-1.5">
+                          {t(group.label)}
+                        </DropdownMenuLabel>
+                        {group.items.map((controller) => (
+                          <DropdownMenuItem
+                            key={controller.key}
+                            onClick={() => handleSelectController(controller)}
+                            className={cn(
+                              "cursor-pointer px-3 py-2",
+                              selectedController?.key === controller.key && "bg-white/10",
+                            )}
+                          >
+                            <div>
+                              <p className="font-medium break-words whitespace-normal text-sm">{controller.title}</p>
+                              <p className="text-xs text-muted-foreground break-words whitespace-normal w-[80%] md:w-full mt-0.5">
+                                {controller.summary || t("apis.controller.noDescription")}
+                              </p>
+                            </div>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuGroup>
+                    ))
+                  ) : (
+                    // Flat search results
+                    filteredControllers.length > 0 ? (
+                      filteredControllers.map((controller) => (
+                        <DropdownMenuItem
+                          key={controller.key}
+                          onClick={() => handleSelectController(controller)}
+                          className={cn(
+                            "cursor-pointer px-3 py-2",
+                            selectedController?.key === controller.key && "bg-white/10",
+                          )}
+                        >
+                          <div>
+                            <p className="font-medium break-words whitespace-normal text-sm">{controller.title}</p>
+                            <p className="text-xs text-muted-foreground break-words whitespace-normal w-[80%] md:w-full mt-0.5">
+                              {controller.summary || t("apis.controller.noDescription")}
+                            </p>
+                          </div>
+                        </DropdownMenuItem>
+                      ))
+                    ) : (
+                      <div className="px-3 py-4 text-sm text-muted-foreground text-center">
+                        {t("apis.dropdown.empty")}
                       </div>
-                    </DropdownMenuItem>
-                  ))}
+                    )
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}

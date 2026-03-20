@@ -229,7 +229,14 @@
       "none": "Sem repos",
       "title": "Repos",
       "count": "{{count}} repos",
-      "empty": "Nenhum repo de API encontrado."
+      "empty": "Nenhum repo de API encontrado.",
+      "search": "Buscar controladores..."
+    },
+    "groups": {
+      "domain": "Domínio",
+      "documentation": "Documentação",
+      "auth": "Auth & Usuário",
+      "other": "Outros"
     },
     "header": {
       "title": "Catalogo de APIs",

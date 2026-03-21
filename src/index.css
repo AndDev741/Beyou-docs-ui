@@ -50,7 +50,7 @@
     --glass: 0 0% 98%;
     --glass-border: 210 16% 88%;
 
-    --font-docs: "Source Serif 4", "Iowan Old Style", "Times New Roman", serif;
+    --font-docs: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
   }
 
   .dark {
@@ -212,6 +212,11 @@
     --tw-prose-pre-bg: hsl(var(--muted));
     --tw-prose-th-borders: hsl(var(--border));
     --tw-prose-td-borders: hsl(var(--border));
+  }
+
+  .docs-prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *))::before,
+  .docs-prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *))::after {
+    content: none;
   }
 }
 

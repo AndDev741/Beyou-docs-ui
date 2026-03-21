@@ -191,7 +191,7 @@ export default function Blog() {
             transition={{ duration: 0.25 }}
             className="min-h-[calc(100vh-64px)] overflow-auto"
           >
-            <div className="max-w-[680px] mx-auto px-4 md:px-6 py-10 md:py-14">
+            <div className="max-w-[820px] mx-auto px-4 md:px-6 py-10 md:py-14">
               {/* back button */}
               <button
                 type="button"

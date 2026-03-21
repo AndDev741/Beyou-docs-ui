@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { MarkdownContent } from "@/components/markdown/MarkdownContent";
+import { TocRail, extractToc } from "@/components/markdown/TocRail";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { parseTags } from "@/lib/projectApi";
@@ -69,6 +70,12 @@ export default function Blog() {
 
   const topicsLoadId = useRef(0);
   const detailLoadId = useRef(0);
+  const readingPanelRef = useRef<HTMLDivElement>(null);
+
+  const toc = useMemo(() => {
+    if (!detail?.docMarkdown) return [];
+    return extractToc(detail.docMarkdown);
+  }, [detail?.docMarkdown]);
 
   /* ── fetch topics ──────────────────────────────────────── */
   useEffect(() => {
@@ -168,6 +175,13 @@ export default function Blog() {
     [setSearchParams],
   );
 
+  const scrollToHeading = useCallback((id: string) => {
+    const root = readingPanelRef.current;
+    if (!root) return;
+    const el = root.querySelector(`#${CSS.escape(id)}`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
   const goBack = useCallback(() => {
     setSearchParams({}, { replace: false });
   }, [setSearchParams]);
@@ -189,7 +203,8 @@ export default function Blog() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="min-h-[calc(100vh-64px)] overflow-auto"
+            ref={readingPanelRef}
+            className="h-[calc(100vh-64px)] overflow-auto"
           >
             <div className="max-w-[820px] mx-auto px-4 md:px-6 py-10 md:py-14">
               {/* back button */}
@@ -299,6 +314,14 @@ export default function Blog() {
                 </>
               )}
             </div>
+
+            {toc.length > 2 && (
+              <TocRail
+                toc={toc}
+                scrollRoot={readingPanelRef}
+                onNavigate={scrollToHeading}
+              />
+            )}
           </motion.div>
         ) : (
           /* ═══════════════ LANDING VIEW ═══════════════ */

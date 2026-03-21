@@ -73,19 +73,68 @@ const LINE_W: Record<number, string> = {
 
 function TocRail({
   toc,
-  activeHeadingId,
+  scrollRoot,
   onNavigate,
 }: {
   toc: TocEntry[];
-  activeHeadingId: string | null;
+  scrollRoot: React.RefObject<HTMLDivElement>;
   onNavigate: (id: string) => void;
 }) {
   const [hovered, setHovered] = useState(false);
+  const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   /* keep the popover visible while the cursor is anywhere inside */
   const show = useCallback(() => setHovered(true), []);
   const hide = useCallback(() => setHovered(false), []);
+
+  /* track active heading via scroll on the detail panel */
+  useEffect(() => {
+    if (!toc.length || !scrollRoot.current) return;
+
+    const root = scrollRoot.current;
+    const headingIds = toc.map((e) => e.id);
+    let lastId = "";
+    let rafId = 0;
+
+    const computeActive = () => {
+      const scrollTop = root.scrollTop;
+      const offset = root.clientHeight * 0.15;
+      let current = headingIds[0];
+
+      for (const id of headingIds) {
+        const el = root.querySelector(`#${CSS.escape(id)}`);
+        if (!el) continue;
+        const top = (el as HTMLElement).offsetTop - root.offsetTop;
+        if (top <= scrollTop + offset) {
+          current = id;
+        } else {
+          break;
+        }
+      }
+
+      if (current && current !== lastId) {
+        lastId = current;
+        setActiveHeadingId(current);
+      }
+    };
+
+    const handleScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(computeActive);
+    };
+
+    const timeout = setTimeout(() => {
+      computeActive();
+      root.addEventListener("scroll", handleScroll, { passive: true });
+    }, 300);
+
+    return () => {
+      clearTimeout(timeout);
+      cancelAnimationFrame(rafId);
+      root.removeEventListener("scroll", handleScroll);
+    };
+  }, [toc, scrollRoot]);
 
   return (
     <div
@@ -187,7 +236,6 @@ export default function Architecture() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
-  const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
 
   const topicsLoadId = useRef(0);
   const detailLoadId = useRef(0);
@@ -302,38 +350,6 @@ export default function Architecture() {
     return extractToc(detail.docMarkdown);
   }, [detail?.docMarkdown]);
 
-  /* ── active heading observer ────────────────────────── */
-
-  useEffect(() => {
-    if (!toc.length || !detailPanelRef.current) return;
-
-    const root = detailPanelRef.current;
-    const headingIds = toc.map((e) => e.id);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveHeadingId(entry.target.id);
-            break;
-          }
-        }
-      },
-      { root, rootMargin: "-10% 0px -80% 0px", threshold: 0 },
-    );
-
-    const timeout = setTimeout(() => {
-      for (const id of headingIds) {
-        const el = root.querySelector(`#${CSS.escape(id)}`);
-        if (el) observer.observe(el);
-      }
-    }, 300);
-
-    return () => {
-      clearTimeout(timeout);
-      observer.disconnect();
-    };
-  }, [toc]);
 
   /* ── callbacks ────────────────────────────────────────── */
 
@@ -376,7 +392,7 @@ export default function Architecture() {
         <motion.aside
           initial={{ opacity: 0, x: -12 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full md:w-80 border-b md:border-b-0 md:border-r border-glass-border/30 glass-panel flex flex-col max-h-[50vh] md:max-h-none"
+          className="w-full md:w-80 border-b md:border-b-0 md:border-r border-glass-border/30 glass-panel flex flex-col max-h-[60vh] md:max-h-none"
         >
           <div className="p-6 border-b border-glass-border/30">
             <h1 className="text-lg font-semibold text-foreground">{t("architecture.sidebar.title")}</h1>
@@ -394,7 +410,7 @@ export default function Architecture() {
 
             {/* tag filter chips */}
             {allTags.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1.5">
+              <div className="mt-3 flex flex-wrap gap-1.5 max-h-24 overflow-auto">
                 {allTags.map((tag) => (
                   <button
                     key={tag}
@@ -593,7 +609,7 @@ export default function Architecture() {
           {toc.length > 2 && (
             <TocRail
               toc={toc}
-              activeHeadingId={activeHeadingId}
+              scrollRoot={detailPanelRef}
               onNavigate={scrollToHeading}
             />
           )}

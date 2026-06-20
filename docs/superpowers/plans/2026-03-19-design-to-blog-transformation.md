@@ -779,13 +779,13 @@ cd /home/gentek/andP/beyou/Beyou-backend-spring
 In another terminal:
 ```bash
 # Import blog posts from arch-design repo
-curl -X POST http://localhost:8099/docs/admin/import/blog
+curl -X POST http://localhost:8099/api/v1/docs/admin/import/blog
 
 # List blog posts
-curl http://localhost:8099/docs/blog/topics?locale=en
+curl http://localhost:8099/api/v1/docs/blog/topics?locale=en
 
 # Get single post
-curl http://localhost:8099/docs/blog/topics/building-auth-system?locale=en
+curl http://localhost:8099/api/v1/docs/blog/topics/building-auth-system?locale=en
 ```
 
 Verify responses include all new metadata fields.

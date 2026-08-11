@@ -3,6 +3,7 @@ import { Clock, GitBranch, FileCode, Box, Newspaper } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { useLocalizedPath } from "@/hooks/useLocale";
 
 export type ActivityItem = {
   type: "project" | "api" | "architecture" | "blog";
@@ -27,6 +28,7 @@ const typeConfig: Record<ActivityItem["type"], { icon: typeof Box; color: string
 
 export function RecentActivity({ items = [], loading = false, error = null }: RecentActivityProps) {
   const { t } = useTranslation();
+  const localized = useLocalizedPath();
   return (
     <section className="px-4 md:px-8 py-10 md:py-12">
       <div className="max-w-6xl mx-auto">
@@ -84,7 +86,7 @@ export function RecentActivity({ items = [], loading = false, error = null }: Re
 
             if (item.href) {
               return (
-                <Link key={`${item.type}-${item.title}-${index}`} to={item.href} className="block">
+                <Link key={`${item.type}-${item.title}-${index}`} to={localized(item.href)} className="block">
                   {row}
                 </Link>
               );

@@ -70,8 +70,11 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "Fira Code", "monospace"],
+        // "<name> Variable" is the family @fontsource-variable actually
+        // declares. Asking for plain "Inter" would download the woff2 files and
+        // then render in system-ui, because nothing declares that name.
+        sans: ["Inter Variable", "Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono Variable", "JetBrains Mono", "Fira Code", "monospace"],
       },
       keyframes: {
         "accordion-down": {

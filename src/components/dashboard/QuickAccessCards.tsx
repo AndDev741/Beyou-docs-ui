@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { useLocalizedPath } from "@/hooks/useLocale";
 
 const cards = [
   {
@@ -57,6 +58,7 @@ const item = {
 
 export function QuickAccessCards() {
   const { t } = useTranslation();
+  const localized = useLocalizedPath();
   return (
     <section className="px-4 md:px-8 py-10 md:py-12">
       <div className="max-w-6xl mx-auto">
@@ -72,7 +74,7 @@ export function QuickAccessCards() {
         >
           {cards.map((card) => (
             <motion.div key={card.path} variants={item}>
-              <Link to={card.path}>
+              <Link to={localized(card.path)}>
                 <motion.div
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}

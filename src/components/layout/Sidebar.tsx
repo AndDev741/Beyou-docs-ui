@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home,
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { useLocaleFreePath, useLocalizedPath } from "@/hooks/useLocale";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
@@ -39,8 +40,12 @@ interface SidebarProps {
 export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
   const isMobile = variant === "mobile";
   const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation();
   const { t } = useTranslation();
+  // Compared against the locale-free path so the active item stays highlighted
+  // in both languages -- location.pathname carries the /pt prefix and would
+  // never equal a nav item path.
+  const currentPath = useLocaleFreePath();
+  const localized = useLocalizedPath();
   const shouldCollapse = isMobile ? false : collapsed;
   const sidebarWidth = shouldCollapse ? 72 : 260;
   const sidebarClass = useMemo(
@@ -97,7 +102,7 @@ export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
       {/* Main Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive = currentPath === item.path;
           const label =
             item.path === "/"
               ? t("nav.home")
@@ -115,7 +120,7 @@ export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
           return (
             <NavLink
               key={item.path}
-              to={item.path}
+              to={localized(item.path)}
               onClick={onClose}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
@@ -162,12 +167,12 @@ export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
       {/* Bottom Navigation */}
       <div className="px-3 py-4 space-y-1 border-t border-glass-border/30">
         {bottomItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive = currentPath === item.path;
           const label = item.path === "/search" ? t("nav.search") : t("nav.settings");
           return (
             <NavLink
               key={item.path}
-              to={item.path}
+              to={localized(item.path)}
               onClick={onClose}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",

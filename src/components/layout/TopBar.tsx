@@ -9,7 +9,9 @@ import {
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { useLocale, useLocaleFreePath, useLocalizedPath } from "@/hooks/useLocale";
+import { localizedPath, rememberLocale, type SupportedLocale } from "@/lib/i18nRouting";
 
 interface TopBarProps {
   onOpenSidebar?: () => void;
@@ -17,26 +19,43 @@ interface TopBarProps {
 
 export function TopBar({ onOpenSidebar }: TopBarProps) {
   const { theme, setThemeByMode, availableThemes } = useTheme();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const locale = useLocale();
+  const currentPath = useLocaleFreePath();
+  const localized = useLocalizedPath();
+
+  // Switching language is a navigation, not a state change: the locale lives in
+  // the URL, so changing it any other way would leave the address bar claiming
+  // one language while the page renders another. Landing on the SAME page in
+  // the other language (rather than the home page) is also what the hreflang
+  // tags promise a search engine.
+  const switchLanguage = useCallback(
+    (next: SupportedLocale) => {
+      if (next === locale) return;
+      rememberLocale(next);
+      navigate(localizedPath(next, currentPath));
+    },
+    [currentPath, locale, navigate],
+  );
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "k") {
         event.preventDefault();
-        navigate("/search");
+        navigate(localized("/search"));
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [navigate]);
+  }, [localized, navigate]);
 
   const themeLabel = (mode: string) => t(`themes.${mode}`, { defaultValue: mode });
   const languageOptions = [
     { id: "en", label: "English", short: "EN" },
     { id: "pt", label: "Português", short: "PT" },
   ];
-  const resolvedLanguage = i18n.language?.toLowerCase().startsWith("pt") ? "pt" : "en";
+  const resolvedLanguage = locale;
   const activeLanguage = languageOptions.find((lang) => lang.id === resolvedLanguage) ?? languageOptions[0];
 
   return (
@@ -72,7 +91,7 @@ export function TopBar({ onOpenSidebar }: TopBarProps) {
               {languageOptions.map((lang) => (
                 <DropdownMenuItem
                   key={lang.id}
-                  onClick={() => i18n.changeLanguage(lang.id)}
+                  onClick={() => switchLanguage(lang.id as SupportedLocale)}
                   className="cursor-pointer flex items-center gap-2"
                 >
                   <span

@@ -595,7 +595,8 @@
   },
   "notFound": {
     "message": "Ops! Pagina nao encontrada",
-    "cta": "Voltar ao inicio"
+    "cta": "Voltar ao inicio",
+    "title": "Página não encontrada"
   },
   "settings": {
     "title": "Configuracoes",
@@ -626,5 +627,43 @@
     "Mocha": "Mocha",
     "Polar": "Polar",
     "Late Latte": "Latte Tarde"
+  },
+  "seo": {
+    "titleTemplate": "{{title}} | Beyou Docs",
+    "defaultDescription": "Como o Beyou, app de acompanhamento de hábitos, é construído: arquitetura do sistema, contratos de API, infraestrutura self-hosted e as decisões de engenharia por trás disso.",
+    "pages": {
+      "home": {
+        "title": "Engenharia Beyou - Arquitetura, APIs e Bastidores",
+        "description": "Como o app de hábitos Beyou é construído: arquitetura do sistema, contratos da API em Spring Boot, infraestrutura self-hosted e as decisões por trás de tudo."
+      },
+      "gettingStarted": {
+        "title": "Primeiros Passos",
+        "description": "Suba a stack do Beyou localmente: o backend em Spring Boot, o front-end em React e o ambiente de desenvolvimento em Docker, passo a passo."
+      },
+      "architecture": {
+        "title": "Arquitetura",
+        "description": "O design do sistema Beyou - modelo de domínio, fluxo de dados, fronteiras de segurança e os diagramas por trás de cada decisão."
+      },
+      "blog": {
+        "title": "Blog de Engenharia",
+        "description": "Relatos de quem constrói o Beyou: resolvendo N+1, adicionando camada de cache, rodando auditoria de segurança e tudo que se aprendeu no caminho."
+      },
+      "apis": {
+        "title": "Referência da API",
+        "description": "Referência endpoint a endpoint da API REST do Beyou, agrupada por controller, com o contrato OpenAPI de cada uma."
+      },
+      "projects": {
+        "title": "Projetos",
+        "description": "Os repositórios por trás do Beyou - backend, front-end web, documentação e o ambiente de produção self-hosted."
+      },
+      "search": {
+        "title": "Busca",
+        "description": "Busque na documentação de engenharia do Beyou."
+      },
+      "settings": {
+        "title": "Configurações",
+        "description": "Preferências de exibição do site de documentação do Beyou."
+      }
+    }
   }
 }

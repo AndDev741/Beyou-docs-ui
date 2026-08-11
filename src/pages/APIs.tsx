@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronDown, Play, Copy, ChevronRight, Search } from "lucide-react";
@@ -50,20 +50,23 @@ const controllerGroups = [
   },
 ];
 
+import { Seo } from "@/components/seo/Seo";
+import { useLocale, useLocalizedPath } from "@/hooks/useLocale";
+import { useCollectionSeo } from "@/hooks/useCollectionSeo";
+import { encodeTopicKey, findCollection } from "@/lib/seo/routes";
+
 export default function APIs() {
-  const { t, i18n } = useTranslation();
-  const locale = useMemo(
-    () => (i18n.language?.toLowerCase().startsWith("pt") ? "pt" : "en"),
-    [i18n.language],
-  );
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation();
+  const locale = useLocale();
+  const localized = useLocalizedPath();
+  const navigate = useNavigate();
+  const { controllerKey } = useParams<{ controllerKey: string }>();
   const { toast } = useToast();
 
   const [controllers, setControllers] = useState<ApiControllerListItem[]>([]);
   const [controllersLoading, setControllersLoading] = useState(true);
   const [controllersError, setControllersError] = useState<string | null>(null);
 
-  const [selectedController, setSelectedController] = useState<ApiControllerListItem | null>(null);
   const [detail, setDetail] = useState<ApiControllerDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState<string | null>(null);
@@ -72,19 +75,15 @@ export default function APIs() {
   const [selectedEndpoint, setSelectedEndpoint] = useState<Endpoint | null>(null);
   const [dropdownSearch, setDropdownSearch] = useState("");
 
+  // Derived from the URL rather than held in state: /apis/:controllerKey is now
+  // the only way a controller is selected.
+  const selectedController = useMemo(
+    () => controllers.find((controller) => controller.key === controllerKey) ?? null,
+    [controllerKey, controllers],
+  );
+
   const controllersLoadId = useRef(0);
   const detailLoadId = useRef(0);
-
-  const syncControllerParam = useCallback(
-    (key: string | null) => {
-      const next = new URLSearchParams();
-      if (key) {
-        next.set("controller", key);
-      }
-      setSearchParams(next, { replace: true });
-    },
-    [setSearchParams],
-  );
 
   // Load controllers
   useEffect(() => {
@@ -97,15 +96,6 @@ export default function APIs() {
       .then((data) => {
         if (controllersLoadId.current !== loadId) return;
         setControllers(data);
-
-        const controllerParam = searchParams.get("controller");
-        const preferred =
-          controllerParam && data.some((controller) => controller.key === controllerParam)
-            ? data.find((c) => c.key === controllerParam)!
-            : data[0] ?? null;
-
-        setSelectedController(preferred);
-        syncControllerParam(preferred?.key ?? null);
       })
       .catch((error) => {
         if (controllersLoadId.current !== loadId) return;
@@ -116,7 +106,7 @@ export default function APIs() {
           setControllersLoading(false);
         }
       });
-  }, [searchParams, locale, syncControllerParam, t]);
+  }, [locale, t]);
 
   // Load controller detail when selected
   useEffect(() => {
@@ -170,10 +160,12 @@ export default function APIs() {
       });
   }, [selectedController, locale, t]);
 
-  const handleSelectController = useCallback((controller: ApiControllerListItem) => {
-    setSelectedController(controller);
-    syncControllerParam(controller.key);
-  }, [syncControllerParam]);
+  const handleSelectController = useCallback(
+    (controller: ApiControllerListItem) => {
+      navigate(localized(`/apis/${encodeTopicKey(controller.key)}`));
+    },
+    [localized, navigate],
+  );
 
   const handleSelectEndpoint = useCallback((endpoint: Endpoint) => {
     setSelectedEndpoint(endpoint);
@@ -262,8 +254,17 @@ export default function APIs() {
     });
   };
 
+  /* ── seo ──────────────────────────────────────────────── */
+  const seo = useCollectionSeo({
+    collection: findCollection("apis")!,
+    detailKey: controllerKey ?? null,
+    detail,
+    listEntry: selectedController,
+  });
+
   return (
     <MainLayout>
+      <Seo {...seo} />
       <div className="flex flex-col md:flex-row md:h-[calc(100vh-64px)]">
         {/* Left Sidebar - Endpoints */}
         <motion.aside

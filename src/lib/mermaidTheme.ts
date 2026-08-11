@@ -136,7 +136,7 @@ export const buildMermaidConfig = (theme: ThemeType) => {
       secondaryTextColor: textOnBackground,
       noteTextColor: textOnBackground,
       actorTextColor: textOnBackground,
-      fontFamily: "Plus Jakarta Sans, Inter, system-ui, sans-serif",
+      fontFamily: "Plus Jakarta Sans Variable, Plus Jakarta Sans, Inter Variable, system-ui, sans-serif",
     },
     flowchart: {
       curve: "basis",

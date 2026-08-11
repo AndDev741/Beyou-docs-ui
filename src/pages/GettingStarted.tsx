@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef } from "react";
+import { Seo } from "@/components/seo/Seo";
+import { useStaticSeo } from "@/hooks/useStaticSeo";
 import { MainLayout } from "@/components/layout/MainLayout";
 import {
   Lightbulb,
@@ -253,8 +255,11 @@ export default function GettingStarted() {
     low: { color: "text-sky-400", bg: "bg-sky-500/15" },
   };
 
+  const seo = useStaticSeo("gettingStarted");
+
   return (
     <MainLayout>
+      <Seo {...seo} />
       {/* Section Navigation — sticky pill bar */}
       <div ref={navRef} className="sticky top-0 z-30 bg-background/80 backdrop-blur-lg border-b border-border/40">
         <div className="max-w-3xl mx-auto px-4 md:px-8">

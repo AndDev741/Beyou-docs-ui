@@ -4,6 +4,7 @@ import type { LucideIcon } from "lucide-react";
 import { MermaidBlock } from "@/components/markdown/MermaidBlock";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useLocalizedPath } from "@/hooks/useLocale";
 
 export type SystemStat = {
   icon: LucideIcon;
@@ -33,6 +34,7 @@ export function SystemOverview({
   error = null,
 }: SystemOverviewProps) {
   const { t } = useTranslation();
+  const localized = useLocalizedPath();
   return (
     <section className="px-4 md:px-8 py-10 md:py-12">
       <div className="max-w-6xl mx-auto">
@@ -113,7 +115,7 @@ export function SystemOverview({
               {t("home.overview.previewTitle")}
             </h3>
             <Link
-              to="/architecture"
+              to={localized("/architecture")}
               className="text-sm text-primary hover:text-primary/80 transition-colors"
             >
               {t("home.overview.previewLink")}

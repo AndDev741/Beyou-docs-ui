@@ -15,7 +15,12 @@ import {
   Code,
   Link,
 } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { Seo } from "@/components/seo/Seo";
+import { useLocale, useLocalizedPath } from "@/hooks/useLocale";
+import { useCollectionSeo } from "@/hooks/useCollectionSeo";
+import { encodeTopicKey, findCollection } from "@/lib/seo/routes";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,7 +43,6 @@ import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 import { MermaidBlock } from "@/components/markdown/MermaidBlock";
 import { useTranslation } from "react-i18next";
 import { fetchProjectTopics, fetchProjectTopicDetail, parseTags, type ProjectTopicListItem, type ProjectTopicDetail } from "@/lib/projectApi";
-import i18n from "@/translations/i18n";
 
 const statusColors: Record<string, string> = {
   active: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
@@ -51,17 +55,23 @@ type SortOption = "title" | "updated" | "order";
 
 export default function Projects() {
   const { t } = useTranslation();
-  const locale = useMemo(
-    () => (i18n.language?.toLowerCase().startsWith("pt") ? "pt" : "en"),
-    [i18n.language],
-  );
+  // Was read off the imported i18n singleton, whose `language` mutates without
+  // React ever hearing about it -- so the memo never recomputed and switching
+  // language left this page in the previous one.
+  const locale = useLocale();
+  const localized = useLocalizedPath();
+  const navigate = useNavigate();
+  // Project details used to open in a Dialog backed by local state, so no
+  // project had a URL of its own -- none of them could be linked to, shared or
+  // indexed. The dialog now mirrors /projects/:projectKey.
+  const { projectKey } = useParams<{ projectKey: string }>();
+  const selectedTopicKey = projectKey ?? null;
   const [searchQuery, setSearchQuery] = useState("");
   const [topics, setTopics] = useState<ProjectTopicListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("order");
-  const [selectedTopicKey, setSelectedTopicKey] = useState<string | null>(null);
   const [detail, setDetail] = useState<ProjectTopicDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const loadIdRef = useRef(0);
@@ -90,7 +100,7 @@ export default function Projects() {
         setLoading(false);
       }
     }
-  }, []);
+  }, [locale, t]);
 
   useEffect(() => {
     void loadTopics();
@@ -100,14 +110,13 @@ export default function Projects() {
     setDetailLoading(true);
     try {
       const data = await fetchProjectTopicDetail(key, locale);
-      console.log("DATA => ", data);
       setDetail(data);
     } catch (err) {
       console.error("Failed to load project detail", err);
     } finally {
       setDetailLoading(false);
     }
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     if (selectedTopicKey) {
@@ -154,8 +163,21 @@ export default function Projects() {
   const totalTopics = topics.length;
   const activeTopics = topics.filter(t => t.status === "ACTIVE").length;
 
+  const listEntry = useMemo(
+    () => topics.find((topic) => topic.key === selectedTopicKey) ?? null,
+    [selectedTopicKey, topics],
+  );
+
+  const seo = useCollectionSeo({
+    collection: findCollection("projects")!,
+    detailKey: selectedTopicKey,
+    detail,
+    listEntry,
+  });
+
   return (
     <MainLayout>
+      <Seo {...seo} />
       <div className="p-4 md:p-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -244,7 +266,7 @@ export default function Projects() {
                 key={topic.key}
                 topic={topic}
                 index={index}
-                onViewDetails={() => setSelectedTopicKey(topic.key)}
+                onViewDetails={() => navigate(localized(`/projects/${encodeTopicKey(topic.key)}`))}
               />
             ))}
           </div>
@@ -266,7 +288,7 @@ export default function Projects() {
       </div>
 
       {/* Detail Modal */}
-      <Dialog open={!!selectedTopicKey} onOpenChange={(open) => !open && setSelectedTopicKey(null)}>
+      <Dialog open={!!selectedTopicKey} onOpenChange={(open) => !open && navigate(localized("/projects"))}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           {detailLoading ? (
             <div className="p-8 text-center text-muted-foreground">
@@ -296,7 +318,7 @@ export default function Projects() {
                   )}
                   {detail.designTopicKey && (
                     <a
-                      href={`/blog?post=${detail.designTopicKey}`}
+                      href={localized(`/blog/${encodeTopicKey(detail.designTopicKey)}`)}
                       className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-sm transition-colors"
                     >
                       <Layers className="w-4 h-4" />
@@ -305,7 +327,7 @@ export default function Projects() {
                   )}
                   {detail.architectureTopicKey && (
                     <a
-                      href={`/architecture?topic=${detail.architectureTopicKey}`}
+                      href={localized(`/architecture/${encodeTopicKey(detail.architectureTopicKey)}`)}
                       className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-sm transition-colors"
                     >
                       <GitFork className="w-4 h-4" />

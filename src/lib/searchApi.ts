@@ -1,12 +1,4 @@
-const getBaseUrl = (): string => {
-  const envUrl = import.meta.env.VITE_BACKEND_URL as string | undefined;
-  const defaultBase =
-    import.meta.env.DEV || typeof window === "undefined"
-      ? "http://localhost:8099"
-      : window.location.origin;
-  const base = envUrl && envUrl.trim().length ? envUrl.trim() : defaultBase;
-  return base.endsWith("/") ? base.slice(0, -1) : base;
-};
+import { getApiBaseUrl } from "./apiBase";
 
 const resolveLocale = (locale?: string): string | undefined => {
   if (!locale) return undefined;
@@ -49,7 +41,7 @@ export async function fetchSearchResults(
   limit?: number,
   offset?: number
 ): Promise<SearchResult[]> {
-  const base = getBaseUrl();
+  const base = getApiBaseUrl();
   const url = new URL(`${base}/docs/search`);
 
   url.searchParams.set("q", q);

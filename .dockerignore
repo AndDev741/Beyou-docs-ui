@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.github
+*.log
+
+# Content directories. They are a copy of beyou-arch-design, which the backend
+# imports and the prerenderer reads back through the API -- nothing in the image
+# build reads them from disk, and they are large.
+api
+architecture
+blog
+projects
+docs

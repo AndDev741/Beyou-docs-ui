@@ -595,7 +595,8 @@
   },
   "notFound": {
     "message": "Oops! Page not found",
-    "cta": "Return to Home"
+    "cta": "Return to Home",
+    "title": "Page not found"
   },
   "settings": {
     "title": "Settings",
@@ -626,5 +627,43 @@
     "Mocha": "Mocha",
     "Polar": "Polar",
     "Late Latte": "Late Latte"
+  },
+  "seo": {
+    "titleTemplate": "{{title}} | Beyou Docs",
+    "defaultDescription": "How the Beyou habit-tracking app is built: system architecture, API contracts, self-hosted infrastructure and the engineering decisions behind them.",
+    "pages": {
+      "home": {
+        "title": "Beyou Engineering - Architecture, APIs & Build Notes",
+        "description": "How the Beyou habit-tracking app is built: system architecture, Spring Boot API contracts, self-hosted infrastructure and the decisions behind them."
+      },
+      "gettingStarted": {
+        "title": "Getting Started",
+        "description": "Run the Beyou stack locally: the Spring Boot backend, the React front end and the Docker development environment, step by step."
+      },
+      "architecture": {
+        "title": "Architecture",
+        "description": "System design of the Beyou app - domain model, data flow, security boundaries and the diagrams behind each decision."
+      },
+      "blog": {
+        "title": "Engineering Blog",
+        "description": "Write-ups from building Beyou: solving N+1 queries, adding a cache layer, running a security audit and everything learned along the way."
+      },
+      "apis": {
+        "title": "API Reference",
+        "description": "Endpoint-by-endpoint reference for the Beyou REST API, grouped by controller, with the OpenAPI contract for each one."
+      },
+      "projects": {
+        "title": "Projects",
+        "description": "The repositories behind Beyou - backend, web front end, documentation and the self-hosted production environment."
+      },
+      "search": {
+        "title": "Search",
+        "description": "Search the Beyou engineering documentation."
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "Display preferences for the Beyou documentation site."
+      }
+    }
   }
 }

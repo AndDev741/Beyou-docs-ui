@@ -11,6 +11,8 @@ import {
   Loader2,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Seo } from "@/components/seo/Seo";
+import { useStaticSeo } from "@/hooks/useStaticSeo";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Input } from "@/components/ui/input";
 import { fetchSearchResults, type SearchResult } from "@/lib/searchApi";
@@ -149,8 +151,11 @@ export default function SearchPage() {
     }
   };
 
+  const seo = useStaticSeo("search");
+
   return (
     <MainLayout>
+      <Seo {...seo} />
       <div className="p-4 md:p-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

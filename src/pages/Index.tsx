@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { Seo } from "@/components/seo/Seo";
+import { useStaticSeo } from "@/hooks/useStaticSeo";
+import { useLocale } from "@/hooks/useLocale";
 import { HeroSection } from "@/components/dashboard/HeroSection";
 import { QuickAccessCards } from "@/components/dashboard/QuickAccessCards";
 import { RecentActivity, type ActivityItem } from "@/components/dashboard/RecentActivity";
@@ -26,14 +29,11 @@ type ProjectsSnapshot = {
 };
 
 const Index = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const envProjectRepos = import.meta.env.VITE_PROJECT_REPOS as string | undefined;
   const envProjectOrg = import.meta.env.VITE_PROJECTS_ORG as string | undefined;
 
-  const locale = useMemo(
-    () => (i18n.language?.toLowerCase().startsWith("pt") ? "pt" : "en"),
-    [i18n.language],
-  );
+  const locale = useLocale();
 
   const projectRepos = useMemo(() => resolveProjectRepos(envProjectRepos), [envProjectRepos]);
   const projectOrg = useMemo(() => resolveProjectOrg(envProjectOrg), [envProjectOrg]);
@@ -257,6 +257,7 @@ const Index = () => {
     projectRepos.length,
     loadProjects,
     loadRandomPreview,
+    t,
   ]);
 
   useEffect(() => {
@@ -269,8 +270,11 @@ const Index = () => {
     void loadHomeData();
   }, [loadHomeData]);
 
+  const seo = useStaticSeo("home");
+
   return (
     <MainLayout>
+      <Seo {...seo} />
       <div className="fade-in">
         <HeroSection />
         <QuickAccessCards />

@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 import { ArrowRight, Layers, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useLocalizedPath } from "@/hooks/useLocale";
 
 export function HeroSection() {
   const { t } = useTranslation();
+  const localized = useLocalizedPath();
   return (
     <section className="relative py-14 md:py-16 px-4 md:px-8 overflow-hidden">
       {/* Background glow effects */}
@@ -42,7 +44,7 @@ export function HeroSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/getting-started">
+            <Link to={localized("/getting-started")}>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -52,7 +54,7 @@ export function HeroSection() {
                 <ArrowRight className="w-4 h-4" />
               </motion.button>
             </Link>
-            <Link to="/architecture">
+            <Link to={localized("/architecture")}>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}

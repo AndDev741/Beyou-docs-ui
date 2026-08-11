@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { useLocalizedPath } from "@/hooks/useLocale";
 
 const cards = [
   {
@@ -57,6 +58,7 @@ const item = {
 
 export function QuickAccessCards() {
   const { t } = useTranslation();
+  const localized = useLocalizedPath();
   return (
     <section className="px-4 md:px-8 py-10 md:py-12">
       <div className="max-w-6xl mx-auto">
@@ -72,7 +74,7 @@ export function QuickAccessCards() {
         >
           {cards.map((card) => (
             <motion.div key={card.path} variants={item}>
-              <Link to={card.path}>
+              <Link to={localized(card.path)}>
                 <motion.div
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
@@ -87,13 +89,6 @@ export function QuickAccessCards() {
                   >
                     <card.icon className="w-6 h-6 text-white" />
                   </div>
-
-                  {/* Badge */}
-                  {card.badge && (
-                    <span className="absolute top-4 right-4 px-2 py-1 text-xs font-medium bg-gradient-to-r from-primary to-accent text-white rounded-full">
-                      {card.badgeKey ? t(card.badgeKey) : card.badge}
-                    </span>
-                  )}
 
                   {/* Content */}
                   <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">

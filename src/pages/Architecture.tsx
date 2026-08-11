@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,10 @@ import {
   type ArchitectureTopicListItem,
 } from "@/lib/architectureApi";
 import { parseTags } from "@/lib/projectApi";
+import { Seo } from "@/components/seo/Seo";
+import { useLocale, useLocalizedPath } from "@/hooks/useLocale";
+import { useCollectionSeo } from "@/hooks/useCollectionSeo";
+import { encodeTopicKey, findCollection } from "@/lib/seo/routes";
 
 /* ── helpers ─────────────────────────────────────────────── */
 
@@ -36,19 +40,20 @@ const STATUS_BADGE: Record<string, string> = {
 /* ── main component ──────────────────────────────────────── */
 
 export default function Architecture() {
-  const { t, i18n } = useTranslation();
-  const locale = useMemo(
-    () => (i18n.language?.toLowerCase().startsWith("pt") ? "pt" : "en"),
-    [i18n.language],
-  );
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [initialTopicParam] = useState(() => searchParams.get("topic"));
+  const { t } = useTranslation();
+  const locale = useLocale();
+  const localized = useLocalizedPath();
+  const navigate = useNavigate();
+  // The URL owns the selection. It used to live in state and be mirrored into a
+  // query param, which meant the same topic was reachable as both /architecture
+  // and /architecture?topic=x.
+  const { topicKey } = useParams<{ topicKey: string }>();
+  const selectedTopicKey = topicKey ?? null;
 
   const [topics, setTopics] = useState<ArchitectureTopicListItem[]>([]);
   const [topicsLoading, setTopicsLoading] = useState(true);
   const [topicsError, setTopicsError] = useState<string | null>(null);
 
-  const [selectedTopicKey, setSelectedTopicKey] = useState<string | null>(initialTopicParam);
   const [detail, setDetail] = useState<ArchitectureTopicDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState<string | null>(null);
@@ -60,16 +65,6 @@ export default function Architecture() {
   const detailLoadId = useRef(0);
   const detailPanelRef = useRef<HTMLDivElement>(null);
 
-  // Sync URL param whenever selected topic changes
-  useEffect(() => {
-    const currentParam = searchParams.get("topic");
-    if (selectedTopicKey !== currentParam) {
-      const next = new URLSearchParams();
-      if (selectedTopicKey) next.set("topic", selectedTopicKey);
-      setSearchParams(next, { replace: true });
-    }
-  }, [selectedTopicKey]); // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => {
     const loadId = topicsLoadId.current + 1;
     topicsLoadId.current = loadId;
@@ -80,16 +75,6 @@ export default function Architecture() {
       .then((data) => {
         if (topicsLoadId.current !== loadId) return;
         setTopics(data);
-
-        // Only set a default topic on first load — never overwrite user selection
-        setSelectedTopicKey((current) => {
-          if (current && data.some((topic) => topic.key === current)) return current;
-          const preferred =
-            initialTopicParam && data.some((topic) => topic.key === initialTopicParam)
-              ? initialTopicParam
-              : data[0]?.key ?? null;
-          return preferred;
-        });
       })
       .catch((error) => {
         if (topicsLoadId.current !== loadId) return;
@@ -100,7 +85,7 @@ export default function Architecture() {
           setTopicsLoading(false);
         }
       });
-  }, [initialTopicParam, locale, t]);
+  }, [locale, t]);
 
   useEffect(() => {
     if (!selectedTopicKey) {
@@ -174,10 +159,10 @@ export default function Architecture() {
 
   const handleSelectTopic = useCallback(
     (key: string) => {
-      setSelectedTopicKey(key);
+      navigate(localized(`/architecture/${encodeTopicKey(key)}`));
       detailPanelRef.current?.scrollTo({ top: 0 });
     },
-    [],
+    [localized, navigate],
   );
 
   const toggleTag = useCallback((tag: string) => {
@@ -198,14 +183,27 @@ export default function Architecture() {
     const el = detailPanelRef.current?.querySelector(`#${CSS.escape(id)}`);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
-      setActiveHeadingId(id);
     }
   }, []);
+
+  /* ── seo ──────────────────────────────────────────────── */
+  const listEntry = useMemo(
+    () => topics.find((topic) => topic.key === selectedTopicKey) ?? null,
+    [selectedTopicKey, topics],
+  );
+
+  const seo = useCollectionSeo({
+    collection: findCollection("architecture")!,
+    detailKey: selectedTopicKey,
+    detail,
+    listEntry,
+  });
 
   /* ── render ───────────────────────────────────────────── */
 
   return (
     <MainLayout>
+      <Seo {...seo} />
       <div className="flex flex-col md:flex-row md:h-[calc(100vh-64px)]">
         {/* ── sidebar ───────────────────────────────────── */}
         <motion.aside

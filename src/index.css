@@ -50,7 +50,7 @@
     --glass: 0 0% 98%;
     --glass-border: 210 16% 88%;
 
-    --font-docs: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+    --font-docs: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", "Inter Variable", system-ui, sans-serif;
   }
 
   .dark {
@@ -327,5 +327,88 @@
     50% {
       box-shadow: 0 0 32px hsl(var(--glow-purple) / 0.35);
     }
+  }
+}
+
+/*
+ * Markup written by scripts/prerender.mts into #root at build time: the real
+ * article text, so that crawlers which never execute JavaScript still get the
+ * page. React clears #root on its first render, so this is only ever visible
+ * before the bundle boots.
+ *
+ * Deliberately NOT display:none or visibility:hidden. Search engines discount
+ * content hidden with CSS, and hiding text that only a crawler is meant to read
+ * is the definition of cloaking. It is styled as a plain, readable article
+ * instead — which also makes it a useful first paint rather than a flash of
+ * unstyled text.
+ */
+@layer components {
+  .prerender-shell {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    color: hsl(var(--foreground));
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .prerender-shell h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .prerender-shell h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 2rem 0 0.75rem;
+  }
+
+  .prerender-shell h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  .prerender-shell p,
+  .prerender-shell ul,
+  .prerender-shell ol,
+  .prerender-shell pre {
+    margin-bottom: 1rem;
+  }
+
+  .prerender-shell ul,
+  .prerender-shell ol {
+    padding-left: 1.5rem;
+    list-style: disc;
+  }
+
+  .prerender-shell a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+  }
+
+  .prerender-shell nav[aria-label="Breadcrumb"] {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    margin-bottom: 1.5rem;
+  }
+
+  .prerender-shell pre {
+    overflow-x: auto;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: hsl(var(--muted) / 0.35);
+    font-size: 0.875rem;
+  }
+
+  .prerender-shell code {
+    font-family: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  .prerender-shell img {
+    max-width: 100%;
+    height: auto;
   }
 }

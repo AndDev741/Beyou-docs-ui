@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
@@ -9,6 +9,10 @@ import { TocRail, extractToc } from "@/components/markdown/TocRail";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { parseTags } from "@/lib/projectApi";
+import { Seo } from "@/components/seo/Seo";
+import { useLocale, useLocalizedPath } from "@/hooks/useLocale";
+import { useCollectionSeo } from "@/hooks/useCollectionSeo";
+import { encodeTopicKey, findCollection } from "@/lib/seo/routes";
 import {
   fetchBlogTopics,
   fetchBlogTopicDetail,
@@ -41,18 +45,17 @@ const containerVariants = {
 const cardVariants = {
   hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
-};
+} as const;
 
 /* ── component ───────────────────────────────────────────── */
 
 export default function Blog() {
-  const { t, i18n } = useTranslation();
-  const locale = useMemo(
-    () => (i18n.language?.toLowerCase().startsWith("pt") ? "pt" : "en"),
-    [i18n.language],
-  );
-  const [searchParams, setSearchParams] = useSearchParams();
-  const postKey = searchParams.get("post");
+  const { t } = useTranslation();
+  const locale = useLocale();
+  const localized = useLocalizedPath();
+  const navigate = useNavigate();
+  // The route param IS the view switch: /blog lists, /blog/:postKey reads.
+  const { postKey } = useParams<{ postKey: string }>();
 
   /* ── topics state ──────────────────────────────────────── */
   const [topics, setTopics] = useState<BlogTopicListItem[]>([]);
@@ -168,11 +171,9 @@ export default function Blog() {
   /* ── callbacks ─────────────────────────────────────────── */
   const openPost = useCallback(
     (key: string) => {
-      const next = new URLSearchParams();
-      next.set("post", key);
-      setSearchParams(next, { replace: false });
+      navigate(localized(`/blog/${encodeTopicKey(key)}`));
     },
-    [setSearchParams],
+    [localized, navigate],
   );
 
   const scrollToHeading = useCallback((id: string) => {
@@ -183,17 +184,31 @@ export default function Blog() {
   }, []);
 
   const goBack = useCallback(() => {
-    setSearchParams({}, { replace: false });
-  }, [setSearchParams]);
+    navigate(localized("/blog"));
+  }, [localized, navigate]);
 
   const clearFilters = useCallback(() => {
     setCategoryFilter("all");
     setSearchQuery("");
   }, []);
 
+  /* ── seo ───────────────────────────────────────────────── */
+  const listEntry = useMemo(
+    () => topics.find((topic) => topic.key === postKey) ?? null,
+    [postKey, topics],
+  );
+
+  const seo = useCollectionSeo({
+    collection: findCollection("blog")!,
+    detailKey: postKey ?? null,
+    detail,
+    listEntry,
+  });
+
   /* ── render ────────────────────────────────────────────── */
   return (
     <MainLayout>
+      <Seo {...seo} />
       <AnimatePresence mode="wait">
         {postKey ? (
           /* ═══════════════ READING VIEW ═══════════════ */

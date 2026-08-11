@@ -1,15 +1,23 @@
 import { motion } from "framer-motion";
 import { Palette, Settings as SettingsIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Seo } from "@/components/seo/Seo";
+import { useStaticSeo } from "@/hooks/useStaticSeo";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context/ThemeContext";
+import { useLocale, useLocaleFreePath } from "@/hooks/useLocale";
+import { localizedPath, rememberLocale, type SupportedLocale } from "@/lib/i18nRouting";
+import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
   const { t } = useTranslation();
 
+  const seo = useStaticSeo("settings");
+
   return (
     <MainLayout>
+      <Seo {...seo} />
       <div className="p-4 md:p-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -41,7 +49,19 @@ export default function Settings() {
 }
 
 function AppearanceSettings() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const locale = useLocale();
+  const currentPath = useLocaleFreePath();
+
+  // Same reasoning as the TopBar switcher: the locale is part of the URL, so
+  // changing language means navigating, and it lands on the page you were
+  // already reading rather than sending you home.
+  const switchLanguage = (next: SupportedLocale) => {
+    if (next === locale) return;
+    rememberLocale(next);
+    navigate(localizedPath(next, currentPath));
+  };
   const { theme, setThemeByMode, availableThemes } = useTheme();
   const themeLabel = (mode: string) => t(`themes.${mode}`, { defaultValue: mode });
 
@@ -95,10 +115,10 @@ function AppearanceSettings() {
           ].map((lang) => (
             <button
               key={lang.id}
-              onClick={() => i18n.changeLanguage(lang.id)}
+              onClick={() => switchLanguage(lang.id as SupportedLocale)}
               className={cn(
                 "px-4 py-2 rounded-lg border transition-all",
-                i18n.language === lang.id
+                locale === lang.id
                   ? "border-primary bg-primary/10"
                   : "border-glass-border/30 hover:border-glass-border",
               )}

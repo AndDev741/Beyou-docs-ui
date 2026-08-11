@@ -137,7 +137,11 @@ describe('openapi-resolver', () => {
   });
 
   it('resolves $ref in real user spec', () => {
-    const yamlPath = path.join(__dirname, '../../../../beyou-arch-design/api/user/openapi.yaml');
+    // This repo's own copy, not a sibling checkout. The path used to reach up
+    // four levels into ../../../../beyou-arch-design, so the test only passed on
+    // a machine that happened to have that repo cloned next to this one -- it
+    // could never pass in CI.
+    const yamlPath = path.join(__dirname, '../../../api/user/openapi.yaml');
     const yamlContent = fs.readFileSync(yamlPath, 'utf8');
     const spec = parse(yamlContent);
     const deref = dereferenceSpec(spec);

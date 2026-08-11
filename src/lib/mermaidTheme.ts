@@ -1,3 +1,4 @@
+import type { MermaidConfig } from "mermaid";
 import type { ThemeType } from "@/components/utils/listOfThemes";
 import { defaultDark, lateNight, sunsetTheme } from "@/components/utils/listOfThemes";
 
@@ -101,7 +102,7 @@ export const resolveMermaidTextColors = (theme: ThemeType) => {
   };
 };
 
-export const buildMermaidConfig = (theme: ThemeType) => {
+export const buildMermaidConfig = (theme: ThemeType): MermaidConfig => {
   const isDark = isDarkTheme(theme.background);
   const background = toHslCss(theme.background);
   const primary = toHslCss(theme.primary);

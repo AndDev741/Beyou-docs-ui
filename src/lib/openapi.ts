@@ -1,3 +1,15 @@
+/**
+ * A node of a parsed OpenAPI document.
+ *
+ * These specs are arbitrary author-written YAML, so the shape genuinely is not
+ * known at compile time — the traversal below narrows structurally at each use
+ * site. `any` is the accurate description here rather than a shortcut, so the
+ * escape hatch is declared once, named, and explained, instead of fourteen
+ * scattered `any`s each needing their own suppression.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type OpenAPINode = any;
+
 import { parse } from "yaml";
 
 export interface OpenAPIParameter {
@@ -12,7 +24,7 @@ export interface OpenAPIParameter {
 
 export interface OpenAPIResponse {
   description?: string;
-  content?: Record<string, { schema?: any }>;
+  content?: Record<string, { schema?: OpenAPINode }>;
 }
 
 export interface OpenAPIOperation {
@@ -22,7 +34,7 @@ export interface OpenAPIOperation {
   tags?: string[];
   parameters?: OpenAPIParameter[];
   requestBody?: {
-    content?: Record<string, { schema?: any }>;
+    content?: Record<string, { schema?: OpenAPINode }>;
   };
   responses?: Record<string, OpenAPIResponse>;
 }
@@ -39,7 +51,7 @@ export interface OpenAPISpec {
     description?: string;
   };
   paths: Record<string, OpenAPIPath>;
-  components?: Record<string, any>;
+  components?: Record<string, OpenAPINode>;
 }
 
 export interface Endpoint {

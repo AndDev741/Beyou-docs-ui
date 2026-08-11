@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   verify:
-    name: Lint & Build
+    name: Verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -41,18 +41,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Reported, not enforced. `npm run lint` currently exits non-zero on main
-      # with 17 pre-existing errors -- mostly no-explicit-any in the OpenAPI
-      # helpers, plus a require() in tailwind.config.ts. Gating on it would mean
-      # a pipeline that is red from its first run, which teaches everyone to
-      # ignore it. Clear those and this should become a hard gate.
-      #
-      # `npm test` is left out for the same reason and is worse: four test files
-      # import @/context/RoleContext, which no longer exists, and one reads a
-      # sibling checkout of beyou-arch-design off the filesystem.
+      # All three are hard gates. They only became gateable once the template
+      # leftovers were removed -- lint used to exit non-zero with 17 errors,
+      # tsc with 15, and four test files imported a RoleContext that no longer
+      # existed. A pipeline that is red from its first run teaches everyone to
+      # ignore it, so nothing here is allowed to fail softly.
       - name: Lint
         run: npm run lint
-        continue-on-error: true
+
+      - name: Typecheck
+        run: npx tsc -p tsconfig.app.json --noEmit
+
+      - name: Test
+        run: npm test
 
       # `build:spa`, not `build`: this job only needs to prove the bundle
       # compiles. The full build also prerenders, which spends about three

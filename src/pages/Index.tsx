@@ -257,6 +257,7 @@ const Index = () => {
     projectRepos.length,
     loadProjects,
     loadRandomPreview,
+    t,
   ]);
 
   useEffect(() => {

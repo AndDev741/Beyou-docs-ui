@@ -134,7 +134,7 @@ export function parseRepoList(value?: string): RepoConfig[] | null {
         ref: ref?.trim() || undefined,
       } satisfies RepoConfig;
     })
-    .filter((repo): repo is RepoConfig => Boolean(repo));
+    .filter((repo): repo is NonNullable<typeof repo> => repo !== null);
 
   return repos.length ? repos : null;
 }

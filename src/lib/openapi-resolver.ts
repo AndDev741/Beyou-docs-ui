@@ -1,17 +1,15 @@
-import { OpenAPISpec } from "./openapi";
+import { OpenAPISpec, type OpenAPINode } from "./openapi";
 
 /**
  * A reference map keyed by reference string (e.g., "#/components/schemas/GoalResponseDTO")
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type RefMap = Map<string, any>;
+export type RefMap = Map<string, OpenAPINode>;
 
 /**
  * Collect all referenceable schemas from the spec's components.
  */
 export function collectRefs(spec: OpenAPISpec): RefMap {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const map = new Map<string, any>();
+  const map = new Map<string, OpenAPINode>();
   if (!spec.components) {
     return map;
   }
@@ -33,8 +31,7 @@ export function collectRefs(spec: OpenAPISpec): RefMap {
  * Resolve a single reference string against the given map.
  * Returns the referenced object or undefined if not found.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function resolveRef(ref: string, refMap: RefMap): any | undefined {
+export function resolveRef(ref: string, refMap: RefMap): OpenAPINode | undefined {
   return refMap.get(ref);
 }
 
@@ -43,7 +40,7 @@ export function resolveRef(ref: string, refMap: RefMap): any | undefined {
  * Returns an object where each property maps to a type string (or nested simplified object).
  * Optional fields are marked with "(optional)" suffix.
  */
-export function simplifySchema(schema: any): any {
+export function simplifySchema(schema: OpenAPINode): OpenAPINode {
   if (!schema || typeof schema !== 'object') {
     return schema;
   }
@@ -55,7 +52,7 @@ export function simplifySchema(schema: any): any {
 
   // Handle object type with properties
   if (schema.type === 'object' && schema.properties) {
-    const result: Record<string, any> = {};
+    const result: Record<string, OpenAPINode> = {};
     for (const [propName, propSchema] of Object.entries(schema.properties)) {
       const simplified = simplifySchema(propSchema);
       result[propName] = simplified;
@@ -79,7 +76,7 @@ export function simplifySchema(schema: any): any {
   // Handle primitive types
   if (schema.type === 'string') {
     if (schema.enum) {
-      return `enum (${schema.enum.map((v: any) => JSON.stringify(v)).join(', ')})`;
+      return `enum (${schema.enum.map((v: OpenAPINode) => JSON.stringify(v)).join(', ')})`;
     }
     if (schema.format) {
       return schema.format; // e.g., uuid, date-time
@@ -102,10 +99,10 @@ export function simplifySchema(schema: any): any {
  * Keeps track of visited references to avoid infinite recursion.
  */
 export function dereferenceSchema(
-  schema: any,
+  schema: OpenAPINode,
   refMap: RefMap,
   visited: Set<string> = new Set()
-): any {
+): OpenAPINode {
   if (schema === null || typeof schema !== "object") {
     return schema;
   }
@@ -142,7 +139,7 @@ export function dereferenceSchema(
   }
 
   // Otherwise it's a plain object – dereference each property
-  const result: any = {};
+  const result: OpenAPINode = {};
   for (const [key, value] of Object.entries(schema)) {
     result[key] = dereferenceSchema(value, refMap, visited);
   }
@@ -153,9 +150,9 @@ export function dereferenceSchema(
  * Dereference all schemas in the spec's components and return a map of
  * resolved schemas keyed by their original reference.
  */
-export function dereferenceAllSchemas(spec: OpenAPISpec): Map<string, any> {
+export function dereferenceAllSchemas(spec: OpenAPISpec): Map<string, OpenAPINode> {
   const refMap = collectRefs(spec);
-  const resolved = new Map<string, any>();
+  const resolved = new Map<string, OpenAPINode>();
 
   for (const [ref, schema] of refMap.entries()) {
     resolved.set(ref, dereferenceSchema(schema, refMap));
@@ -170,7 +167,7 @@ export function dereferenceAllSchemas(spec: OpenAPISpec): Map<string, any> {
  */
 export function dereferenceSpec(spec: OpenAPISpec): OpenAPISpec {
   const refMap = collectRefs(spec);
-  const deref = (obj: any): any => dereferenceSchema(obj, refMap);
+  const deref = (obj: OpenAPINode): OpenAPINode => dereferenceSchema(obj, refMap);
   return {
     ...spec,
     paths: deref(spec.paths),

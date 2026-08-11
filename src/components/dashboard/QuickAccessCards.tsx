@@ -90,13 +90,6 @@ export function QuickAccessCards() {
                     <card.icon className="w-6 h-6 text-white" />
                   </div>
 
-                  {/* Badge */}
-                  {card.badge && (
-                    <span className="absolute top-4 right-4 px-2 py-1 text-xs font-medium bg-gradient-to-r from-primary to-accent text-white rounded-full">
-                      {card.badgeKey ? t(card.badgeKey) : card.badge}
-                    </span>
-                  )}
-
                   {/* Content */}
                   <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
                     {t(card.titleKey)}

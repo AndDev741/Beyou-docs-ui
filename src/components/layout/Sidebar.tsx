@@ -154,11 +154,6 @@ export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
                   </motion.span>
                 )}
               </AnimatePresence>
-              {item.badge && !shouldCollapse && (
-                <span className="ml-auto px-2 py-0.5 text-xs font-medium bg-gradient-to-r from-primary to-accent text-white rounded-full relative z-10">
-                  {item.badge}
-                </span>
-              )}
             </NavLink>
           );
         })}

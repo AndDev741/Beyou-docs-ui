@@ -179,8 +179,38 @@ async function fetchJson<T>(path: string, locale: SupportedLocale): Promise<T> {
       continue;
     }
 
-    throw new Error(`${response.status} ${response.statusText} for ${url}`);
+    throw new Error(describeFailure(response, url));
   }
+}
+
+/**
+ * Failures here stop a release, so the message has to point at the actual cause.
+ *
+ * The docs endpoints are permitAll in SecurityConfig, so the backend has no path
+ * that answers a plain GET with 401/403. When one shows up it came from the edge
+ * in front of the API, not the application -- Cloudflare's bot protection blocks
+ * datacenter IPs by default, and CI runners are datacenter IPs. A bare
+ * "403 Forbidden" sent the first investigation of this at the backend, which had
+ * never even seen the request.
+ */
+function describeFailure(response: Response, url: URL): string {
+  const base = `${response.status} ${response.statusText || "(no status text)"} for ${url}`;
+
+  if (response.status !== 401 && response.status !== 403) return base;
+
+  const servedByEdge = (response.headers.get("server") ?? "").toLowerCase().includes("cloudflare");
+
+  return [
+    base,
+    servedByEdge ? "  Served by Cloudflare, so the request never reached the backend." : "",
+    "  These endpoints are permitAll -- the backend does not reject anonymous GETs.",
+    "  A 401/403 here means the edge blocked this client, most likely bot",
+    "  protection refusing a datacenter IP such as a CI runner. Allow",
+    "  /api/v1/docs/* at the edge, or point PRERENDER_API_URL at an API reachable",
+    "  without passing through it.",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 /* ── page template ───────────────────────────────────────── */

@@ -179,8 +179,54 @@ async function fetchJson<T>(path: string, locale: SupportedLocale): Promise<T> {
       continue;
     }
 
-    throw new Error(`${response.status} ${response.statusText} for ${url}`);
+    throw new Error(await describeFailure(response, url));
   }
+}
+
+/**
+ * Failures here stop a release, so the message has to point at the actual cause.
+ *
+ * The docs endpoints are permitAll in SecurityConfig, so the backend has no path
+ * that answers a plain GET with 401/403. When one shows up it came from the edge
+ * in front of the API, not the application -- Cloudflare's bot protection blocks
+ * datacenter IPs by default, and CI runners are datacenter IPs. A bare
+ * "403 Forbidden" sent the first investigation of this at the backend, which had
+ * never even seen the request.
+ */
+async function describeFailure(response: Response, url: URL): Promise<string> {
+  const base = `${response.status} ${response.statusText || "(no status text)"} for ${url}`;
+
+  if (response.status !== 401 && response.status !== 403) return base;
+
+  // Which Cloudflare mechanism blocked this is the one thing that decides the
+  // fix, and it is only in the response body: its block page carries an error
+  // code (1020 access denied by a rule, 1015 rate limited, 1010 browser
+  // signature) plus a Ray ID that can be looked up in the dashboard. `server:
+  // cloudflare` is on every response through the zone, successful ones included,
+  // so it identifies nothing on its own.
+  const rayId = response.headers.get("cf-ray") ?? "(none)";
+  const body = await response.text().catch(() => "");
+  const errorCode = body.match(/Error\s*(\d{4})/i)?.[1];
+  const snippet = body
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 300);
+
+  return [
+    base,
+    `  cf-ray: ${rayId}`,
+    errorCode ? `  Cloudflare error ${errorCode}` : "",
+    "  These endpoints are permitAll -- the backend does not reject anonymous",
+    "  GETs, so a 401/403 was produced in front of it. The same URL answers 200",
+    "  from other clients, so this is about who is asking, not what is asked:",
+    "  bot protection scoring a CI runner's datacenter IP is the usual cause.",
+    "  Fix at the edge, or point PRERENDER_API_URL at an API that does not sit",
+    "  behind it.",
+    snippet ? `  body: ${snippet}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 /* ── page template ───────────────────────────────────────── */

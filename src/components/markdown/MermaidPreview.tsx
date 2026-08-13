@@ -18,8 +18,9 @@ export function MermaidPreview({
   interactive = false,
   showControls = false,
 }: MermaidPreviewProps) {
-  const { theme } = useTheme();
-  const { textOnBackground, textOnPrimary, edgeLabelBackground } = resolveMermaidTextColors(theme);
+  const { resolvedBase } = useTheme();
+  const { textOnBackground, textOnPrimary, edgeLabelBackground } =
+    resolveMermaidTextColors(resolvedBase);
   const [svg, setSvg] = useState<string>("");
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -28,8 +29,8 @@ export function MermaidPreview({
   const panStartRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    mermaid.initialize(buildMermaidConfig(theme));
-  }, [theme]);
+    mermaid.initialize(buildMermaidConfig(resolvedBase));
+  }, [resolvedBase]);
 
   useEffect(() => {
     let cancelled = false;
@@ -54,7 +55,7 @@ export function MermaidPreview({
     return () => {
       cancelled = true;
     };
-  }, [code, theme]);
+  }, [code, resolvedBase]);
 
   useEffect(() => {
     setZoom(1);

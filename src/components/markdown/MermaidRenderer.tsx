@@ -9,13 +9,14 @@ interface MermaidRendererProps {
 }
 
 export function MermaidRenderer({ chart, className = "" }: MermaidRendererProps) {
-  const { theme } = useTheme();
+  const { resolvedBase } = useTheme();
   const [svg, setSvg] = useState<string>("");
-  const { textOnBackground, textOnPrimary, edgeLabelBackground } = resolveMermaidTextColors(theme);
+  const { textOnBackground, textOnPrimary, edgeLabelBackground } =
+    resolveMermaidTextColors(resolvedBase);
 
   useEffect(() => {
-    mermaid.initialize(buildMermaidConfig(theme));
-  }, [theme]);
+    mermaid.initialize(buildMermaidConfig(resolvedBase));
+  }, [resolvedBase]);
 
   useEffect(() => {
     const renderChart = async () => {
@@ -36,7 +37,7 @@ export function MermaidRenderer({ chart, className = "" }: MermaidRendererProps)
     };
 
     renderChart();
-  }, [chart, theme]);
+  }, [chart, resolvedBase]);
 
   if (!svg) {
     return null;

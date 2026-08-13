@@ -74,7 +74,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // this effect rewrites e.g. "Cyberpunk" as "dark".
   useEffect(() => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, mode);
+      if (window.localStorage.getItem(STORAGE_KEY) !== mode) {
+        window.localStorage.setItem(STORAGE_KEY, mode);
+      }
     } catch {
       /* storage blocked — the mode still applies in-session */
     }

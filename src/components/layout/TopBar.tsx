@@ -1,12 +1,15 @@
 import { motion } from "framer-motion";
-import { Command, Globe, Menu, Monitor, Moon, Palette, Sun } from "lucide-react";
+import { Command, Globe, Menu, Palette } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme, type ThemeMode } from "@/context/ThemeContext";
+import { THEME_MODE_OPTIONS } from "@/lib/themeModeOptions";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect } from "react";
@@ -51,11 +54,6 @@ export function TopBar({ onOpenSidebar }: TopBarProps) {
   }, [localized, navigate]);
 
   const themeLabel = (value: ThemeMode) => t(`themes.${value}`);
-  const modeOptions: { mode: ThemeMode; icon: typeof Sun }[] = [
-    { mode: "light", icon: Sun },
-    { mode: "dark", icon: Moon },
-    { mode: "system", icon: Monitor },
-  ];
   const languageOptions = [
     { id: "en", label: "English", short: "EN" },
     { id: "pt", label: "Português", short: "PT" },
@@ -125,28 +123,26 @@ export function TopBar({ onOpenSidebar }: TopBarProps) {
                 <span className="text-xs text-muted-foreground">{themeLabel(mode)}</span>
               </motion.button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              role="radiogroup"
-              aria-label={t("topbar.theme")}
-              className="w-48 bg-popover border-glass-border"
-            >
-              {modeOptions.map((option) => {
-                const isActive = option.mode === mode;
-                const Icon = option.icon;
-                return (
-                  <DropdownMenuItem
-                    key={option.mode}
-                    role="radio"
-                    aria-checked={isActive}
-                    onClick={() => setMode(option.mode)}
-                    className="cursor-pointer flex items-center gap-3"
-                  >
-                    <Icon className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-                    <span className="text-sm font-medium">{themeLabel(option.mode)}</span>
-                  </DropdownMenuItem>
-                );
-              })}
+            <DropdownMenuContent align="end" className="w-48 bg-popover border-glass-border">
+              <DropdownMenuRadioGroup
+                value={mode}
+                onValueChange={(value) => setMode(value as ThemeMode)}
+                aria-label={t("topbar.theme")}
+              >
+                {THEME_MODE_OPTIONS.map((option) => {
+                  const Icon = option.icon;
+                  return (
+                    <DropdownMenuRadioItem
+                      key={option.mode}
+                      value={option.mode}
+                      className="cursor-pointer flex items-center gap-3"
+                    >
+                      <Icon className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                      <span className="text-sm font-medium">{themeLabel(option.mode)}</span>
+                    </DropdownMenuRadioItem>
+                  );
+                })}
+              </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

@@ -224,7 +224,13 @@ describe("ThemeContext", () => {
         const expected = resolveThemeMode(input);
         const run = runPrePaintScript(input);
         expect(run.error, `script threw for ${JSON.stringify(input)}`).toBeNull();
-        expect(run.written, `write-back for ${JSON.stringify(input)}`).toBe(expected);
+        if (input === expected) {
+          // Already-canonical values are not rewritten (no redundant write on
+          // every page load) — mirrored by the provider's persistence guard.
+          expect(run.written, `no redundant write for ${JSON.stringify(input)}`).toBeNull();
+        } else {
+          expect(run.written, `migration write-back for ${JSON.stringify(input)}`).toBe(expected);
+        }
         expect(run.classes.has("light"), `light class for ${JSON.stringify(input)}`).toBe(
           expected === "light",
         );

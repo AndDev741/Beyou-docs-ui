@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import { Monitor, Moon, Palette, Settings as SettingsIcon, Sun } from "lucide-react";
+import { Palette, Settings as SettingsIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Seo } from "@/components/seo/Seo";
 import { useStaticSeo } from "@/hooks/useStaticSeo";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { cn } from "@/lib/utils";
-import { useTheme, type ThemeMode } from "@/context/ThemeContext";
+import { useTheme } from "@/context/ThemeContext";
+import { THEME_MODE_OPTIONS } from "@/lib/themeModeOptions";
 import { useLocale, useLocaleFreePath } from "@/hooks/useLocale";
 import { localizedPath, rememberLocale, type SupportedLocale } from "@/lib/i18nRouting";
 import { useNavigate } from "react-router-dom";
@@ -64,12 +65,6 @@ function AppearanceSettings() {
   };
   const { mode, setMode } = useTheme();
 
-  const modeOptions: { mode: ThemeMode; icon: typeof Sun }[] = [
-    { mode: "light", icon: Sun },
-    { mode: "dark", icon: Moon },
-    { mode: "system", icon: Monitor },
-  ];
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -81,7 +76,7 @@ function AppearanceSettings() {
           {t("settings.themeLabel")}
         </label>
         <div role="radiogroup" aria-label={t("settings.themeLabel")} className="flex gap-3">
-          {modeOptions.map((option) => {
+          {THEME_MODE_OPTIONS.map((option) => {
             const isActive = option.mode === mode;
             const Icon = option.icon;
             return (

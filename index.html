@@ -42,10 +42,12 @@
           stored !== null && Object.prototype.hasOwnProperty.call(map, stored)
             ? map[stored]
             : "system";
-        try {
-          window.localStorage.setItem("beyou-docs-theme", resolved);
-        } catch (e) {
-          /* write failure only loses the migration, not this paint */
+        if (resolved !== stored) {
+          try {
+            window.localStorage.setItem("beyou-docs-theme", resolved);
+          } catch (e) {
+            /* write failure only loses the migration, not this paint */
+          }
         }
         if (resolved === "light") {
           document.documentElement.classList.add("light");

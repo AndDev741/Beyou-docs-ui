@@ -3,23 +3,12 @@ import { Toaster as Sonner, toast } from "sonner";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
-const isDarkTheme = (hex: string) => {
-  const cleaned = hex.replace("#", "").slice(0, 6);
-  const value = parseInt(cleaned, 16);
-  const r = (value >> 16) & 255;
-  const g = (value >> 8) & 255;
-  const b = value & 255;
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance < 0.5;
-};
-
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme } = useTheme();
-  const tone = isDarkTheme(theme.background) ? "dark" : "light";
+  const { resolvedBase } = useTheme();
 
   return (
     <Sonner
-      theme={tone as ToasterProps["theme"]}
+      theme={resolvedBase}
       className="toaster group"
       toastOptions={{
         classNames: {

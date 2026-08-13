@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-import { Palette, Settings as SettingsIcon } from "lucide-react";
+import { Monitor, Moon, Palette, Settings as SettingsIcon, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Seo } from "@/components/seo/Seo";
 import { useStaticSeo } from "@/hooks/useStaticSeo";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/context/ThemeContext";
+import { useTheme, type ThemeMode } from "@/context/ThemeContext";
 import { useLocale, useLocaleFreePath } from "@/hooks/useLocale";
 import { localizedPath, rememberLocale, type SupportedLocale } from "@/lib/i18nRouting";
 import { useNavigate } from "react-router-dom";
@@ -62,8 +62,13 @@ function AppearanceSettings() {
     rememberLocale(next);
     navigate(localizedPath(next, currentPath));
   };
-  const { theme, setThemeByMode, availableThemes } = useTheme();
-  const themeLabel = (mode: string) => t(`themes.${mode}`, { defaultValue: mode });
+  const { mode, setMode } = useTheme();
+
+  const modeOptions: { mode: ThemeMode; icon: typeof Sun }[] = [
+    { mode: "light", icon: Sun },
+    { mode: "dark", icon: Moon },
+    { mode: "system", icon: Monitor },
+  ];
 
   return (
     <motion.div
@@ -75,27 +80,28 @@ function AppearanceSettings() {
         <label className="text-sm font-medium text-foreground mb-4 block">
           {t("settings.themeLabel")}
         </label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {availableThemes.map((themeOption) => {
-            const isActive = themeOption.mode === theme.mode;
+        <div role="radiogroup" aria-label={t("settings.themeLabel")} className="flex gap-3">
+          {modeOptions.map((option) => {
+            const isActive = option.mode === mode;
+            const Icon = option.icon;
             return (
               <button
-                key={themeOption.mode}
-                onClick={() => setThemeByMode(themeOption.mode)}
+                key={option.mode}
+                type="button"
+                role="radio"
+                aria-checked={isActive}
+                onClick={() => setMode(option.mode)}
                 className={cn(
-                  "px-4 py-3 rounded-lg border transition-all text-left",
+                  "px-4 py-2 rounded-lg border transition-all",
                   isActive
                     ? "border-primary bg-primary/10"
                     : "border-glass-border/30 hover:border-glass-border",
                 )}
               >
-                <div className="flex items-center gap-3">
-                  <span
-                    className="w-3 h-3 rounded-full border border-white/20"
-                    style={{ background: themeOption.primary }}
-                  />
+                <div className="flex items-center gap-2">
+                  <Icon className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
                   <span className="text-sm font-medium text-foreground">
-                    {themeLabel(themeOption.mode)}
+                    {t(`themes.${option.mode}`)}
                   </span>
                 </div>
               </button>

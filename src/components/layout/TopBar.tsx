@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
-import { Command, Globe, Menu, Palette } from "lucide-react";
+import { Command, Globe, Menu, Monitor, Moon, Palette, Sun } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useTheme } from "@/context/ThemeContext";
+import { useTheme, type ThemeMode } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect } from "react";
@@ -18,7 +18,7 @@ interface TopBarProps {
 }
 
 export function TopBar({ onOpenSidebar }: TopBarProps) {
-  const { theme, setThemeByMode, availableThemes } = useTheme();
+  const { mode, setMode } = useTheme();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const locale = useLocale();
@@ -50,7 +50,12 @@ export function TopBar({ onOpenSidebar }: TopBarProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [localized, navigate]);
 
-  const themeLabel = (mode: string) => t(`themes.${mode}`, { defaultValue: mode });
+  const themeLabel = (value: ThemeMode) => t(`themes.${value}`);
+  const modeOptions: { mode: ThemeMode; icon: typeof Sun }[] = [
+    { mode: "light", icon: Sun },
+    { mode: "dark", icon: Moon },
+    { mode: "system", icon: Monitor },
+  ];
   const languageOptions = [
     { id: "en", label: "English", short: "EN" },
     { id: "pt", label: "Português", short: "PT" },
@@ -117,23 +122,31 @@ export function TopBar({ onOpenSidebar }: TopBarProps) {
               >
                 <Palette className="w-4 h-4" />
                 <span className="text-sm font-medium">{t("topbar.theme")}</span>
-                <span className="text-xs text-muted-foreground">{themeLabel(theme.mode)}</span>
+                <span className="text-xs text-muted-foreground">{themeLabel(mode)}</span>
               </motion.button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 bg-popover border-glass-border">
-              {availableThemes.map((themeOption) => (
-                <DropdownMenuItem
-                  key={themeOption.mode}
-                  onClick={() => setThemeByMode(themeOption.mode)}
-                  className="cursor-pointer flex items-center gap-3"
-                >
-                  <span
-                    className="w-3 h-3 rounded-full border border-white/20"
-                    style={{ background: themeOption.primary }}
-                  />
-                  <span className="text-sm font-medium">{themeLabel(themeOption.mode)}</span>
-                </DropdownMenuItem>
-              ))}
+            <DropdownMenuContent
+              align="end"
+              role="radiogroup"
+              aria-label={t("topbar.theme")}
+              className="w-48 bg-popover border-glass-border"
+            >
+              {modeOptions.map((option) => {
+                const isActive = option.mode === mode;
+                const Icon = option.icon;
+                return (
+                  <DropdownMenuItem
+                    key={option.mode}
+                    role="radio"
+                    aria-checked={isActive}
+                    onClick={() => setMode(option.mode)}
+                    className="cursor-pointer flex items-center gap-3"
+                  >
+                    <Icon className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                    <span className="text-sm font-medium">{themeLabel(option.mode)}</span>
+                  </DropdownMenuItem>
+                );
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

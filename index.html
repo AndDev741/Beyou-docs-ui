@@ -4,7 +4,56 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#0B1220" />
+    <meta name="theme-color" content="#F5F7FA" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0E1218" media="(prefers-color-scheme: dark)" />
+
+    <!--
+      Pre-paint theme resolution: runs before any stylesheet or module loads so
+      the first paint already has the right base — no flash of the wrong theme.
+      Explicit choices pin a class ("light"/"dark") on <html>; "system" leaves
+      no class and the prefers-color-scheme block in src/index.css resolves it.
+      The legacy map mirrors LEGACY_THEME_MAP in src/context/ThemeContext.tsx;
+      a parity test in src/context/ThemeContext.test.tsx executes this script
+      body and fails if the two copies drift.
+    -->
+    <script>
+      (function () {
+        var map = {
+          Midnight: "dark",
+          Cyberpunk: "dark",
+          Polar: "dark",
+          "Late Latte": "dark",
+          Sunset: "light",
+          Amethyst: "light",
+          Mocha: "light",
+          beYou: "system",
+          beYouDark: "system",
+          light: "light",
+          dark: "dark",
+          system: "system",
+        };
+        var stored = null;
+        try {
+          stored = window.localStorage.getItem("beyou-docs-theme");
+        } catch (e) {
+          /* storage blocked: fall through to system (no class) */
+        }
+        var resolved =
+          stored !== null && Object.prototype.hasOwnProperty.call(map, stored)
+            ? map[stored]
+            : "system";
+        try {
+          window.localStorage.setItem("beyou-docs-theme", resolved);
+        } catch (e) {
+          /* write failure only loses the migration, not this paint */
+        }
+        if (resolved === "light") {
+          document.documentElement.classList.add("light");
+        } else if (resolved === "dark") {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
 
     <!--
       Fonts are self-hosted and imported from src/main.tsx; the three

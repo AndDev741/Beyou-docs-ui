@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type SVGProps } from "react";
 import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -37,6 +37,37 @@ interface SidebarProps {
   onClose?: () => void;
 }
 
+/**
+ * The brand symbol: a ring at 83% with the opening to the north-east and the
+ * check pointing at it. Geometry is identical to public/favicon.svg and to the
+ * main app's BrandMark; it strokes in currentColor so a `text-primary` class
+ * tints it with the active theme.
+ */
+function BrandGlyph(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 64 64" {...props}>
+      <circle
+        cx="32"
+        cy="32"
+        r="24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="8"
+        strokeLinecap="round"
+        strokeDasharray="125 25.8"
+      />
+      <path
+        d="M22 33l7 7 14-14"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
   const isMobile = variant === "mobile";
   const [collapsed, setCollapsed] = useState(false);
@@ -73,9 +104,8 @@ export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
           animate={{ opacity: shouldCollapse ? 0 : 1 }}
           className="flex items-center gap-3 overflow-hidden flex-1"
         >
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <span className="text-white font-bold text-sm">B</span>
-          </div>
+          {/* Decorative here: the wordmark right beside it carries the name. */}
+          <BrandGlyph aria-hidden="true" className="w-8 h-8 shrink-0 text-primary" />
           {!shouldCollapse && (
             <span className="font-semibold text-foreground whitespace-nowrap">
               {t("app.name")}
@@ -83,9 +113,12 @@ export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
           )}
         </motion.div>
         {shouldCollapse && (
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center mx-auto">
-            <span className="text-white font-bold text-sm">B</span>
-          </div>
+          // Collapsed, the glyph is the only brand signal, so it names itself.
+          <BrandGlyph
+            role="img"
+            aria-label={t("app.name")}
+            className="w-8 h-8 shrink-0 text-primary mx-auto"
+          />
         )}
         {isMobile && (
           <button

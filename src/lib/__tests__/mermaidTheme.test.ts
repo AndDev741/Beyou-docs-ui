@@ -40,7 +40,7 @@ describe("buildMermaidConfig", () => {
   it("uses the Geist font stack in both bases", () => {
     for (const base of ["light", "dark"] as const) {
       expect(buildMermaidConfig(base).themeVariables!.fontFamily).toBe(
-        "Geist Variable, Geist, Inter Variable, system-ui, sans-serif",
+        "Geist Variable, Geist, system-ui, sans-serif",
       );
     }
   });

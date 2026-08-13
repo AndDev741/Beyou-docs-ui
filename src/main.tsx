@@ -9,10 +9,8 @@
 //
 // Variable fonts, so one file covers every weight the design uses instead of
 // four static cuts per family.
-import "@fontsource-variable/inter";
-import "@fontsource-variable/plus-jakarta-sans";
-import "@fontsource-variable/plus-jakarta-sans/wght-italic.css";
-import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
 
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";

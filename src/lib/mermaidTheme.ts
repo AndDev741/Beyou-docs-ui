@@ -79,7 +79,7 @@ export const buildMermaidConfig = (base: ThemeBase): MermaidConfig => {
       secondaryTextColor: palette.text2,
       noteTextColor: palette.text,
       actorTextColor: palette.text,
-      fontFamily: "Geist Variable, Geist, Inter Variable, system-ui, sans-serif",
+      fontFamily: "Geist Variable, Geist, system-ui, sans-serif",
     },
     flowchart: {
       curve: "basis",

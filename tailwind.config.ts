@@ -73,10 +73,10 @@ export default {
       },
       fontFamily: {
         // "<name> Variable" is the family @fontsource-variable actually
-        // declares. Asking for plain "Inter" would download the woff2 files and
+        // declares. Asking for plain "Geist" would download the woff2 files and
         // then render in system-ui, because nothing declares that name.
-        sans: ["Inter Variable", "Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono Variable", "JetBrains Mono", "Fira Code", "monospace"],
+        sans: ["Geist Variable", "Geist", "system-ui", "sans-serif"],
+        mono: ["Geist Mono Variable", "Geist Mono", "ui-monospace", "monospace"],
       },
       keyframes: {
         "accordion-down": {

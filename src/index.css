@@ -67,7 +67,7 @@
     --glass: 0 0% 100%;
     --glass-border: 216 21% 91%;
 
-    --font-docs: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", "Inter Variable", system-ui, sans-serif;
+    --font-docs: "Geist Variable", "Geist", system-ui, sans-serif;
   }
 
   .dark {
@@ -496,7 +496,7 @@
   }
 
   .prerender-shell code {
-    font-family: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+    font-family: "Geist Mono Variable", "Geist Mono", ui-monospace, monospace;
   }
 
   .prerender-shell img {

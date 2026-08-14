@@ -32,6 +32,22 @@ const bottomItems = [
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
+/**
+ * A section stays lit while you read inside it.
+ *
+ * Every section has detail routes (`/architecture/:topicKey`, `/blog/:postKey`,
+ * `/apis/:controllerKey`, `/projects/:projectKey`), and an exact match dropped the
+ * highlight the moment an item was opened: the reader lost the one signal telling
+ * them where they were. Home is the exception and stays exact, since every path
+ * starts with a slash.
+ */
+export function isSectionActive(currentPath: string, itemPath: string): boolean {
+  if (itemPath === "/") {
+    return currentPath === "/";
+  }
+  return currentPath === itemPath || currentPath.startsWith(`${itemPath}/`);
+}
+
 interface SidebarProps {
   variant?: "desktop" | "mobile";
   onClose?: () => void;
@@ -135,7 +151,7 @@ export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
       {/* Main Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = currentPath === item.path;
+          const isActive = isSectionActive(currentPath, item.path);
           const label =
             item.path === "/"
               ? t("nav.home")
@@ -195,7 +211,7 @@ export function Sidebar({ variant = "desktop", onClose }: SidebarProps) {
       {/* Bottom Navigation */}
       <div className="px-3 py-4 space-y-1 border-t border-glass-border/30">
         {bottomItems.map((item) => {
-          const isActive = currentPath === item.path;
+          const isActive = isSectionActive(currentPath, item.path);
           const label = item.path === "/search" ? t("nav.search") : t("nav.settings");
           return (
             <NavLink

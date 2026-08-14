@@ -75,7 +75,11 @@ function AppearanceSettings() {
         <label className="text-sm font-medium text-foreground mb-4 block">
           {t("settings.themeLabel")}
         </label>
-        <div role="radiogroup" aria-label={t("settings.themeLabel")} className="flex gap-3">
+        {/* Honest toggle-button semantics: a real radiogroup promises roving
+            tabindex + arrow-key movement, which these plain buttons don't
+            implement. aria-pressed on tab-reachable buttons matches what the
+            keyboard actually does. */}
+        <div role="group" aria-label={t("settings.themeLabel")} className="flex gap-3">
           {THEME_MODE_OPTIONS.map((option) => {
             const isActive = option.mode === mode;
             const Icon = option.icon;
@@ -83,8 +87,7 @@ function AppearanceSettings() {
               <button
                 key={option.mode}
                 type="button"
-                role="radio"
-                aria-checked={isActive}
+                aria-pressed={isActive}
                 onClick={() => setMode(option.mode)}
                 className={cn(
                   "px-4 py-2 rounded-lg border transition-all",

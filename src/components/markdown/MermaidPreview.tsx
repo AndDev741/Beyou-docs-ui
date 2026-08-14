@@ -3,7 +3,7 @@ import mermaid from "mermaid";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context/ThemeContext";
-import { buildMermaidConfig, resolveMermaidTextColors } from "@/lib/mermaidTheme";
+import { ensureMermaid, resolveMermaidTextColors } from "@/lib/mermaidTheme";
 
 interface MermaidPreviewProps {
   code: string;
@@ -19,7 +19,7 @@ export function MermaidPreview({
   showControls = false,
 }: MermaidPreviewProps) {
   const { resolvedBase } = useTheme();
-  const { textOnBackground, textOnPrimary, edgeLabelBackground } =
+  const { textOnBackground, nodeText, edgeLabelBackground } =
     resolveMermaidTextColors(resolvedBase);
   const [svg, setSvg] = useState<string>("");
   const [zoom, setZoom] = useState(1);
@@ -29,7 +29,7 @@ export function MermaidPreview({
   const panStartRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    mermaid.initialize(buildMermaidConfig(resolvedBase));
+    ensureMermaid(resolvedBase);
   }, [resolvedBase]);
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export function MermaidPreview({
       style={
         {
           "--mermaid-text": textOnBackground,
-          "--mermaid-node-text": textOnPrimary,
+          "--mermaid-node-text": nodeText,
           "--mermaid-edge-label-bg": edgeLabelBackground,
           color: textOnBackground,
         } as CSSProperties
@@ -133,7 +133,7 @@ export function MermaidPreview({
       style={
         {
           "--mermaid-text": textOnBackground,
-          "--mermaid-node-text": textOnPrimary,
+          "--mermaid-node-text": nodeText,
           "--mermaid-edge-label-bg": edgeLabelBackground,
           color: textOnBackground,
         } as CSSProperties

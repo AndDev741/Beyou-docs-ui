@@ -7,6 +7,9 @@ export type ThemeBase = "light" | "dark";
 
 /**
  * Migration table from the retired 9-theme model to light/dark/system.
+ * beYou/beYouDark were explicit light/dark picks, so they migrate to the
+ * matching mode — mapping them to "system" would silently flip an explicit
+ * dark pick on a light-OS machine (and the write-back would destroy it).
  * Mirrored by the inline pre-paint script in index.html — the parity test in
  * ThemeContext.test.tsx executes that script body against this map and fails
  * if the two copies drift. Change both together.
@@ -19,8 +22,8 @@ export const LEGACY_THEME_MAP: Record<string, ThemeMode> = {
   Sunset: "light",
   Amethyst: "light",
   Mocha: "light",
-  beYou: "system",
-  beYouDark: "system",
+  beYou: "light",
+  beYouDark: "dark",
   light: "light",
   dark: "dark",
   system: "system",
@@ -56,6 +59,15 @@ function readStoredMode(): ThemeMode {
 
 const prefersDarkQuery = () => window.matchMedia("(prefers-color-scheme: dark)");
 
+/**
+ * Base background hexes for the `<meta name="theme-color">` pair in index.html.
+ * Values match --background in src/index.css and the tags' initial content.
+ */
+const THEME_COLOR_HEX: Record<ThemeBase, string> = {
+  light: "#F5F7FA",
+  dark: "#0E1218",
+};
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<ThemeMode>(readStoredMode);
   const [prefersDark, setPrefersDark] = useState(() => prefersDarkQuery().matches);
@@ -84,11 +96,25 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   // The provider's ONLY DOM effect. Explicit choices pin a class; `system`
   // carries no class so the prefers-color-scheme block in index.css resolves
-  // it with zero JS (matching the pre-paint script in index.html).
+  // it with zero JS (matching the pre-paint script in index.html). The same
+  // effect keeps the <meta name="theme-color"> pair honest: an explicit pin
+  // points both tags at that base's bg (browser chrome follows the pin, not
+  // the OS), while `system` restores each tag's original per-media value.
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove("light", "dark");
     if (mode !== "system") root.classList.add(mode);
+
+    // Tags may be absent (tests render without the index.html head).
+    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+      const base: ThemeBase =
+        mode === "system"
+          ? meta.getAttribute("media")?.includes("dark")
+            ? "dark"
+            : "light"
+          : mode;
+      meta.setAttribute("content", THEME_COLOR_HEX[base]);
+    });
   }, [mode]);
 
   const resolvedBase: ThemeBase = mode === "system" ? (prefersDark ? "dark" : "light") : mode;

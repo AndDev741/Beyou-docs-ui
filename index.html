@@ -12,9 +12,10 @@
       the first paint already has the right base — no flash of the wrong theme.
       Explicit choices pin a class ("light"/"dark") on <html>; "system" leaves
       no class and the prefers-color-scheme block in src/index.css resolves it.
-      The legacy map mirrors LEGACY_THEME_MAP in src/context/ThemeContext.tsx;
-      a parity test in src/context/ThemeContext.test.tsx executes this script
-      body and fails if the two copies drift.
+      The legacy map mirrors LEGACY_THEME_MAP in src/context/ThemeContext.tsx
+      (beYou/beYouDark were explicit picks, so they map to light/dark, not
+      system); a parity test in src/context/ThemeContext.test.tsx executes this
+      script body and fails if the two copies drift. Change both together.
     -->
     <script>
       (function () {
@@ -26,8 +27,8 @@
           Sunset: "light",
           Amethyst: "light",
           Mocha: "light",
-          beYou: "system",
-          beYouDark: "system",
+          beYou: "light",
+          beYouDark: "dark",
           light: "light",
           dark: "dark",
           system: "system",

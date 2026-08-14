@@ -1,7 +1,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import mermaid from "mermaid";
 import { useTheme } from "@/context/ThemeContext";
-import { buildMermaidConfig, resolveMermaidTextColors } from "@/lib/mermaidTheme";
+import { ensureMermaid, resolveMermaidTextColors } from "@/lib/mermaidTheme";
 
 interface MermaidRendererProps {
   chart: string;
@@ -11,11 +11,11 @@ interface MermaidRendererProps {
 export function MermaidRenderer({ chart, className = "" }: MermaidRendererProps) {
   const { resolvedBase } = useTheme();
   const [svg, setSvg] = useState<string>("");
-  const { textOnBackground, textOnPrimary, edgeLabelBackground } =
+  const { textOnBackground, nodeText, edgeLabelBackground } =
     resolveMermaidTextColors(resolvedBase);
 
   useEffect(() => {
-    mermaid.initialize(buildMermaidConfig(resolvedBase));
+    ensureMermaid(resolvedBase);
   }, [resolvedBase]);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export function MermaidRenderer({ chart, className = "" }: MermaidRendererProps)
       style={
         {
           "--mermaid-text": textOnBackground,
-          "--mermaid-node-text": textOnPrimary,
+          "--mermaid-node-text": nodeText,
           "--mermaid-edge-label-bg": edgeLabelBackground,
           color: textOnBackground,
         } as CSSProperties

@@ -25,29 +25,33 @@ describe("Settings theme picker", () => {
     document.documentElement.classList.remove("light", "dark");
   });
 
-  it("renders exactly light, dark and system as radios in a labelled radiogroup", () => {
+  // The picker is deliberately NOT a radiogroup: plain buttons implement no
+  // roving tabindex or arrow-key contract, so they advertise toggle-button
+  // semantics (group + aria-pressed) instead of promising radio behavior.
+  it("renders exactly light, dark and system as toggle buttons in a labelled group", () => {
     renderPage(<Settings />, { path: "/settings" });
 
-    const group = screen.getByRole("radiogroup", { name: "settings.themeLabel" });
-    expect(within(group).getAllByRole("radio")).toHaveLength(3);
-    expect(within(group).getByRole("radio", { name: "themes.light" })).toBeInTheDocument();
-    expect(within(group).getByRole("radio", { name: "themes.dark" })).toBeInTheDocument();
-    expect(within(group).getByRole("radio", { name: "themes.system" })).toBeInTheDocument();
+    const group = screen.getByRole("group", { name: "settings.themeLabel" });
+    expect(within(group).getAllByRole("button")).toHaveLength(3);
+    expect(within(group).getByRole("button", { name: "themes.light" })).toBeInTheDocument();
+    expect(within(group).getByRole("button", { name: "themes.dark" })).toBeInTheDocument();
+    expect(within(group).getByRole("button", { name: "themes.system" })).toBeInTheDocument();
+    expect(within(group).queryAllByRole("radio")).toHaveLength(0);
   });
 
-  it("clicking dark checks it, persists the mode, and pins the dark class", () => {
+  it("clicking dark presses it, persists the mode, and pins the dark class", () => {
     renderPage(<Settings />, { path: "/settings" });
 
-    const group = screen.getByRole("radiogroup", { name: "settings.themeLabel" });
-    const dark = within(group).getByRole("radio", { name: "themes.dark" });
-    expect(dark).toHaveAttribute("aria-checked", "false");
+    const group = screen.getByRole("group", { name: "settings.themeLabel" });
+    const dark = within(group).getByRole("button", { name: "themes.dark" });
+    expect(dark).toHaveAttribute("aria-pressed", "false");
 
     fireEvent.click(dark);
 
-    expect(dark).toHaveAttribute("aria-checked", "true");
+    expect(dark).toHaveAttribute("aria-pressed", "true");
     expect(
-      within(group).getByRole("radio", { name: "themes.system" }),
-    ).toHaveAttribute("aria-checked", "false");
+      within(group).getByRole("button", { name: "themes.system" }),
+    ).toHaveAttribute("aria-pressed", "false");
     expect(localStorage.getItem(STORAGE_KEY)).toBe("dark");
     expect(document.documentElement.classList.contains("dark")).toBe(true);
   });

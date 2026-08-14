@@ -1,3 +1,4 @@
+import mermaid from "mermaid";
 import type { MermaidConfig } from "mermaid";
 import type { ThemeBase } from "@/context/ThemeContext";
 
@@ -14,7 +15,11 @@ type MermaidPalette = {
   border: string;
   accent: string;
   accentStrong: string;
-  /** Readable text on an `accent`-filled node. */
+  /**
+   * Readable text on an `accent`-filled shape (mermaid `primaryTextColor`).
+   * Node fills use `bg` via `mainBkg`, so node label text takes `text`, NOT
+   * this value — on-accent over a bg fill is invisible in dark mode.
+   */
   textOnAccent: string;
 };
 
@@ -41,12 +46,17 @@ const PALETTES: Record<ThemeBase, MermaidPalette> = {
   },
 };
 
-/** Colors the renderers feed into the `--mermaid-*` inline CSS variables. */
+/**
+ * Colors the renderers feed into the `--mermaid-*` inline CSS variables.
+ * `nodeText` backs `--mermaid-node-text`, which index.css applies to
+ * `.node text` with `!important` — nodes are bg-filled (`mainBkg`), so this
+ * must be the main text color, never the on-accent color.
+ */
 export const resolveMermaidTextColors = (base: ThemeBase) => {
   const palette = PALETTES[base];
   return {
     textOnBackground: palette.text,
-    textOnPrimary: palette.textOnAccent,
+    nodeText: palette.text,
     edgeLabelBackground: palette.border,
   };
 };
@@ -74,7 +84,7 @@ export const buildMermaidConfig = (base: ThemeBase): MermaidConfig => {
       titleColor: palette.text,
       edgeLabelBackground: palette.border,
       labelTextColor: palette.text,
-      nodeTextColor: palette.textOnAccent,
+      nodeTextColor: palette.text,
       textColor: palette.text,
       secondaryTextColor: palette.text2,
       noteTextColor: palette.text,
@@ -92,3 +102,23 @@ export const buildMermaidConfig = (base: ThemeBase): MermaidConfig => {
     },
   };
 };
+
+/**
+ * `mermaid.initialize` is global, so it needs exactly one owner: components
+ * used to call it per instance (10 diagrams = 10 identical inits, again on
+ * every theme flip). Renderers call this instead; it re-initializes only when
+ * `base` differs from the last-initialized value. Rendering itself still
+ * happens per component.
+ */
+let initializedBase: ThemeBase | null = null;
+
+export function ensureMermaid(base: ThemeBase): void {
+  if (initializedBase === base) return;
+  mermaid.initialize(buildMermaidConfig(base));
+  initializedBase = base;
+}
+
+/** Test hook: forget the last-initialized base so a test can force a re-init. */
+export function resetMermaidInitForTests(): void {
+  initializedBase = null;
+}

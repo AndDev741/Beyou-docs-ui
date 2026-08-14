@@ -93,7 +93,9 @@
     --accent-foreground: 218 55% 10%;
 
     --destructive: 0 91% 71%;
-    --destructive-foreground: 0 0% 100%;
+    /* Dark on-accent ink: white on the lightened salmon is ~2.8:1, so the
+       foreground matches --primary-foreground/--accent-foreground instead. */
+    --destructive-foreground: 218 55% 10%;
 
     --border: 216 20% 20%;
     --input: 216 20% 20%;
@@ -143,7 +145,7 @@
       --accent-foreground: 218 55% 10%;
 
       --destructive: 0 91% 71%;
-      --destructive-foreground: 0 0% 100%;
+      --destructive-foreground: 218 55% 10%;
 
       --border: 216 20% 20%;
       --input: 216 20% 20%;

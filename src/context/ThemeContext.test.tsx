@@ -158,8 +158,10 @@ describe("ThemeContext", () => {
       ["Midnight", "dark"],
       ["Polar", "dark"],
       ["Late Latte", "dark"],
-      ["beYou", "system"],
-      ["beYouDark", "system"],
+      // beYou/beYouDark were explicit picks in the old model: they migrate to
+      // the matching explicit mode, never to system.
+      ["beYou", "light"],
+      ["beYouDark", "dark"],
       ["light", "light"],
       ["dark", "dark"],
       ["system", "system"],
@@ -245,6 +247,49 @@ describe("ThemeContext", () => {
       expect(run.error).toBeNull();
       expect(run.classes.size).toBe(0);
       expect(run.written).toBeNull();
+    });
+  });
+
+  describe("theme-color meta tags", () => {
+    // Mirrors the pair in index.html: one tag per prefers-color-scheme media.
+    function installMetaTags() {
+      const make = (scheme: "light" | "dark", content: string) => {
+        const meta = document.createElement("meta");
+        meta.setAttribute("name", "theme-color");
+        meta.setAttribute("media", `(prefers-color-scheme: ${scheme})`);
+        meta.setAttribute("content", content);
+        document.head.appendChild(meta);
+        return meta;
+      };
+      return { light: make("light", "#F5F7FA"), dark: make("dark", "#0E1218") };
+    }
+
+    afterEach(() => {
+      document
+        .querySelectorAll('meta[name="theme-color"]')
+        .forEach((meta) => meta.remove());
+    });
+
+    it("pinning dark sets both metas to the dark bg; system restores the pair", () => {
+      const metas = installMetaTags();
+      mountProvider();
+
+      act(() => captured!.setMode("dark"));
+      expect(metas.light.getAttribute("content")).toBe("#0E1218");
+      expect(metas.dark.getAttribute("content")).toBe("#0E1218");
+
+      act(() => captured!.setMode("system"));
+      expect(metas.light.getAttribute("content")).toBe("#F5F7FA");
+      expect(metas.dark.getAttribute("content")).toBe("#0E1218");
+    });
+
+    it("pinning light sets both metas to the light bg", () => {
+      const metas = installMetaTags();
+      mountProvider();
+
+      act(() => captured!.setMode("light"));
+      expect(metas.light.getAttribute("content")).toBe("#F5F7FA");
+      expect(metas.dark.getAttribute("content")).toBe("#F5F7FA");
     });
   });
 

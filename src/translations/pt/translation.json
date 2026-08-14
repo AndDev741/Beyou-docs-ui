@@ -618,15 +618,9 @@
     "keysFooter": "As chaves ficam salvas neste navegador. Limpe um campo para remover o valor salvo."
   },
   "themes": {
-    "beYou": "beYou",
-    "beYouDark": "beYou Escuro",
-    "Sunset": "Por do Sol",
-    "Amethyst": "Ametista",
-    "Midnight": "Meia-noite",
-    "Cyberpunk": "Ciberpunk",
-    "Mocha": "Mocha",
-    "Polar": "Polar",
-    "Late Latte": "Latte Tarde"
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
   },
   "seo": {
     "titleTemplate": "{{title}} | Beyou Docs",

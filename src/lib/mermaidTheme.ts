@@ -1,143 +1,95 @@
+import mermaid from "mermaid";
 import type { MermaidConfig } from "mermaid";
-import type { ThemeType } from "@/components/utils/listOfThemes";
-import { defaultDark, lateNight, sunsetTheme } from "@/components/utils/listOfThemes";
+import type { ThemeBase } from "@/context/ThemeContext";
 
-type Hsl = { h: number; s: number; l: number };
+/**
+ * Static brand palettes, one per resolved base. Diagram colors come straight
+ * from here — nothing is derived from the retired 9-theme model any more, and
+ * these hex values mirror the CSS custom properties in index.css.
+ */
+type MermaidPalette = {
+  bg: string;
+  surface: string;
+  text: string;
+  text2: string;
+  border: string;
+  accent: string;
+  accentStrong: string;
+  /**
+   * Readable text on an `accent`-filled shape (mermaid `primaryTextColor`).
+   * Node fills use `bg` via `mainBkg`, so node label text takes `text`, NOT
+   * this value — on-accent over a bg fill is invisible in dark mode.
+   */
+  textOnAccent: string;
+};
 
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const PALETTES: Record<ThemeBase, MermaidPalette> = {
+  light: {
+    bg: "#F5F7FA",
+    surface: "#FFFFFF",
+    text: "#171B22",
+    text2: "#566070",
+    border: "#E2E6EC",
+    accent: "#1D6BF3",
+    accentStrong: "#1558D6",
+    textOnAccent: "#FFFFFF",
+  },
+  dark: {
+    bg: "#0E1218",
+    surface: "#151A22",
+    text: "#F0F4F9",
+    text2: "#A3AEBD",
+    border: "#29313D",
+    accent: "#5C9DFF",
+    accentStrong: "#7AB0FF",
+    textOnAccent: "#0E1218",
+  },
+};
 
-const hexToRgb = (hex: string) => {
-  const cleaned = hex.replace("#", "");
-  if (cleaned.length !== 6 && cleaned.length !== 8) return null;
-  const base = cleaned.length === 8 ? cleaned.slice(0, 6) : cleaned;
-  const value = parseInt(base, 16);
+/**
+ * Colors the renderers feed into the `--mermaid-*` inline CSS variables.
+ * `nodeText` backs `--mermaid-node-text`, which index.css applies to
+ * `.node text` with `!important` — nodes are bg-filled (`mainBkg`), so this
+ * must be the main text color, never the on-accent color.
+ */
+export const resolveMermaidTextColors = (base: ThemeBase) => {
+  const palette = PALETTES[base];
   return {
-    r: (value >> 16) & 255,
-    g: (value >> 8) & 255,
-    b: value & 255,
+    textOnBackground: palette.text,
+    nodeText: palette.text,
+    edgeLabelBackground: palette.border,
   };
 };
 
-const rgbToHsl = ({ r, g, b }: { r: number; g: number; b: number }): Hsl => {
-  const rNorm = r / 255;
-  const gNorm = g / 255;
-  const bNorm = b / 255;
-  const max = Math.max(rNorm, gNorm, bNorm);
-  const min = Math.min(rNorm, gNorm, bNorm);
-  const delta = max - min;
-  let h = 0;
-  let s = 0;
-  const l = (max + min) / 2;
-
-  if (delta !== 0) {
-    s = delta / (1 - Math.abs(2 * l - 1));
-    switch (max) {
-      case rNorm:
-        h = ((gNorm - bNorm) / delta) % 6;
-        break;
-      case gNorm:
-        h = (bNorm - rNorm) / delta + 2;
-        break;
-      default:
-        h = (rNorm - gNorm) / delta + 4;
-        break;
-    }
-    h *= 60;
-    if (h < 0) h += 360;
-  }
-
-  return {
-    h: Math.round(h),
-    s: Math.round(s * 100),
-    l: Math.round(l * 100),
-  };
-};
-
-const toHslCss = (hex: string) => {
-  const rgb = hexToRgb(hex);
-  if (!rgb) return "hsl(0 0% 0%)";
-  const { h, s, l } = rgbToHsl(rgb);
-  return `hsl(${h} ${s}% ${l}%)`;
-};
-
-const adjustLightness = (hex: string, delta: number) => {
-  const rgb = hexToRgb(hex);
-  if (!rgb) return "hsl(0 0% 0%)";
-  const { h, s, l } = rgbToHsl(rgb);
-  const nextL = clamp(l + delta, 0, 100);
-  return `hsl(${h} ${s}% ${nextL}%)`;
-};
-
-const isDarkTheme = (hex: string) => {
-  const rgb = hexToRgb(hex);
-  if (!rgb) return false;
-  const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
-  return luminance < 0.5;
-};
-
-const pickTextColor = (hex: string) => (isDarkTheme(hex) ? "#ffffff" : "#0b0b0b");
-
-const resolveTextColor = (theme: ThemeType) => {
-  const mode = theme.mode.toLowerCase();
-  const sunsetTone = sunsetTheme.secondary;
-  const darkTone = defaultDark.secondary || lateNight.secondary;
-
-  if (["beyou", "amethyst", "mocha"].includes(mode)) {
-    return sunsetTone;
-  }
-
-  if (["midnight", "cyberpunk", "polar"].includes(mode)) {
-    return darkTone;
-  }
-
-  return pickTextColor(theme.background);
-};
-
-export const resolveMermaidTextColors = (theme: ThemeType) => {
-  const isDark = isDarkTheme(theme.background);
-  return {
-    textOnBackground: resolveTextColor(theme),
-    textOnPrimary: pickTextColor(theme.primary),
-    edgeLabelBackground: adjustLightness(theme.background, isDark ? 12 : -10),
-  };
-};
-
-export const buildMermaidConfig = (theme: ThemeType): MermaidConfig => {
-  const isDark = isDarkTheme(theme.background);
-  const background = toHslCss(theme.background);
-  const primary = toHslCss(theme.primary);
-  const { textOnBackground, textOnPrimary, edgeLabelBackground } = resolveMermaidTextColors(theme);
-  const muted = adjustLightness(theme.background, isDark ? 8 : -6);
-  const mutedStrong = adjustLightness(theme.background, isDark ? 14 : -10);
-  const border = adjustLightness(theme.background, isDark ? 18 : -16);
-  const accent = adjustLightness(theme.primary, isDark ? 10 : -10);
+export const buildMermaidConfig = (base: ThemeBase): MermaidConfig => {
+  const palette = PALETTES[base];
 
   return {
     startOnLoad: false,
     theme: "base",
     themeVariables: {
-      primaryColor: primary,
-      primaryTextColor: textOnPrimary,
-      primaryBorderColor: primary,
-      lineColor: accent,
-      edgeLabelColor: textOnBackground,
-      secondaryColor: muted,
-      tertiaryColor: mutedStrong,
-      background,
-      mainBkg: background,
-      secondBkg: muted,
-      nodeBorder: primary,
-      clusterBkg: muted,
-      clusterBorder: border,
-      titleColor: textOnBackground,
-      edgeLabelBackground: edgeLabelBackground,
-      labelTextColor: textOnBackground,
-      nodeTextColor: textOnPrimary,
-      textColor: textOnBackground,
-      secondaryTextColor: textOnBackground,
-      noteTextColor: textOnBackground,
-      actorTextColor: textOnBackground,
-      fontFamily: "Plus Jakarta Sans Variable, Plus Jakarta Sans, Inter Variable, system-ui, sans-serif",
+      primaryColor: palette.accent,
+      primaryTextColor: palette.textOnAccent,
+      primaryBorderColor: palette.accentStrong,
+      lineColor: palette.accentStrong,
+      edgeLabelColor: palette.text,
+      secondaryColor: palette.surface,
+      tertiaryColor: palette.border,
+      background: palette.bg,
+      mainBkg: palette.bg,
+      secondBkg: palette.surface,
+      nodeBorder: palette.accentStrong,
+      clusterBkg: palette.surface,
+      clusterBorder: palette.border,
+      titleColor: palette.text,
+      edgeLabelBackground: palette.border,
+      labelTextColor: palette.text,
+      nodeTextColor: palette.text,
+      textColor: palette.text,
+      secondaryTextColor: palette.text2,
+      noteTextColor: palette.text,
+      actorTextColor: palette.text,
+      fontFamily: "Geist Variable, Geist, system-ui, sans-serif",
     },
     flowchart: {
       curve: "basis",
@@ -150,3 +102,23 @@ export const buildMermaidConfig = (theme: ThemeType): MermaidConfig => {
     },
   };
 };
+
+/**
+ * `mermaid.initialize` is global, so it needs exactly one owner: components
+ * used to call it per instance (10 diagrams = 10 identical inits, again on
+ * every theme flip). Renderers call this instead; it re-initializes only when
+ * `base` differs from the last-initialized value. Rendering itself still
+ * happens per component.
+ */
+let initializedBase: ThemeBase | null = null;
+
+export function ensureMermaid(base: ThemeBase): void {
+  if (initializedBase === base) return;
+  mermaid.initialize(buildMermaidConfig(base));
+  initializedBase = base;
+}
+
+/** Test hook: forget the last-initialized base so a test can force a re-init. */
+export function resetMermaidInitForTests(): void {
+  initializedBase = null;
+}

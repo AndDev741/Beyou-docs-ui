@@ -4,76 +4,170 @@
 
 /* Beyou Docs - Habit-first documentation system */
 
+/*
+ * Brand tokens (2026 refresh). Values are copied from the Beyou brand token
+ * set (light/dark neutrals + "beyou" accent pack) as HSL triplets:
+ *   light: bg #F5F7FA, surface #FFFFFF, surface2 #EDF0F4, border #E2E6EC,
+ *          text #171B22, text2 #566070, accent #1D6BF3, accent-strong #1558D6,
+ *          on-accent #FFFFFF, success #0E9F6E, danger #DC2626
+ *   dark:  bg #0E1218, surface #151A22, surface2 #1D242E, border #29313D,
+ *          text #F0F4F9, text2 #A3AEBD, accent #5C9DFF, accent-strong #7AB0FF,
+ *          on-accent #0B1526, success #34D399, danger #F87171
+ *
+ * Three blocks: light base (:root), explicit dark (.dark), and an OS-dark
+ * duplicate guarded by prefers-color-scheme so "system" needs no JS class.
+ * The pre-paint script in index.html sets .light/.dark for explicit choices.
+ */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    --background: 216 33% 97%;
+    --foreground: 218 19% 11%;
 
-    --card: 0 0% 98%;
-    --card-foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 218 19% 11%;
 
-    --popover: 0 0% 98%;
-    --popover-foreground: 0 0% 0%;
+    --popover: 214 24% 94%;
+    --popover-foreground: 218 19% 11%;
 
-    --primary: 205 100% 44%;
+    --primary: 218 90% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 214 24% 94%;
+    --secondary-foreground: 218 19% 11%;
 
-    --muted: 210 20% 94%;
-    --muted-foreground: 220 9% 40%;
+    --muted: 214 24% 94%;
+    --muted-foreground: 217 13% 39%;
 
-    --accent: 205 90% 58%;
+    --accent: 219 82% 46%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 16% 88%;
-    --input: 210 16% 88%;
-    --ring: 205 100% 44%;
+    --border: 216 21% 91%;
+    --input: 216 21% 91%;
+    --ring: 218 90% 53%;
+
+    --success: 160 84% 34%;
+    --error: 0 72% 51%;
 
     --radius: 0.9rem;
 
-    --sidebar-background: 210 30% 98%;
-    --sidebar-foreground: 220 10% 30%;
-    --sidebar-primary: 205 100% 44%;
+    --sidebar-background: 216 33% 97%;
+    --sidebar-foreground: 217 13% 39%;
+    --sidebar-primary: 218 90% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 20% 94%;
-    --sidebar-accent-foreground: 220 10% 25%;
-    --sidebar-border: 210 16% 88%;
-    --sidebar-ring: 205 100% 44%;
+    --sidebar-accent: 214 24% 94%;
+    --sidebar-accent-foreground: 218 19% 11%;
+    --sidebar-border: 216 21% 91%;
+    --sidebar-ring: 218 90% 53%;
 
-    --glow-purple: 205 100% 44%;
-    --glow-pink: 190 90% 58%;
-    --glass: 0 0% 98%;
-    --glass-border: 210 16% 88%;
+    --glow-purple: 218 90% 53%;
+    --glow-pink: 219 82% 46%;
+    --glass: 0 0% 100%;
+    --glass-border: 216 21% 91%;
 
-    --font-docs: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", "Inter Variable", system-ui, sans-serif;
+    --font-docs: "Geist Variable", "Geist", system-ui, sans-serif;
   }
 
   .dark {
-    --background: 240 8% 8%;
-    --foreground: 0 0% 98%;
-    --card: 240 8% 12%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 8% 10%;
-    --popover-foreground: 0 0% 98%;
-    --secondary: 240 6% 18%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 6% 18%;
-    --muted-foreground: 220 7% 65%;
-    --accent: 205 90% 58%;
-    --accent-foreground: 0 0% 100%;
-    --border: 240 6% 22%;
-    --input: 240 6% 22%;
-    --glass: 240 8% 14%;
-    --glass-border: 240 6% 22%;
-    --sidebar-background: 240 8% 10%;
-    --sidebar-foreground: 220 10% 75%;
-    --sidebar-accent: 240 6% 16%;
-    --sidebar-accent-foreground: 0 0% 98%;
+    --background: 216 26% 7%;
+    --foreground: 213 43% 96%;
+
+    --card: 217 24% 11%;
+    --card-foreground: 213 43% 96%;
+
+    --popover: 215 23% 15%;
+    --popover-foreground: 213 43% 96%;
+
+    --primary: 216 100% 68%;
+    --primary-foreground: 218 55% 10%;
+
+    --secondary: 215 23% 15%;
+    --secondary-foreground: 213 43% 96%;
+
+    --muted: 215 23% 15%;
+    --muted-foreground: 215 16% 69%;
+
+    --accent: 216 100% 74%;
+    --accent-foreground: 218 55% 10%;
+
+    --destructive: 0 91% 71%;
+    /* Dark on-accent ink: white on the lightened salmon is ~2.8:1, so the
+       foreground matches --primary-foreground/--accent-foreground instead. */
+    --destructive-foreground: 218 55% 10%;
+
+    --border: 216 20% 20%;
+    --input: 216 20% 20%;
+    --ring: 216 100% 68%;
+
+    --success: 158 64% 52%;
+    --error: 0 91% 71%;
+
+    --sidebar-background: 216 26% 7%;
+    --sidebar-foreground: 215 16% 69%;
+    --sidebar-primary: 216 100% 68%;
+    --sidebar-primary-foreground: 218 55% 10%;
+    --sidebar-accent: 215 23% 15%;
+    --sidebar-accent-foreground: 213 43% 96%;
+    --sidebar-border: 216 20% 20%;
+    --sidebar-ring: 216 100% 68%;
+
+    --glow-purple: 216 100% 68%;
+    --glow-pink: 216 100% 74%;
+    --glass: 217 24% 11%;
+    --glass-border: 216 20% 20%;
+  }
+
+  /* With no explicit choice ("system": no class on <html>), OS dark applies
+     the dark base with zero JS. Keep in lockstep with .dark above. */
+  @media (prefers-color-scheme: dark) {
+    :root:not(.light) {
+      --background: 216 26% 7%;
+      --foreground: 213 43% 96%;
+
+      --card: 217 24% 11%;
+      --card-foreground: 213 43% 96%;
+
+      --popover: 215 23% 15%;
+      --popover-foreground: 213 43% 96%;
+
+      --primary: 216 100% 68%;
+      --primary-foreground: 218 55% 10%;
+
+      --secondary: 215 23% 15%;
+      --secondary-foreground: 213 43% 96%;
+
+      --muted: 215 23% 15%;
+      --muted-foreground: 215 16% 69%;
+
+      --accent: 216 100% 74%;
+      --accent-foreground: 218 55% 10%;
+
+      --destructive: 0 91% 71%;
+      --destructive-foreground: 218 55% 10%;
+
+      --border: 216 20% 20%;
+      --input: 216 20% 20%;
+      --ring: 216 100% 68%;
+
+      --success: 158 64% 52%;
+      --error: 0 91% 71%;
+
+      --sidebar-background: 216 26% 7%;
+      --sidebar-foreground: 215 16% 69%;
+      --sidebar-primary: 216 100% 68%;
+      --sidebar-primary-foreground: 218 55% 10%;
+      --sidebar-accent: 215 23% 15%;
+      --sidebar-accent-foreground: 213 43% 96%;
+      --sidebar-border: 216 20% 20%;
+      --sidebar-ring: 216 100% 68%;
+
+      --glow-purple: 216 100% 68%;
+      --glow-pink: 216 100% 74%;
+      --glass: 217 24% 11%;
+      --glass-border: 216 20% 20%;
+    }
   }
 }
 
@@ -404,7 +498,7 @@
   }
 
   .prerender-shell code {
-    font-family: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+    font-family: "Geist Mono Variable", "Geist Mono", ui-monospace, monospace;
   }
 
   .prerender-shell img {

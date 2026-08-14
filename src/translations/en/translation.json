@@ -618,15 +618,9 @@
     "keysFooter": "Keys are stored locally in this browser. Clear a field to remove the stored value."
   },
   "themes": {
-    "beYou": "beYou",
-    "beYouDark": "beYou Dark",
-    "Sunset": "Sunset",
-    "Amethyst": "Amethyst",
-    "Midnight": "Midnight",
-    "Cyberpunk": "Cyberpunk",
-    "Mocha": "Mocha",
-    "Polar": "Polar",
-    "Late Latte": "Late Latte"
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   },
   "seo": {
     "titleTemplate": "{{title}} | Beyou Docs",

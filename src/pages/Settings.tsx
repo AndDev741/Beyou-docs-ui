@@ -6,6 +6,7 @@ import { useStaticSeo } from "@/hooks/useStaticSeo";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context/ThemeContext";
+import { THEME_MODE_OPTIONS } from "@/lib/themeModeOptions";
 import { useLocale, useLocaleFreePath } from "@/hooks/useLocale";
 import { localizedPath, rememberLocale, type SupportedLocale } from "@/lib/i18nRouting";
 import { useNavigate } from "react-router-dom";
@@ -62,8 +63,7 @@ function AppearanceSettings() {
     rememberLocale(next);
     navigate(localizedPath(next, currentPath));
   };
-  const { theme, setThemeByMode, availableThemes } = useTheme();
-  const themeLabel = (mode: string) => t(`themes.${mode}`, { defaultValue: mode });
+  const { mode, setMode } = useTheme();
 
   return (
     <motion.div
@@ -75,27 +75,31 @@ function AppearanceSettings() {
         <label className="text-sm font-medium text-foreground mb-4 block">
           {t("settings.themeLabel")}
         </label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {availableThemes.map((themeOption) => {
-            const isActive = themeOption.mode === theme.mode;
+        {/* Honest toggle-button semantics: a real radiogroup promises roving
+            tabindex + arrow-key movement, which these plain buttons don't
+            implement. aria-pressed on tab-reachable buttons matches what the
+            keyboard actually does. */}
+        <div role="group" aria-label={t("settings.themeLabel")} className="flex gap-3">
+          {THEME_MODE_OPTIONS.map((option) => {
+            const isActive = option.mode === mode;
+            const Icon = option.icon;
             return (
               <button
-                key={themeOption.mode}
-                onClick={() => setThemeByMode(themeOption.mode)}
+                key={option.mode}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => setMode(option.mode)}
                 className={cn(
-                  "px-4 py-3 rounded-lg border transition-all text-left",
+                  "px-4 py-2 rounded-lg border transition-all",
                   isActive
                     ? "border-primary bg-primary/10"
                     : "border-glass-border/30 hover:border-glass-border",
                 )}
               >
-                <div className="flex items-center gap-3">
-                  <span
-                    className="w-3 h-3 rounded-full border border-white/20"
-                    style={{ background: themeOption.primary }}
-                  />
+                <div className="flex items-center gap-2">
+                  <Icon className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
                   <span className="text-sm font-medium text-foreground">
-                    {themeLabel(themeOption.mode)}
+                    {t(`themes.${option.mode}`)}
                   </span>
                 </div>
               </button>

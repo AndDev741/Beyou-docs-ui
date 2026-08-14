@@ -11,6 +11,7 @@ Fonts default to ../Beyou-Frontend/apps/mobile/assets/fonts, resolved against
 this repo's root so the invocation works from any directory; pass --fonts-dir
 to point somewhere else. Output is deterministic: same inputs, same bytes.
 """
+import math
 import argparse
 import os
 from PIL import Image, ImageDraw, ImageFont
@@ -38,20 +39,32 @@ SUPERSAMPLE = 4
 def brand_mark(diameter):
     """The ring with its opening to the north-east, and the check inside it.
 
-    Same geometry as public/favicon.svg: on the ring's 48-unit grid the arc
-    runs from -61 to 298 degrees (the dasharray 125/25.8 gap) and the check is
-    the polyline (22,33) (29,40) (43,26). PIL draws arcs and lines with no
-    antialiasing, so the mark is drawn SUPERSAMPLE times too big on its own
-    layer and shrunk with LANCZOS before compositing.
+    Same geometry as public/favicon.svg (64-unit viewBox, center (32,32)):
+    ring at stroke-center radius 24 with stroke 8 (annulus 20..28, OUTER
+    diameter 56), round caps, dash covering 298.4 degrees clockwise from
+    3 o'clock so the ~61.6-degree opening sits across the north-east; check
+    polyline (22,33) -> (29,40) -> (43,26), same stroke, round caps/joins.
+    `diameter` is the ring's OUTER diameter (u = diameter/56). PIL arc widths
+    grow inward from the bbox, so the bbox sits at outer radius 28u. Drawn
+    SUPERSAMPLE times too big and shrunk with LANCZOS for antialiasing.
     """
     size = diameter * SUPERSAMPLE
     layer = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
-    u = size / 48.0  # one grid unit; the favicon's stroke of 8 scales with it
-    stroke = round(8 * u)
-    d.arc([0, 0, size - 1, size - 1], start=-61, end=298, fill=ACCENT, width=stroke)
-    p = lambda a, b: ((a - 8) * u, (b - 8) * u)
-    d.line([p(22, 33), p(29, 40), p(43, 26)], fill=ACCENT, width=stroke, joint="curve")
+    c = size / 2.0
+    u = size / 56.0
+    stroke = max(1, round(8 * u))
+    R = 28 * u
+    d.arc([c - R, c - R, c + R, c + R], start=0, end=298.4, fill=ACCENT, width=stroke)
+    for ang in (0.0, 298.4):  # round caps at the dash endpoints (radius 24u)
+        ex = c + 24 * u * math.cos(math.radians(ang))
+        ey = c + 24 * u * math.sin(math.radians(ang))
+        d.ellipse([ex - stroke / 2, ey - stroke / 2, ex + stroke / 2, ey + stroke / 2], fill=ACCENT)
+    p = lambda a, b: (c + (a - 32) * u, c + (b - 32) * u)
+    pts = [p(22, 33), p(29, 40), p(43, 26)]
+    d.line(pts, fill=ACCENT, width=stroke, joint="curve")
+    for ex, ey in (pts[0], pts[-1]):  # round caps on the check's open ends
+        d.ellipse([ex - stroke / 2, ey - stroke / 2, ex + stroke / 2, ey + stroke / 2], fill=ACCENT)
     return layer.resize((diameter, diameter), Image.LANCZOS)
 
 

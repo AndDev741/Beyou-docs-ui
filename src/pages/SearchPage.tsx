@@ -11,6 +11,9 @@ import {
   Loader2,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { useLocalizedPath } from "@/hooks/useLocale";
+import { encodeTopicKey } from "@/lib/seo/routes";
 import { Seo } from "@/components/seo/Seo";
 import { useStaticSeo } from "@/hooks/useStaticSeo";
 import { MainLayout } from "@/components/layout/MainLayout";
@@ -19,6 +22,8 @@ import { fetchSearchResults, type SearchResult } from "@/lib/searchApi";
 
 export default function SearchPage() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const localized = useLocalizedPath();
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -136,16 +141,19 @@ export default function SearchPage() {
     }
   };
 
+  // Detail pages are addressed by path segment (/architecture/:topicKey);
+  // the old ?topic= form died with that migration, so building it here sent
+  // every click back to the bare listing.
   const getPathForResult = (result: SearchResult) => {
     switch (result.type) {
       case "architecture":
-        return `/architecture?topic=${result.key}`;
+        return `/architecture/${encodeTopicKey(result.key)}`;
       case "blog":
-        return `/blog?post=${result.key}`;
+        return `/blog/${encodeTopicKey(result.key)}`;
       case "api":
-        return `/apis?controller=${result.key}`;
+        return `/apis/${encodeTopicKey(result.key)}`;
       case "project":
-        return `/projects`;
+        return `/projects/${encodeTopicKey(result.key)}`;
       default:
         return "/";
     }
@@ -248,7 +256,7 @@ export default function SearchPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     className="glass-panel rounded-xl p-4 cursor-pointer hover:bg-white/5 transition-colors gradient-border"
-                    onClick={() => window.open(path, "_self")}
+                    onClick={() => navigate(localized(path))}
                   >
                     <div className="flex items-start gap-4">
                       <div className="p-2 rounded-lg bg-white/5">

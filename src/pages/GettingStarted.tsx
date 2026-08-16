@@ -24,6 +24,11 @@ import {
   GitPullRequest,
   Rocket,
   ArrowUp,
+  Activity,
+  Gauge,
+  ScrollText,
+  Bug,
+  Smartphone,
 } from "lucide-react";
 
 type Priority = "high" | "medium" | "low";
@@ -130,7 +135,7 @@ const futureIdeas: FutureIdea[] = [
   },
 ];
 
-const sectionIds = ["why-beyou", "local-execution", "collaboration", "future-ideas"] as const;
+const sectionIds = ["why-beyou", "local-execution", "monitoring", "collaboration", "future-ideas"] as const;
 
 export default function GettingStarted() {
   const { t, i18n } = useTranslation();
@@ -157,9 +162,15 @@ export default function GettingStarted() {
     const scrollParent = getScrollParent();
     if (!scrollParent) return;
 
+    // Document scrolling fires scroll events on window, not on <html>.
+    const target: EventTarget =
+      scrollParent === document.documentElement ? window : scrollParent;
+
     const handleScroll = () => {
-      const navHeight = navRef.current?.offsetHeight ?? 0;
-      const threshold = navHeight + 20;
+      // The section under the pinned bar is the active one, wherever the bar
+      // happens to be pinned.
+      const navBottom = navRef.current?.getBoundingClientRect().bottom ?? 0;
+      const threshold = navBottom + 20;
       for (let i = sectionIds.length - 1; i >= 0; i--) {
         const el = document.getElementById(sectionIds[i]);
         if (!el) continue;
@@ -171,9 +182,9 @@ export default function GettingStarted() {
       setActiveSection(sectionIds[0]);
     };
 
-    scrollParent.addEventListener("scroll", handleScroll, { passive: true });
+    target.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => scrollParent.removeEventListener("scroll", handleScroll);
+    return () => target.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollTo = (id: string) => {
@@ -196,6 +207,7 @@ export default function GettingStarted() {
   const navItems = [
     { id: "why-beyou", icon: Lightbulb, key: "whyBeyou", color: "text-primary" },
     { id: "local-execution", icon: Terminal, key: "localExecution", color: "text-accent" },
+    { id: "monitoring", icon: Activity, key: "monitoring", color: "text-emerald-400" },
     { id: "collaboration", icon: Users, key: "collaboration", color: "text-purple-400" },
     { id: "future-ideas", icon: Rocket, key: "futureIdeas", color: "text-rose-400" },
   ];
@@ -238,15 +250,29 @@ export default function GettingStarted() {
     </div>
   );
 
-  const stepIcons = [FolderOpen, GitBranch, Package, FileCode, FileCode, Play];
+  const stepIcons = [FolderOpen, GitBranch, FileCode, Play];
 
   const steps = [
     "createFolder",
-    "cloneBackendFrontend",
-    "installDependencies",
-    "cloneDevEnv",
+    "cloneRepos",
     "createEnvFile",
     "runScripts",
+  ] as const;
+
+  const envKeys = [
+    "postgresDb",
+    "postgresUser",
+    "postgresPassword",
+    "postgresPort",
+    "tokenSecret",
+    "googleClientId",
+    "googleClientSecret",
+    "cookieSecure",
+    "corsAllowedPattern",
+    "mailSettings",
+    "frontendUrl",
+    "docsImportSettings",
+    "monitoringVars",
   ] as const;
 
   const priorityConfig: Record<Priority, { color: string; bg: string }> = {
@@ -260,8 +286,10 @@ export default function GettingStarted() {
   return (
     <MainLayout>
       <Seo {...seo} />
-      {/* Section Navigation — sticky pill bar */}
-      <div ref={navRef} className="sticky top-0 z-30 bg-background/80 backdrop-blur-lg border-b border-border/40">
+      {/* Section Navigation — pinned below the 64px TopBar (h-16), which is
+          itself sticky at top-0 with the same z-index and would otherwise be
+          painted over. */}
+      <div ref={navRef} className="sticky top-16 z-20 bg-background/80 backdrop-blur-lg border-b border-border/40">
         <div className="max-w-3xl mx-auto px-4 md:px-8">
           <nav className="flex items-center gap-1 py-2 overflow-x-auto scrollbar-hide">
             {navItems.map(({ id, icon: Icon, key, color }) => (
@@ -293,7 +321,7 @@ export default function GettingStarted() {
         </div>
 
         {/* Why Beyou Section */}
-        <section id="why-beyou" className="mb-12 scroll-mt-14">
+        <section id="why-beyou" className="mb-12 scroll-mt-28">
           <div className="glass-panel gradient-border p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
@@ -310,7 +338,7 @@ export default function GettingStarted() {
         </section>
 
         {/* Local Execution Section */}
-        <section id="local-execution" className="scroll-mt-14">
+        <section id="local-execution" className="scroll-mt-28">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/10">
               <Terminal className="w-5 h-5 text-accent" />
@@ -351,22 +379,23 @@ export default function GettingStarted() {
                     </p>
 
                     {/* Code blocks for steps that have them */}
-                    {stepKey === "cloneBackendFrontend" && (
-                      <CodeBlock code={t(`${stepPath}.code`)} />
-                    )}
-                    {stepKey === "installDependencies" && (
-                      <div className="space-y-3">
-                        <CodeBlock code={t(`${stepPath}.codeBackend`)} />
-                        <CodeBlock code={t(`${stepPath}.codeFrontend`)} />
-                      </div>
-                    )}
-                    {stepKey === "cloneDevEnv" && (
+                    {(stepKey === "cloneRepos" || stepKey === "createEnvFile") && (
                       <CodeBlock code={t(`${stepPath}.code`)} />
                     )}
                     {stepKey === "runScripts" && (
-                      <div className="space-y-3">
-                        <CodeBlock code={t(`${stepPath}.scriptDev`)} />
-                        <CodeBlock code={t(`${stepPath}.scriptProd`)} />
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wider text-emerald-400/90 mb-1.5">
+                            {t(`${stepPath}.devLabel`)}
+                          </p>
+                          <CodeBlock code={t(`${stepPath}.scriptDev`)} />
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wider text-sky-400/90 mb-1.5">
+                            {t(`${stepPath}.prodLabel`)}
+                          </p>
+                          <CodeBlock code={t(`${stepPath}.scriptProd`)} />
+                        </div>
                       </div>
                     )}
                   </div>
@@ -394,7 +423,7 @@ export default function GettingStarted() {
                   </tr>
                 </thead>
                 <tbody>
-                  {["upDev", "upProd", "down", "resetDb"].map((key, i) => {
+                  {["upDev", "upProd", "down", "resetDb", "monitoring"].map((key, i) => {
                     const text = t(
                       `gettingStarted.localExecution.scriptsExplanation.${key}`
                     );
@@ -443,20 +472,7 @@ export default function GettingStarted() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    "postgresDb",
-                    "postgresUser",
-                    "postgresPassword",
-                    "postgresPort",
-                    "tokenSecret",
-                    "googleClientId",
-                    "googleClientSecret",
-                    "cookieSecure",
-                    "corsAllowedPattern",
-                    "mailSettings",
-                    "frontendUrl",
-                    "docsImportSettings",
-                  ].map((key, i) => {
+                  {envKeys.map((key, i) => {
                     const text = t(
                       `gettingStarted.localExecution.envExplanation.${key}`
                     );
@@ -481,20 +497,7 @@ export default function GettingStarted() {
               </table>
               {/* Mobile stacked layout */}
               <div className="md:hidden divide-y divide-border/30">
-                {[
-                  "postgresDb",
-                  "postgresUser",
-                  "postgresPassword",
-                  "postgresPort",
-                  "tokenSecret",
-                  "googleClientId",
-                  "googleClientSecret",
-                  "cookieSecure",
-                  "corsAllowedPattern",
-                  "mailSettings",
-                  "frontendUrl",
-                  "docsImportSettings",
-                ].map((key, i) => {
+                {envKeys.map((key, i) => {
                   const text = t(
                     `gettingStarted.localExecution.envExplanation.${key}`
                   );
@@ -519,8 +522,85 @@ export default function GettingStarted() {
           </div>
         </section>
 
+        {/* Monitoring & Observability Section */}
+        <section id="monitoring" className="mt-16 scroll-mt-28">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-500/10">
+              <Activity className="w-5 h-5 text-emerald-400" />
+            </div>
+            <h2 className="text-2xl font-semibold text-foreground">
+              {t("gettingStarted.monitoring.title")}
+            </h2>
+          </div>
+          <p className="text-muted-foreground leading-relaxed mb-8 pl-[52px]">
+            {t("gettingStarted.monitoring.description")}
+          </p>
+
+          {/* One overlay, three questions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {[
+              { key: "prometheus", icon: Gauge, color: "text-orange-400", bg: "bg-orange-500/10" },
+              { key: "loki", icon: ScrollText, color: "text-amber-400", bg: "bg-amber-500/10" },
+              { key: "glitchtip", icon: Bug, color: "text-rose-400", bg: "bg-rose-500/10" },
+            ].map(({ key, icon: Icon, color, bg }) => (
+              <div key={key} className="glass-panel gradient-border p-5">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <div className={`flex items-center justify-center w-8 h-8 rounded-lg ${bg}`}>
+                    <Icon className={`w-4 h-4 ${color}`} />
+                  </div>
+                  <h4 className="text-base font-semibold text-foreground">
+                    {t(`gettingStarted.monitoring.stack.${key}.name`)}
+                  </h4>
+                </div>
+                <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${color}`}>
+                  {t(`gettingStarted.monitoring.stack.${key}.question`)}
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {t(`gettingStarted.monitoring.stack.${key}.description`)}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-sm text-muted-foreground leading-relaxed mb-8">
+            {t("gettingStarted.monitoring.grafana")}
+          </p>
+
+          {/* Turning it on */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
+              <ChevronRight className="w-5 h-5 text-emerald-400" />
+              {t("gettingStarted.monitoring.howTitle")}
+            </h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              {t("gettingStarted.monitoring.how")}
+            </p>
+            <CodeBlock code={t("gettingStarted.monitoring.command")} />
+          </div>
+
+          {/* Worth knowing */}
+          <div>
+            <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+              <ChevronRight className="w-5 h-5 text-emerald-400" />
+              {t("gettingStarted.monitoring.notes.title")}
+            </h3>
+            <div className="glass-panel gradient-border p-5">
+              <ul className="space-y-2.5">
+                {["sameFile", "zeroConfig", "loopback", "firstRun", "bootstrap"].map((key) => (
+                  <li key={key} className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <span className="text-sm text-muted-foreground">
+                      {t(`gettingStarted.monitoring.notes.${key}`)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
         {/* How to Collaborate Section */}
-        <section id="collaboration" className="mt-16 scroll-mt-14">
+        <section id="collaboration" className="mt-16 scroll-mt-28">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-purple-500/10">
               <Users className="w-5 h-5 text-purple-400" />
@@ -539,9 +619,10 @@ export default function GettingStarted() {
               <ChevronRight className="w-5 h-5 text-purple-400" />
               {t("gettingStarted.collaboration.areas.title")}
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
                 { key: "code", icon: Code, color: "text-blue-400", bg: "bg-blue-500/10" },
+                { key: "mobile", icon: Smartphone, color: "text-sky-400", bg: "bg-sky-500/10" },
                 { key: "docs", icon: BookOpen, color: "text-amber-400", bg: "bg-amber-500/10" },
                 { key: "translations", icon: Languages, color: "text-emerald-400", bg: "bg-emerald-500/10" },
               ].map(({ key, icon: Icon, color, bg }) => (
@@ -623,7 +704,7 @@ export default function GettingStarted() {
             </p>
             <div className="glass-panel p-5">
               <ul className="space-y-2">
-                {["frontend", "backend", "docsUi", "archDesign", "devEnv"].map((key) => (
+                {["frontend", "backend", "docsUi", "archDesign", "devEnv", "e2eTests"].map((key) => (
                   <li key={key} className="flex items-start gap-2.5">
                     <Package className="w-4 h-4 text-purple-400/70 shrink-0 mt-0.5" />
                     <span className="text-sm text-muted-foreground">
@@ -648,7 +729,7 @@ export default function GettingStarted() {
         </section>
 
         {/* Future Ideas Section */}
-        <section id="future-ideas" className="mt-16 scroll-mt-14">
+        <section id="future-ideas" className="mt-16 scroll-mt-28">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-rose-500/10">
               <Rocket className="w-5 h-5 text-rose-400" />

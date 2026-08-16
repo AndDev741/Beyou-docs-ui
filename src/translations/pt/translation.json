@@ -1,10 +1,10 @@
 {
   "app": {
     "name": "Beyou Docs",
-    "tagline": "Seu stack de habitos, documentado."
+    "tagline": "Seu stack de hábitos, documentado."
   },
   "nav": {
-    "home": "Inicio",
+    "home": "Início",
     "gettingStarted": "Primeiros passos",
     "architecture": "Arquitetura",
     "blog": "Blog",
@@ -12,7 +12,7 @@
     "projects": "Projetos",
     "plan": "Plano",
     "search": "Busca",
-    "settings": "Configuracoes",
+    "settings": "Configurações",
     "collapse": "Recolher"
   },
   "topbar": {
@@ -38,15 +38,15 @@
   },
   "home": {
     "hero": {
-      "badge": "Documentacao Beyou",
+      "badge": "Documentação Beyou",
       "titleLine1": "O que está por trás",
-      "titleLine2": "Do web app Beyou.",
+      "titleLine2": "Do app Beyou.",
       "description": "Explore arquitetura, APIs, posts de blog e projetos que movem o Beyou.",
-      "primaryCta": "Abrir Documentacao",
-      "secondaryCta": "Ver Arquitetura"
+      "primaryCta": "Abrir Documentação",
+      "secondaryCta": "Experimente o Beyou"
     },
     "quick": {
-      "title": "Acesso rapido",
+      "title": "Acesso rápido",
       "arch": {
         "title": "Arquitetura",
         "description": "Arquitetura do sistema e decisões."
@@ -61,11 +61,11 @@
       },
       "projects": {
         "title": "Projetos",
-        "description": "Repositorios e informações"
+        "description": "Repositórios e ownership do Beyou."
       },
       "plan": {
         "title": "Plano",
-        "description": "Notas de roadmap e proximos passos.",
+        "description": "Notas de roadmap e próximos passos.",
         "badge": "Somente leitura"
       }
     },
@@ -75,35 +75,35 @@
       "loading": "Carregando atividade...",
       "empty": "Sem atividade recente.",
       "defaults": {
-        "arch": "Topico de arquitetura atualizado",
+        "arch": "Tópico de arquitetura atualizado",
         "blog": "Post de blog atualizado",
-        "api": "Repositorio de API atualizado",
-        "project": "Repositorio atualizado"
+        "api": "Repositório de API atualizado",
+        "project": "Repositório atualizado"
       }
     },
     "overview": {
-      "title": "Visao geral",
-      "loading": "Carregando visao geral...",
+      "title": "Visão geral",
+      "loading": "Carregando visão geral...",
       "status": {
-        "healthy": "Saudavel",
+        "healthy": "Saudável",
         "warning": "Alerta",
         "error": "Erro"
       },
       "previewTitle": "Preview da arquitetura",
       "previewLink": "Ver diagrama completo →",
-      "previewEmpty": "Sem preview disponivel."
+      "previewEmpty": "Sem preview disponível."
     },
     "stats": {
-      "architecture": "Topicos de arquitetura",
+      "architecture": "Tópicos de arquitetura",
       "blogPosts": "Posts de Blog",
       "apis": "Repos de API",
       "projects": "Projetos",
       "updated": "Atualizado {{time}}",
-      "noRecent": "Sem atualizacoes recentes",
+      "noRecent": "Sem atualizações recentes",
       "customRepos": "Lista de repos custom",
       "org": "Org: {{org}}",
       "sampled": "Amostra de {{count}} repos",
-      "latest": "Ultimos {{shown}} de {{total}}"
+      "latest": "Últimos {{shown}} de {{total}}"
     },
     "errors": {
       "load": "Falha ao carregar dados iniciais"
@@ -123,14 +123,14 @@
     },
     "filters": {
       "all": "Todos",
-      "technical": "Tecnico",
+      "technical": "Técnico",
       "planning": "Planejamento"
     },
     "reading": {
       "back": "Voltar ao blog",
       "loading": "Carregando post...",
       "error": "Falha ao carregar post.",
-      "noContent": "Sem conteudo."
+      "noContent": "Sem conteúdo."
     },
     "errors": {
       "loadTopics": "Falha ao carregar posts do blog.",
@@ -139,21 +139,21 @@
   },
   "architecture": {
     "sidebar": {
-      "title": "Topicos de arquitetura",
-      "search": "Buscar topicos",
+      "title": "Tópicos de arquitetura",
+      "search": "Buscar tópicos",
       "tags": "Tags",
       "allTags": "Todas as tags",
       "project": "Projeto ligado",
       "allProjects": "Todos os projetos",
-      "topicCount": "{{count}} topicos",
-      "loadingTopics": "Carregando topicos...",
-      "noTopics": "Nenhum topico corresponde ao filtro.",
-      "newTopic": "Novo topico",
+      "topicCount": "{{count}} tópicos",
+      "loadingTopics": "Carregando tópicos...",
+      "noTopics": "Nenhum tópico corresponde ao filtro.",
+      "newTopic": "Novo tópico",
       "clearFilters": "Limpar"
     },
-    "empty": "Selecione um topico para ver detalhes.",
+    "empty": "Selecione um tópico para ver detalhes.",
     "topic": {
-      "noDescription": "Sem descricao.",
+      "noDescription": "Sem descrição.",
       "updated": "Atualizado {{date}}",
       "readingTime": "{{count}} min de leitura",
       "viewProject": "Ver projeto"
@@ -164,9 +164,9 @@
       "archived": "Arquivado"
     },
     "toc": {
-      "title": "Sumario",
-      "section": "secao",
-      "sections": "secoes"
+      "title": "Sumário",
+      "section": "seção",
+      "sections": "seções"
     },
     "tabs": {
       "diagrams": "Diagramas",
@@ -187,12 +187,12 @@
       "loading": "Carregando docs...",
       "empty": "Sem docs.",
       "select": "Selecione um doc.",
-      "noContent": "Sem conteudo.",
+      "noContent": "Sem conteúdo.",
       "new": "Novo"
     },
     "metadata": {
       "title": "Titulo",
-      "description": "Descricao",
+      "description": "Descrição",
       "tags": "Tags",
       "projects": "Projetos ligados",
       "viewProjects": "Ver projetos",
@@ -206,7 +206,7 @@
     },
     "flow": {
       "error": "Erro no builder: {{error}}. Corrija o JSON abaixo.",
-      "mermaidOutput": "Saida Mermaid",
+      "mermaidOutput": "Saída Mermaid",
       "copyMermaid": "Copiar Mermaid",
       "rawJson": "JSON bruto",
       "placeholder": "JSON do diagrama"
@@ -214,11 +214,11 @@
     "mermaid": {
       "renderError": "Falha ao renderizar Mermaid.",
       "error": "Erro Mermaid: {{error}}",
-      "empty": "O preview aparecera aqui.",
+      "empty": "O preview aparecerá aqui.",
       "reset": "Resetar"
     },
     "errors": {
-      "loadTopics": "Falha ao carregar topicos",
+      "loadTopics": "Falha ao carregar tópicos",
       "loadProjects": "Falha ao carregar projetos",
       "loadFile": "Falha ao carregar arquivo"
     }
@@ -236,16 +236,18 @@
       "domain": "Domínio",
       "documentation": "Documentação",
       "auth": "Auth & Usuário",
-      "other": "Outros"
+      "other": "Outros",
+      "ai": "IA",
+      "feedback": "Feedback"
     },
     "header": {
-      "title": "Catalogo de APIs",
+      "title": "Catálogo de APIs",
       "subtitleAll": "Paths e schemas combinados entre repos.",
-      "subtitleSingle": "Repositorio OpenAPI",
+      "subtitleSingle": "Repositório OpenAPI",
       "paths": "{{count}} APIs",
       "schemas": "{{count}} Schemas",
       "spec": "Spec: {{spec}}",
-      "version": "Versao: {{version}}"
+      "version": "Versão: {{version}}"
     },
     "search": "Filtrar APIs ou schemas",
     "count": "{{paths}} APIs | {{schemas}} schemas",
@@ -272,26 +274,26 @@
       "loadApiDetails": "Falha ao carregar detalhes da API",
       "loadSchemaDetails": "Falha ao carregar detalhes do schema",
       "loadSchema": "Falha ao carregar schema",
-      "schemaSourceMissing": "Arquivo de schema indisponivel."
+      "schemaSourceMissing": "Arquivo de schema indisponível."
     },
     "detail": {
       "pathLabel": "API Path",
       "schemaLabel": "Schema",
-      "viewDefinition": "Ver definicao",
+      "viewDefinition": "Ver definição",
       "viewSchema": "Ver schema",
-      "parameters": "Parametros",
-      "noParameters": "Sem parametros.",
+      "parameters": "Parâmetros",
+      "noParameters": "Sem parâmetros.",
       "requestBody": "Request Body",
       "responses": "Responses",
       "noResponses": "Sem responses documentados.",
       "noSchema": "Sem schema.",
-      "parameter": "parametro",
+      "parameter": "parâmetro",
       "ref": "ref",
       "unknown": "desconhecido",
       "in": "em {{location}}",
-      "noDescription": "Sem descricao.",
+      "noDescription": "Sem descrição.",
       "schemaError": "Erro ao carregar schema: {{error}}",
-      "schemaUnavailable": "Schema indisponivel.",
+      "schemaUnavailable": "Schema indisponível.",
       "type": "Tipo: {{type}}",
       "fieldsCount": "{{count}} campos",
       "fields": "Campos",
@@ -309,9 +311,9 @@
   },
   "projects": {
     "title": "Projetos",
-    "subtitle": "Repositorios e ownership do Beyou",
+    "subtitle": "Repositórios e ownership do Beyou",
     "search": "Buscar projetos...",
-    "count": "{{total}} repositorios • {{active}} ativos",
+    "count": "{{total}} repositórios • {{active}} ativos",
     "filters": {
       "status": "Status",
       "allStatuses": "Todos os status",
@@ -321,7 +323,7 @@
       "forks": "Forks",
       "visibility": "Visibilidade",
       "allVisibility": "Todas",
-      "public": "Publico",
+      "public": "Público",
       "private": "Privado",
       "internal": "Interno",
       "language": "Linguagem",
@@ -335,12 +337,12 @@
       "order": "Ordem"
     },
     "errors": {
-      "load": "Falha ao carregar repositorios",
-      "title": "Repositorios com erro"
+      "load": "Falha ao carregar repositórios",
+      "title": "Repositórios com erro"
     },
     "loading": {
-      "initial": "Carregando repositorios...",
-      "more": "Carregando mais repositorios... ({{count}} carregados)"
+      "initial": "Carregando repositórios...",
+      "more": "Carregando mais repositórios... ({{count}} carregados)"
     },
     "empty": {
       "title": "Nenhum projeto encontrado",
@@ -352,8 +354,8 @@
       "disabled": "desativado",
       "fork": "Fork"
     },
-    "noDescription": "Sem descricao.",
-    "openRepo": "Abrir repositorio",
+    "noDescription": "Sem descrição.",
+    "openRepo": "Abrir repositório",
     "metrics": {
       "commits": "{{count}} commits",
       "branches": "{{count}} branches",
@@ -375,8 +377,8 @@
   },
   "search": {
     "title": "Busca",
-    "subtitle": "Encontre conteudo em arquitetura, APIs, posts de blog e projetos",
-    "placeholder": "Buscar documentacao...",
+    "subtitle": "Encontre conteúdo em arquitetura, APIs, posts de blog e projetos",
+    "placeholder": "Buscar documentação...",
     "recentTitle": "Buscas recentes",
     "recent": {
       "1": "regras de streak",
@@ -393,20 +395,20 @@
     },
     "sample": {
       "arch": {
-        "title": "Visao geral do backend",
-        "description": "Visao de servicos e fluxo de dados"
+        "title": "Visão geral do backend",
+        "description": "Visão de serviços e fluxo de dados"
       },
       "api": {
         "title": "POST /auth/login",
-        "description": "Autenticar usuario e retornar token"
+        "description": "Autenticar usuário e retornar token"
       },
       "blog": {
-        "title": "Fluxo de autenticacao",
-        "description": "Diagrama de autenticacao e sessao"
+        "title": "Fluxo de autenticação",
+        "description": "Diagrama de autenticação e sessão"
       },
       "project": {
         "title": "Plataforma core",
-        "description": "Servicos e APIs principais"
+        "description": "Serviços e APIs principais"
       }
     },
     "loading": "Buscando...",
@@ -415,9 +417,9 @@
   },
   "gettingStarted": {
     "title": "Primeiros passos",
-    "description": "Aqui você verá a motivação para construir o Beyou, como executar todos os projetos localmente, como colaborar com o aplicativo e outras informações.",
+    "description": "Por que o Beyou existe, como rodar a stack inteira na sua máquina e como ajudar a construir.",
     "whyBeyou": {
-      "title": "Porque o Beyou",
+      "title": "Por que o Beyou?",
       "paragraph": "Sempre tive dificuldade em manter minhas tarefas organizadas. Também queria ver se estava progredindo em certas áreas da minha vida. Para cada aplicativo que testei, apenas uma dessas coisas estava presente. Então comecei a construir meu próprio aplicativo pessoal de organização de hábitos e rotinas, mais para aprender programação, mas também para finalmente ter o produto que sempre quis, onde posso facilmente criar hábitos e tarefas com categorias de vida e ver a evolução ao longo do tempo, sem mencionar a facilidade de criar rotinas diárias personalizadas e metas para sempre manter o foco."
     },
     "checklist": "Checklist",
@@ -425,7 +427,7 @@
     "steps": {
       "token": {
         "title": "Conecte sua fonte de dados",
-        "description": "Os docs serao carregados do banco quando disponiveis."
+        "description": "Os docs serão carregados do banco quando disponíveis."
       },
       "env": {
         "title": "Configure o ambiente",
@@ -438,73 +440,67 @@
     },
     "local": {
       "title": "Ambiente local",
-      "description": "Ajuste preferencias e chaves em Configuracoes.",
-      "cta": "Abrir Configuracoes"
+      "description": "Ajuste preferências e chaves em Configurações.",
+      "cta": "Abrir Configurações"
     },
     "links": {
-      "title": "Links rapidos",
-      "architecture": "Visao de arquitetura",
+      "title": "Links rápidos",
+      "architecture": "Visão de arquitetura",
       "apis": "Docs de API",
       "blog": "Blog",
       "plan": "Plano"
     },
     "localExecution": {
       "title": "Como executar o projeto localmente",
-      "description": "Siga este guia passo a passo para configurar o Beyou na sua máquina.",
+      "description": "Tudo abaixo roda na sua máquina só com Git e Docker (Compose v2). Os containers compilam e executam a stack inteira, então você nunca instala Java nem Node no host.",
       "steps": {
         "createFolder": {
           "title": "Crie uma pasta dedicada",
-          "description": "Crie uma pasta onde todos os projetos ficarão, por exemplo uma pasta 'beyou'."
+          "description": "Crie uma pasta onde todos os projetos ficarão, por exemplo uma pasta 'beyou'. A stack de dev constrói o backend e o frontend a partir de diretórios irmãos, então o layout importa."
         },
-        "cloneBackendFrontend": {
-          "title": "Clone o backend e frontend",
-          "description": "Clone os repositórios usando git:",
-          "code": "git clone https://github.com/AndDev741/Beyou-backend-spring.git\ngit clone https://github.com/AndDev741/Beyou-Frontend.git"
-        },
-        "installDependencies": {
-          "title": "Instale as dependências",
-          "description": "Vá para cada pasta do projeto e execute:",
-          "codeBackend": "mvn clean install",
-          "codeFrontend": "npm install"
-        },
-        "cloneDevEnv": {
-          "title": "Clone o orquestrador de ambiente de desenvolvimento",
-          "description": "Volte para a pasta principal e clone o repositório dev‑env:",
-          "code": "git clone https://github.com/AndDev741/Beyou-dev-env.git"
+        "cloneRepos": {
+          "title": "Clone os repositórios lado a lado",
+          "description": "Clone o orquestrador de ambiente junto com o backend e o frontend, todos na mesma pasta:",
+          "code": "git clone https://github.com/AndDev741/Beyou-dev-env.git\ngit clone https://github.com/AndDev741/Beyou-backend-spring.git\ngit clone https://github.com/AndDev741/Beyou-Frontend.git"
         },
         "createEnvFile": {
           "title": "Crie o arquivo .env",
-          "description": "Copie o conteúdo de .env.example para um novo arquivo .env e preencha com seus próprios valores. No final deste tópico você encontrará uma explicação detalhada de cada variável."
+          "description": "Dentro de Beyou-dev-env, copie .env.example para .env. Cada variável está documentada no próprio arquivo; no mínimo, defina TOKEN_SECRET (32+ caracteres aleatórios) e uma senha de verdade para o Postgres. No final deste tópico também há uma tabela explicando cada variável.",
+          "code": "cd Beyou-dev-env\ncp .env.example .env"
         },
         "runScripts": {
-          "title": "Execute os scripts de orquestração",
-          "description": "Você pode escolher entre modo de desenvolvimento (hot‑reload) ou modo tipo produção (otimizado). Use os scripts fornecidos:",
+          "title": "Suba a stack",
+          "description": "O modo dev constrói seus clones locais e recarrega a cada edição. O primeiro boot leva alguns minutos porque tudo compila em volumes nomeados; as próximas subidas os reaproveitam. O modo tipo produção ignora seus clones por completo: baixa as imagens que o CI publica no GitHub Container Registry, roda tudo em segundo plano atrás do nginx e deixa o Watchtower reimplantar a cada imagem nova. Com a stack no ar, abra http://localhost:3000 (a API responde em http://localhost:8099/api/v1).",
+          "devLabel": "Desenvolvimento: hot reload dos seus clones locais",
           "scriptDev": "./scripts/up-dev.sh",
+          "prodLabel": "Tipo produção: imagens publicadas no GHCR, atualizadas pelo Watchtower",
           "scriptProd": "./scripts/up-prod.sh"
         }
       },
       "scriptsExplanation": {
         "title": "O que cada script faz",
-        "upDev": "up‑dev.sh – inicia a stack em modo de desenvolvimento com hot‑reload para backend e frontend.",
-        "upProd": "up‑prod.sh – inicia a stack em modo tipo produção (constrói as imagens e serve o frontend via Nginx).",
-        "down": "down.sh – para a stack (especifique o modo 'dev' ou 'prod').",
-        "resetDb": "reset‑db.sh – remove o volume do PostgreSQL para resetar o banco de dados."
+        "upDev": "up-dev.sh – constrói backend e frontend a partir dos checkouts irmãos e roda a stack em primeiro plano com hot reload.",
+        "upProd": "up-prod.sh – baixa as imagens publicadas ghcr.io/anddev741/beyou-* e roda a stack tipo produção em segundo plano; o nginx serve o build web e o Watchtower reimplanta a cada nova imagem.",
+        "down": "down.sh – para a stack e remove órfãos (passe o modo 'dev' ou 'prod').",
+        "resetDb": "reset-db.sh – derruba a stack de dev e apaga o volume do Postgres. Irreversível.",
+        "monitoring": "--monitoring – flag opcional para up-dev.sh, up-prod.sh e down.sh; adiciona a camada de observabilidade (Grafana, Prometheus, Loki, GlitchTip)."
       },
       "envExplanation": {
         "title": "Variáveis de ambiente (.env)",
-        "description": "Abaixo estão as variáveis necessárias e como preenchê‑las:",
+        "description": "Estas são as variáveis que você vai mexer primeiro; o .env.example documenta todas elas no próprio arquivo:",
         "postgresDb": "POSTGRES_DB – nome do banco de dados (padrão: beyou).",
         "postgresUser": "POSTGRES_USER – usuário do banco de dados (padrão: postgres).",
-        "postgresPassword": "POSTGRES_PASSWORD – senha do banco de dados (padrão: 1516).",
-        "postgresPort": "POSTGRES_PORT – porta onde o PostgreSQL será exposto (padrão: 5490).",
-        "tokenSecret": "TOKEN_SECRET – uma string secreta usada para assinar tokens JWT; altere para um valor aleatório forte.",
-        "googleClientId": "GOOGLE_CLIENT_ID – se você deseja Google OAuth, forneça seu ID de cliente OAuth 2.0.",
+        "postgresPassword": "POSTGRES_PASSWORD – senha do banco de dados. O template a deixa vazia de propósito: defina um valor longo e aleatório seu.",
+        "postgresPort": "POSTGRES_PORT – porta do host onde o PostgreSQL é exposto (padrão: 5490).",
+        "tokenSecret": "TOKEN_SECRET – segredo usado para assinar tokens JWT; 32+ caracteres aleatórios.",
+        "googleClientId": "GOOGLE_CLIENT_ID – ID de cliente OAuth 2.0 para login com Google; deixe vazio para desativar.",
         "googleClientSecret": "GOOGLE_CLIENT_SECRET – segredo do cliente correspondente.",
         "cookieSecure": "COOKIE_SECURE – defina como 'true' para HTTPS, 'false' para desenvolvimento local.",
-        "corsAllowedPattern": "CORS_ALLOWED_PATTERN – padrão de origem permitida para CORS (padrão: '*').",
-        "mailSettings": "Configurações de e‑mail (opcional) – preencha se quiser funcionalidade de e‑mail.",
+        "corsAllowedPattern": "CORS_ALLOWED_PATTERN – padrão de origem permitida para CORS. '*' funciona em dev; o perfil de produção recusa curinga.",
+        "mailSettings": "MAIL_* (opcional) – credenciais SMTP para os e-mails de verificação e redefinição de senha.",
         "frontendUrl": "FRONTEND_URL – URL do frontend (padrão: http://localhost:3000/).",
-        "docsImportSettings": "Configurações de importação de documentação – usadas pelo recurso de importação de documentação."
+        "docsImportSettings": "DOCS_IMPORT_* – repositório de origem e segredo da importação de documentação que alimenta este site.",
+        "monitoringVars": "GRAFANA_ADMIN_PASSWORD, GLITCHTIP_* – exigidas apenas com --monitoring; não têm padrão de propósito."
       }
     },
     "collaboration": {
@@ -512,12 +508,13 @@
       "description": "Beyou é open-source sob a licença Apache 2.0. Contribuições são bem-vindas — veja como participar.",
       "repos": {
         "title": "Repositórios do Projeto",
-        "description": "O projeto está dividido em 5 repositórios na organização AndDev741 no GitHub:",
-        "frontend": "Beyou-Frontend — App React principal (hábitos, metas, tarefas)",
+        "description": "O projeto está espalhado por 6 repositórios no GitHub, todos sob AndDev741:",
+        "frontend": "Beyou-Frontend — Monorepo: o web app React (apps/web), o app mobile nativo em React Native + Expo (apps/mobile), pacotes compartilhados e o site de marketing",
         "backend": "Beyou-backend-spring — API Spring Boot (auth, lógica de domínio, persistência)",
         "docsUi": "Beyou-docs-ui — Este app visualizador de documentação",
         "archDesign": "Beyou-arch-design — Specs OpenAPI e docs de arquitetura",
-        "devEnv": "Beyou-dev-env — Orquestração Docker Compose para dev local"
+        "devEnv": "Beyou-dev-env — Orquestração Docker Compose: dev com hot reload, produção a partir de imagens publicadas e o overlay de monitoramento",
+        "e2eTests": "Beyou-e2e-tests — Suíte Playwright de ponta a ponta que exercita a stack completa (frontend, backend e Postgres juntos)"
       },
       "workflow": {
         "title": "Fluxo de Contribuição",
@@ -539,6 +536,10 @@
         "translations": {
           "title": "Traduções",
           "description": "Ajude a manter as traduções em inglês e português completas e precisas nos arquivos JSON de tradução. Novos idiomas também são bem-vindos!"
+        },
+        "mobile": {
+          "title": "Mobile",
+          "description": "O app nativo Android/iOS vive em apps/mobile, construído com React Native e Expo. Ele divide o cliente de API e a linguagem visual com o web app. Ajuda é bem-vinda em telas e comportamento offline, e testar em um aparelho de verdade já é uma contribuição por si só."
         }
       },
       "guidelines": {
@@ -569,10 +570,44 @@
       }
     },
     "nav": {
-      "whyBeyou": "Por que Beyou",
+      "whyBeyou": "Por que Beyou?",
       "localExecution": "Execução Local",
       "collaboration": "Colaboração",
-      "futureIdeas": "Ideias para o Futuro"
+      "futureIdeas": "Ideias para o Futuro",
+      "monitoring": "Monitoramento"
+    },
+    "monitoring": {
+      "title": "Monitoramento & Observabilidade",
+      "description": "O Beyou entrega sua observabilidade em um único overlay do Compose (docker-compose.monitoring.yml). É o mesmo arquivo em desenvolvimento e em produção, então o que você depura localmente é exatamente o que roda implantado.",
+      "stack": {
+        "prometheus": {
+          "name": "Prometheus",
+          "question": "Como está o desempenho?",
+          "description": "Coleta o /actuator/prometheus do backend mais cAdvisor, node-exporter e postgres-exporter: internos da JVM, recursos por container, o host e a visão do próprio banco sobre si mesmo."
+        },
+        "loki": {
+          "name": "Loki + Alloy",
+          "question": "O que aconteceu?",
+          "description": "Os apps não precisam de nenhuma configuração de log. O Alloy acompanha o stdout de cada container beyou* pela API do Docker e envia ao Loki, que resolve os níveis de log no lado do servidor. Os logs ficam guardados por 30 dias."
+        },
+        "glitchtip": {
+          "name": "GlitchTip",
+          "question": "O que quebrou?",
+          "description": "Rastreamento de erros compatível com Sentry: backend, web e mobile reportam para ele por DSN. Também é dono dos monitores de uptime e heartbeat, já que é a peça capaz de avisar um humano de verdade."
+        }
+      },
+      "grafana": "Os três aparecem em um único Grafana (localhost:3001), com quatro dashboards provisionados automaticamente: Containers (saúde da frota), Service Health (JVM do backend), AI Agent e Logs.",
+      "howTitle": "Como ativar",
+      "how": "Adicione a flag aos scripts de subida e descida. Antes da primeira execução, defina GRAFANA_ADMIN_PASSWORD, GLITCHTIP_SECRET_KEY e GLITCHTIP_DB_PASSWORD no .env. Elas não têm padrão de propósito.",
+      "command": "./scripts/up-dev.sh --monitoring\n./scripts/up-prod.sh --monitoring\n./scripts/down.sh dev --monitoring",
+      "notes": {
+        "title": "Vale saber",
+        "sameFile": "Um único arquivo de overlay serve todos os ambientes, então o monitoramento que você testa em dev é o mesmo que roda em produção.",
+        "zeroConfig": "A coleta de logs é limitada a projetos Compose cujo nome começa com 'beyou'. Implante a partir de um diretório com outro nome e os logs param de fluir silenciosamente.",
+        "loopback": "Toda superfície administrativa escuta apenas em 127.0.0.1 (Grafana 3001, Prometheus 9090, GlitchTip 8000). O Loki não ganha porta no host: sua API sem autenticação só é alcançável pelo Grafana. Use túnel ou proxy reverso, nunca uma escuta mais ampla.",
+        "firstRun": "O GlitchTip permite que a primeira conta registrada vire admin. Registre a sua logo após o primeiro boot, enquanto a porta 8000 ainda é só loopback.",
+        "bootstrap": "O ./scripts/bootstrap-glitchtip.sh cria em seguida a organização, os projetos, os monitores de uptime e as regras de alerta do GlitchTip. O registro continua manual de propósito: script de bootstrap não deve guardar a sua senha."
+      }
     }
   },
   "plan": {
@@ -581,11 +616,11 @@
     "cards": {
       "arch": {
         "title": "Arquitetura",
-        "body": "Topicos, diagramas e dependencias a incluir."
+        "body": "Tópicos, diagramas e dependências a incluir."
       },
       "blog": {
         "title": "Blog",
-        "body": "Posts, artigos e decisoes."
+        "body": "Posts, artigos e decisões."
       },
       "api": {
         "title": "APIs",
@@ -594,27 +629,27 @@
     }
   },
   "notFound": {
-    "message": "Ops! Pagina nao encontrada",
-    "cta": "Voltar ao inicio",
+    "message": "Ops! Página não encontrada",
+    "cta": "Voltar ao início",
     "title": "Página não encontrada"
   },
   "settings": {
-    "title": "Configuracoes",
-    "description": "Ajuste sua experiencia.",
-    "appearance": "Aparencia",
+    "title": "Configurações",
+    "description": "Ajuste sua experiência.",
+    "appearance": "Aparência",
     "languageLabel": "Idioma",
     "themeLabel": "Tema",
     "compactMode": "Modo compacto",
-    "compactDescription": "Reduz o espaco na interface",
+    "compactDescription": "Reduz o espaço na interface",
     "aiKeys": "Chaves de IA",
-    "aiKeysDescription": "Guarde chaves e modelos padrao para assistencias.",
+    "aiKeysDescription": "Guarde chaves e modelos padrão para assistências.",
     "keyStored": "Salva localmente",
     "keyEnv": "Usando chave do ambiente",
     "keyMissing": "Ausente",
     "apiKey": "Chave de API",
-    "defaultModel": "Modelo padrao",
+    "defaultModel": "Modelo padrão",
     "envOverride": "Override do ambiente detectado.",
-    "defaultValue": "Padrao: {{model}}.",
+    "defaultValue": "Padrão: {{model}}.",
     "keysFooter": "As chaves ficam salvas neste navegador. Limpe um campo para remover o valor salvo."
   },
   "themes": {

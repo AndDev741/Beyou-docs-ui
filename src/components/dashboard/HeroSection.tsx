@@ -1,11 +1,19 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Layers, Sparkles } from "lucide-react";
+import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useLocalizedPath } from "@/hooks/useLocale";
+import { useLocale, useLocalizedPath } from "@/hooks/useLocale";
+
+// The live app's marketing site. English is the root; Portuguese lives at /pt/
+// (see site/functions/_middleware.js in the Beyou-Frontend repo).
+const APP_URL: Record<string, string> = {
+  en: "https://beyouweb.com/",
+  pt: "https://beyouweb.com/pt/",
+};
 
 export function HeroSection() {
   const { t } = useTranslation();
+  const locale = useLocale();
   const localized = useLocalizedPath();
   return (
     <section className="relative py-14 md:py-16 px-4 md:px-8 overflow-hidden">
@@ -54,16 +62,20 @@ export function HeroSection() {
                 <ArrowRight className="w-4 h-4" />
               </motion.button>
             </Link>
-            <Link to={localized("/architecture")}>
+            <a
+              href={APP_URL[locale] ?? APP_URL.en}
+              target="_blank"
+              rel="noreferrer"
+            >
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="btn-ghost flex items-center gap-2"
               >
-                <Layers className="w-4 h-4" />
+                <ExternalLink className="w-4 h-4" />
                 {t("home.hero.secondaryCta")}
               </motion.button>
-            </Link>
+            </a>
           </div>
         </motion.div>
       </div>

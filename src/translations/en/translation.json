@@ -40,10 +40,10 @@
     "hero": {
       "badge": "Beyou documentation",
       "titleLine1": "What is behind",
-      "titleLine2": "The beyou web app.",
+      "titleLine2": "The Beyou app.",
       "description": "Explore architecture, APIs, blog posts, and projects that power Beyou.",
       "primaryCta": "Open Documentation",
-      "secondaryCta": "View Architecture"
+      "secondaryCta": "Try Beyou"
     },
     "quick": {
       "title": "Quick Access",
@@ -61,7 +61,7 @@
       },
       "projects": {
         "title": "Projects",
-        "description": "Repositories and informations."
+        "description": "Repositories and service ownership."
       },
       "plan": {
         "title": "Plan",
@@ -236,7 +236,9 @@
       "domain": "Domain",
       "documentation": "Documentation",
       "auth": "Auth & User",
-      "other": "Other"
+      "other": "Other",
+      "ai": "AI",
+      "feedback": "Feedback"
     },
     "header": {
       "title": "API Catalog",
@@ -415,9 +417,9 @@
   },
   "gettingStarted": {
     "title": "Getting Started",
-    "description": "Here you're going to see the motivation to build beyou, how to run all projects locally, how to collaborate with the app and other stuffs.",
+    "description": "Why Beyou exists, how to run the whole stack on your machine, and how to help build it.",
     "whyBeyou": {
-      "title": "Why Beyou",
+      "title": "Why Beyou?",
       "paragraph": "I've always had trouble keeping my tasks organized. I also wanted to see if I was progressing in certain areas of my life. For every app I tested, only one of those things was there. So I started building my own personal habit and routine organization app, more to learn programming, but also to ultimately have the product I always wanted, where I can easily create habits and tasks with life categories and see the evolution over time, not to mention the ease of creating customized daily routines and goals to always stay on track."
     },
     "checklist": "Setup Checklist",
@@ -450,61 +452,55 @@
     },
     "localExecution": {
       "title": "How to execute the project locally",
-      "description": "Follow this step‑by‑step guide to set up Beyou on your machine.",
+      "description": "Everything below runs on your machine with just Git and Docker (Compose v2). The containers compile and run the whole stack, so you never install Java or Node on the host.",
       "steps": {
         "createFolder": {
           "title": "Create a dedicated folder",
-          "description": "Create a folder where all projects will stay, like a 'beyou' folder."
+          "description": "Create a folder where all the projects will live, e.g. a 'beyou' folder. The dev stack builds the backend and frontend from sibling directories, so the layout matters."
         },
-        "cloneBackendFrontend": {
-          "title": "Clone the backend and frontend",
-          "description": "Clone the repositories using git:",
-          "code": "git clone https://github.com/AndDev741/Beyou-backend-spring.git\ngit clone https://github.com/AndDev741/Beyou-Frontend.git"
-        },
-        "installDependencies": {
-          "title": "Install dependencies",
-          "description": "Go to each project folder and execute:",
-          "codeBackend": "mvn clean install",
-          "codeFrontend": "npm install"
-        },
-        "cloneDevEnv": {
-          "title": "Clone the development environment orchestrator",
-          "description": "Go back to the main folder and clone the dev‑env repository:",
-          "code": "git clone https://github.com/AndDev741/Beyou-dev-env.git"
+        "cloneRepos": {
+          "title": "Clone the repositories side by side",
+          "description": "Clone the dev-environment orchestrator together with the backend and frontend, all into the same folder:",
+          "code": "git clone https://github.com/AndDev741/Beyou-dev-env.git\ngit clone https://github.com/AndDev741/Beyou-backend-spring.git\ngit clone https://github.com/AndDev741/Beyou-Frontend.git"
         },
         "createEnvFile": {
           "title": "Create the .env file",
-          "description": "Copy the content of .env.example inside a new .env file and fill your own values. At the end of this topic you will find a detailed explanation of each variable."
+          "description": "Inside Beyou-dev-env, copy .env.example to .env. Every variable is documented in the file itself; at minimum, set TOKEN_SECRET (32+ random characters) and a real Postgres password. There is also a table explaining each variable at the end of this topic.",
+          "code": "cd Beyou-dev-env\ncp .env.example .env"
         },
         "runScripts": {
-          "title": "Run the orchestration scripts",
-          "description": "You can choose between development mode (hot‑reload) or production‑like mode (optimized). Use the provided scripts:",
+          "title": "Run the stack",
+          "description": "Dev mode builds your local clones and hot-reloads them as you edit. The first boot takes a few minutes because everything compiles into named volumes; later starts reuse them. Production-like mode ignores your clones entirely: it pulls the images CI publishes to GitHub Container Registry, runs them detached behind nginx, and lets Watchtower redeploy each time a new image is pushed. Once the stack is up, open http://localhost:3000 (the API answers on http://localhost:8099/api/v1).",
+          "devLabel": "Development: hot reload from your local clones",
           "scriptDev": "./scripts/up-dev.sh",
+          "prodLabel": "Production-like: published GHCR images, kept fresh by Watchtower",
           "scriptProd": "./scripts/up-prod.sh"
         }
       },
       "scriptsExplanation": {
         "title": "What each script does",
-        "upDev": "up‑dev.sh – starts the stack in development mode with hot‑reload for backend and frontend.",
-        "upProd": "up‑prod.sh – starts the stack in production‑like mode (builds the images and serves frontend via Nginx).",
-        "down": "down.sh – stops the stack (specify 'dev' or 'prod' mode).",
-        "resetDb": "reset‑db.sh – removes the PostgreSQL volume to reset the database."
+        "upDev": "up-dev.sh – builds backend and frontend from your sibling checkouts and runs the stack in the foreground with hot reload.",
+        "upProd": "up-prod.sh – pulls the published ghcr.io/anddev741/beyou-* images and runs the production-like stack detached; nginx serves the web build and Watchtower redeploys on new images.",
+        "down": "down.sh – stops the stack and removes orphans (pass 'dev' or 'prod' mode).",
+        "resetDb": "reset-db.sh – tears down the dev stack and deletes the Postgres volume. Irreversible.",
+        "monitoring": "--monitoring – optional flag for up-dev.sh, up-prod.sh and down.sh; adds the observability overlay (Grafana, Prometheus, Loki, GlitchTip)."
       },
       "envExplanation": {
         "title": "Environment variables (.env)",
-        "description": "Below are the required variables and how to fill them:",
+        "description": "These are the variables you'll touch first; .env.example documents every one of them inline:",
         "postgresDb": "POSTGRES_DB – name of the database (default: beyou).",
         "postgresUser": "POSTGRES_USER – database user (default: postgres).",
-        "postgresPassword": "POSTGRES_PASSWORD – database password (default: 1516).",
-        "postgresPort": "POSTGRES_PORT – port where PostgreSQL will be exposed (default: 5490).",
-        "tokenSecret": "TOKEN_SECRET – a secret string used to sign JWT tokens; change it to a strong random value.",
-        "googleClientId": "GOOGLE_CLIENT_ID – if you want Google OAuth, provide your OAuth 2.0 client ID.",
+        "postgresPassword": "POSTGRES_PASSWORD – database password. The template ships it empty on purpose: set your own long, random value.",
+        "postgresPort": "POSTGRES_PORT – host port where PostgreSQL is exposed (default: 5490).",
+        "tokenSecret": "TOKEN_SECRET – secret used to sign JWT tokens; 32+ characters of randomness.",
+        "googleClientId": "GOOGLE_CLIENT_ID – OAuth 2.0 client ID for Google sign-in; leave empty to disable.",
         "googleClientSecret": "GOOGLE_CLIENT_SECRET – corresponding client secret.",
         "cookieSecure": "COOKIE_SECURE – set to 'true' for HTTPS, 'false' for local development.",
-        "corsAllowedPattern": "CORS_ALLOWED_PATTERN – CORS allowed origin pattern (default: '*').",
-        "mailSettings": "Mail settings (optional) – fill if you want email functionality.",
+        "corsAllowedPattern": "CORS_ALLOWED_PATTERN – allowed CORS origin pattern. '*' works in dev; the prod profile refuses a wildcard.",
+        "mailSettings": "MAIL_* (optional) – SMTP credentials for the verification and password-reset e-mails.",
         "frontendUrl": "FRONTEND_URL – URL of the frontend (default: http://localhost:3000/).",
-        "docsImportSettings": "Docs import settings – used by the documentation import feature."
+        "docsImportSettings": "DOCS_IMPORT_* – source repo and secret for the documentation import that feeds this site.",
+        "monitoringVars": "GRAFANA_ADMIN_PASSWORD, GLITCHTIP_* – required only with --monitoring; they have no defaults on purpose."
       }
     },
     "collaboration": {
@@ -512,12 +508,13 @@
       "description": "Beyou is open-source under the Apache 2.0 license. Contributions are welcome — here's how to get involved.",
       "repos": {
         "title": "Project Repositories",
-        "description": "The project is split across 5 repositories under the AndDev741 GitHub organization:",
-        "frontend": "Beyou-Frontend — Main React app (habits, goals, tasks UI)",
+        "description": "The project is spread across 6 repositories on GitHub, all under AndDev741:",
+        "frontend": "Beyou-Frontend — Monorepo: the React web app (apps/web), the native mobile app in React Native + Expo (apps/mobile), shared packages, and the marketing site",
         "backend": "Beyou-backend-spring — Spring Boot API (auth, domain logic, persistence)",
         "docsUi": "Beyou-docs-ui — This documentation viewer app",
         "archDesign": "Beyou-arch-design — OpenAPI specs & architecture docs",
-        "devEnv": "Beyou-dev-env — Docker Compose orchestration for local dev"
+        "devEnv": "Beyou-dev-env — Docker Compose orchestration: dev with hot reload, production from published images, and the monitoring overlay",
+        "e2eTests": "Beyou-e2e-tests — Playwright end-to-end suite that drives the full stack (frontend, backend, and Postgres together)"
       },
       "workflow": {
         "title": "Contribution Workflow",
@@ -539,6 +536,10 @@
         "translations": {
           "title": "Translations",
           "description": "Help keep English and Portuguese translations complete and accurate in the JSON translation files. New languages are welcome too!"
+        },
+        "mobile": {
+          "title": "Mobile",
+          "description": "The native Android/iOS app lives in apps/mobile, built with React Native and Expo. It shares the API client and the visual language with the web app. Help is welcome on screens and offline behavior, and testing on a real device is a contribution by itself."
         }
       },
       "guidelines": {
@@ -569,10 +570,44 @@
       }
     },
     "nav": {
-      "whyBeyou": "Why Beyou",
+      "whyBeyou": "Why Beyou?",
       "localExecution": "Local Execution",
       "collaboration": "Collaboration",
-      "futureIdeas": "Future Ideas"
+      "futureIdeas": "Future Ideas",
+      "monitoring": "Monitoring"
+    },
+    "monitoring": {
+      "title": "Monitoring & Observability",
+      "description": "Beyou ships its observability as a single Compose overlay (docker-compose.monitoring.yml). It is the same file in development and in production, so what you debug locally is exactly what runs deployed.",
+      "stack": {
+        "prometheus": {
+          "name": "Prometheus",
+          "question": "How is it performing?",
+          "description": "Scrapes the backend's /actuator/prometheus plus cAdvisor, node-exporter and postgres-exporter: JVM internals, per-container resources, the host, and the database's own view of itself."
+        },
+        "loki": {
+          "name": "Loki + Alloy",
+          "question": "What happened?",
+          "description": "The apps need no log configuration at all. Alloy tails the stdout of every beyou* container through the Docker API and pushes to Loki, which works out log levels on the server side. Logs are kept for 30 days."
+        },
+        "glitchtip": {
+          "name": "GlitchTip",
+          "question": "What broke?",
+          "description": "Sentry-compatible error tracking: backend, web, and mobile all report to it by DSN. It also owns the uptime and heartbeat monitors, since it is the piece that can actually notify a human."
+        }
+      },
+      "grafana": "All three surface in one Grafana (localhost:3001), with four dashboards provisioned automatically: Containers (fleet health), Service Health (backend JVM), AI Agent, and Logs.",
+      "howTitle": "Turning it on",
+      "how": "Add the flag to the up and down scripts. Before the first run, set GRAFANA_ADMIN_PASSWORD, GLITCHTIP_SECRET_KEY and GLITCHTIP_DB_PASSWORD in .env. They have no defaults on purpose.",
+      "command": "./scripts/up-dev.sh --monitoring\n./scripts/up-prod.sh --monitoring\n./scripts/down.sh dev --monitoring",
+      "notes": {
+        "title": "Worth knowing",
+        "sameFile": "One overlay file serves every environment, so the monitoring you test in dev is the same monitoring that runs in prod.",
+        "zeroConfig": "Log collection is scoped to Compose projects whose name starts with 'beyou'. Deploy from a directory named differently and logs silently stop flowing.",
+        "loopback": "Every admin surface binds to 127.0.0.1 only (Grafana 3001, Prometheus 9090, GlitchTip 8000). Loki gets no host port at all: its unauthenticated API is reachable only through Grafana. Use a tunnel or reverse proxy, never a wider binding.",
+        "firstRun": "GlitchTip lets the first account to register become admin. Register yours right after the first boot, while port 8000 is still loopback-only.",
+        "bootstrap": "./scripts/bootstrap-glitchtip.sh then creates the GlitchTip org, projects, uptime monitors, and alert rules. Registration stays manual on purpose: a bootstrap script has no business holding your password."
+      }
     }
   },
   "plan": {

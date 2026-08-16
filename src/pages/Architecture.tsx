@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Input } from "@/components/ui/input";
@@ -86,6 +86,14 @@ export default function Architecture() {
         }
       });
   }, [locale, t]);
+
+  // With no topic in the URL, open the first one (the overview) instead of an
+  // empty panel. Replace, not push: Back should skip the bare listing URL. The
+  // prerendered /architecture HTML still exists for crawlers that don't run JS.
+  useEffect(() => {
+    if (selectedTopicKey || topicsLoading || topics.length === 0) return;
+    navigate(localized(`/architecture/${encodeTopicKey(topics[0].key)}`), { replace: true });
+  }, [selectedTopicKey, topicsLoading, topics, localized, navigate]);
 
   useEffect(() => {
     if (!selectedTopicKey) {
@@ -370,12 +378,12 @@ export default function Architecture() {
                       {detail.projectKey && (
                         <>
                           <span className="text-muted-foreground/40">|</span>
-                          <a
-                            href={`/projects?topic=${detail.projectKey}`}
+                          <Link
+                            to={localized(`/projects/${encodeTopicKey(detail.projectKey)}`)}
                             className="text-primary hover:underline"
                           >
                             {t("architecture.topic.viewProject")}
-                          </a>
+                          </Link>
                         </>
                       )}
                     </div>

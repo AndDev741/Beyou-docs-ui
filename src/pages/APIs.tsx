@@ -37,16 +37,24 @@ const methodColors: Record<string, string> = {
 
 const controllerGroups = [
   {
+    label: "apis.groups.auth",
+    keys: ["authentication", "auth-verification", "user", "user-photo", "user-export"],
+  },
+  {
     label: "apis.groups.domain",
-    keys: ["category", "goal", "habit", "routine", "task", "schedule"],
+    keys: ["category", "habit", "task", "goal", "routine", "schedule", "snapshot", "check-history", "xp"],
+  },
+  {
+    label: "apis.groups.ai",
+    keys: ["ai-agent", "onboarding"],
+  },
+  {
+    label: "apis.groups.feedback",
+    keys: ["feedback", "feedback-admin"],
   },
   {
     label: "apis.groups.documentation",
-    keys: ["architecture-docs", "blog-docs", "project-docs", "api-docs", "docs-import"],
-  },
-  {
-    label: "apis.groups.auth",
-    keys: ["authentication", "user"],
+    keys: ["architecture-docs", "blog-docs", "api-docs", "project-docs", "search-docs", "docs-import"],
   },
 ];
 
@@ -107,6 +115,14 @@ export default function APIs() {
         }
       });
   }, [locale, t]);
+
+  // With no controller in the URL, open the first one instead of an empty
+  // panel. Replace, not push: Back should skip the bare listing URL. Same
+  // pattern as the architecture page.
+  useEffect(() => {
+    if (controllerKey || controllersLoading || controllers.length === 0) return;
+    navigate(localized(`/apis/${encodeTopicKey(controllers[0].key)}`), { replace: true });
+  }, [controllerKey, controllersLoading, controllers, localized, navigate]);
 
   // Load controller detail when selected
   useEffect(() => {

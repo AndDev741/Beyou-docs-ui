@@ -17,7 +17,12 @@ export function MainLayout({ children }: MainLayoutProps) {
       </div>
       <div className="flex-1 flex flex-col min-w-0">
         <TopBar onOpenSidebar={() => setMobileNavOpen(true)} />
-        <main className="flex-1 overflow-auto">
+        {/* No overflow-auto here: the document is the scroller. An overflow
+            value on <main> makes it the containing scrollport for any sticky
+            descendant, and since <main> grows with its content and never
+            actually scrolls, those elements would stick to a box that itself
+            scrolls away. */}
+        <main className="flex-1">
           {children}
         </main>
       </div>

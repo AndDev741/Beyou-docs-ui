@@ -100,6 +100,11 @@ jobs:
           build-args: |
             SITE_URL=${{ vars.DOCS_SITE_URL || 'https://docs.beyouweb.com' }}
             PRERENDER_API_URL=${{ vars.DOCS_PRERENDER_API_URL || 'https://api.beyouweb.com/api/v1' }}
+            # Same contract as the app image: build-time inline; missing key
+            # ships the site with analytics off. The Beyou PostHog project is
+            # EU-hosted, so the host variable must be set alongside the key.
+            VITE_POSTHOG_KEY=${{ vars.PROD_POSTHOG_KEY }}
+            VITE_POSTHOG_HOST=${{ vars.PROD_POSTHOG_HOST }}
           tags: |
             ghcr.io/anddev741/beyou-docs:latest
             ghcr.io/anddev741/beyou-docs:sha-${{ env.SHORT_SHA }}

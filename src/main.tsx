@@ -16,5 +16,10 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import "./translations/i18n";
+import { initAnalytics } from "./lib/analytics";
+
+// Product analytics (PostHog). Dormant without VITE_POSTHOG_KEY, and a no-op
+// during the Node prerender pass. See lib/analytics.ts.
+initAnalytics();
 
 createRoot(document.getElementById("root")!).render(<App />);

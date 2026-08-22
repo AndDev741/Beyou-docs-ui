@@ -13,6 +13,13 @@ ARG PRERENDER_API_URL=https://api.beyouweb.com/api/v1
 ENV SITE_URL=${SITE_URL}
 ENV PRERENDER_API_URL=${PRERENDER_API_URL}
 ENV VITE_SITE_URL=${SITE_URL}
+# Product analytics (PostHog). A phc_ key is a public ingest identifier, not a
+# secret, so a build ARG is fine — same treatment the app image gives it. Left
+# unset, the site builds with analytics permanently off (src/lib/analytics.ts).
+ARG VITE_POSTHOG_KEY
+ARG VITE_POSTHOG_HOST
+ENV VITE_POSTHOG_KEY=${VITE_POSTHOG_KEY}
+ENV VITE_POSTHOG_HOST=${VITE_POSTHOG_HOST}
 # VITE_BACKEND_URL is deliberately NOT set: unset, the client derives the API
 # base from its own origin (src/lib/apiBase.ts) and reaches the backend through
 # this image's nginx proxy. Baking an absolute URL would pin the image to one

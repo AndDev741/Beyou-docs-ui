@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 import { TocRail, extractToc } from "@/components/markdown/TocRail";
@@ -69,6 +70,10 @@ export default function Blog() {
 
   /* ── filter state ──────────────────────────────────────── */
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  // A single tag, not a set. Posts carry four or five tags each, so an
+  // intersection filter lands on nothing far more often than it helps; picking
+  // one tag and seeing everything that shares it is what a reader actually wants.
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const topicsLoadId = useRef(0);
@@ -142,6 +147,16 @@ export default function Blog() {
       );
     }
 
+    // Filtered here rather than through the `tag` query parameter the API
+    // offers. Every topic is already in memory, so a round trip would buy a
+    // loading flash and a new cache entry per tag on the server for a filter
+    // the client can apply instantly.
+    if (tagFilter) {
+      result = result.filter((tp) =>
+        parseTags(tp.tags ?? "").includes(tagFilter),
+      );
+    }
+
     const query = searchQuery.trim().toLowerCase();
     if (query) {
       result = result.filter((tp) => {
@@ -153,7 +168,7 @@ export default function Blog() {
     }
 
     return result;
-  }, [topics, categoryFilter, searchQuery]);
+  }, [topics, categoryFilter, tagFilter, searchQuery]);
 
   const featuredPost = useMemo(
     () => filteredTopics.find((tp) => tp.featured) ?? null,
@@ -189,8 +204,30 @@ export default function Blog() {
 
   const clearFilters = useCallback(() => {
     setCategoryFilter("all");
+    setTagFilter(null);
     setSearchQuery("");
   }, []);
+
+  // Picking a tag from inside a post has to leave the post, or the reader sets
+  // a filter and stays on the page that hides the list it applies to.
+  const selectTag = useCallback(
+    (tag: string) => {
+      setTagFilter(tag);
+      navigate(localized("/blog"));
+    },
+    [localized, navigate],
+  );
+
+  // The cards below are divs, not buttons, because a tag button cannot legally
+  // nest inside a button. This puts the keyboard behaviour back.
+  const onCardKeyDown = useCallback(
+    (event: ReactKeyboardEvent<HTMLDivElement>, key: string) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      openPost(key);
+    },
+    [openPost],
+  );
 
   /* ── seo ───────────────────────────────────────────────── */
   const listEntry = useMemo(
@@ -263,12 +300,15 @@ export default function Blog() {
                     {parseTags(detail.tags ?? "").length > 0 && (
                       <div className="flex flex-wrap gap-1.5 mb-4">
                         {parseTags(detail.tags ?? "").map((tag) => (
-                          <span
+                          <button
                             key={tag}
-                            className="px-2 py-0.5 rounded-full text-xs bg-primary/10 text-primary"
+                            type="button"
+                            onClick={() => selectTag(tag)}
+                            title={t("blog.filters.byTag", { tag })}
+                            className="px-2 py-0.5 rounded-full text-xs bg-primary/10 text-primary transition-colors hover:bg-primary/20"
                           >
                             {tag}
-                          </span>
+                          </button>
                         ))}
                       </div>
                     )}
@@ -382,6 +422,18 @@ export default function Blog() {
                       </button>
                     ))}
                   </div>
+                  {/* active tag, with the only way back out of it */}
+                  {tagFilter && (
+                    <button
+                      type="button"
+                      onClick={() => setTagFilter(null)}
+                      aria-label={t("blog.filters.clearTag", { tag: tagFilter })}
+                      className="self-start flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-primary/50 bg-primary/20 text-primary transition-colors hover:bg-primary/30"
+                    >
+                      <span>#{tagFilter}</span>
+                      <X className="w-3 h-3" aria-hidden="true" />
+                    </button>
+                  )}
                   <div className="flex-1 max-w-xs">
                     <Input
                       value={searchQuery}
@@ -438,13 +490,15 @@ export default function Blog() {
                 <>
                   {/* ── featured hero ────────────────── */}
                   {featuredPost && (
-                    <motion.button
-                      type="button"
+                    <motion.div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => openPost(featuredPost.key)}
+                      onKeyDown={(event) => onCardKeyDown(event, featuredPost.key)}
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.4 }}
-                      className="w-full text-left rounded-2xl border border-glass-border/30 overflow-hidden mb-8 group transition-colors hover:border-primary/40"
+                      className="w-full text-left cursor-pointer rounded-2xl border border-glass-border/30 overflow-hidden mb-8 group transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
                       style={{
                         background: `linear-gradient(135deg, ${featuredPost.coverColor ?? "hsl(var(--primary))"}15, transparent 60%)`,
                       }}
@@ -483,12 +537,18 @@ export default function Blog() {
                             {parseTags(featuredPost.tags ?? "")
                               .slice(0, 4)
                               .map((tag) => (
-                                <span
+                                <button
                                   key={tag}
-                                  className="px-2 py-0.5 rounded-full text-[10px] bg-primary/10 text-primary"
+                                  type="button"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    selectTag(tag);
+                                  }}
+                                  title={t("blog.filters.byTag", { tag })}
+                                  className="px-2 py-0.5 rounded-full text-[10px] bg-primary/10 text-primary transition-colors hover:bg-primary/20"
                                 >
                                   {tag}
-                                </span>
+                                </button>
                               ))}
                             {featuredPost.author && (
                               <span className="text-xs text-muted-foreground ml-auto">
@@ -506,7 +566,7 @@ export default function Blog() {
                           </div>
                         </div>
                       </div>
-                    </motion.button>
+                    </motion.div>
                   )}
 
                   {/* ── recent posts grid ────────────── */}
@@ -521,12 +581,14 @@ export default function Blog() {
                         const tags = parseTags(post.tags ?? "");
                         const cs = categoryStyle(post.category);
                         return (
-                          <motion.button
+                          <motion.div
                             key={post.key}
-                            type="button"
+                            role="button"
+                            tabIndex={0}
                             variants={cardVariants}
                             onClick={() => openPost(post.key)}
-                            className="text-left glass-panel rounded-xl border border-glass-border/30 p-5 flex flex-col gap-3 transition-colors hover:border-primary/40 group"
+                            onKeyDown={(event) => onCardKeyDown(event, post.key)}
+                            className="text-left cursor-pointer glass-panel rounded-xl border border-glass-border/30 p-5 flex flex-col gap-3 transition-colors hover:border-primary/40 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
                           >
                             {/* top: emoji + category */}
                             <div className="flex items-center gap-2">
@@ -560,12 +622,18 @@ export default function Blog() {
                             {tags.length > 0 && (
                               <div className="flex flex-wrap gap-1 mt-auto">
                                 {tags.slice(0, 3).map((tag) => (
-                                  <span
+                                  <button
                                     key={tag}
-                                    className="px-1.5 py-0.5 rounded text-[10px] bg-primary/10 text-primary"
+                                    type="button"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      selectTag(tag);
+                                    }}
+                                    title={t("blog.filters.byTag", { tag })}
+                                    className="px-1.5 py-0.5 rounded text-[10px] bg-primary/10 text-primary transition-colors hover:bg-primary/20"
                                   >
                                     {tag}
-                                  </span>
+                                  </button>
                                 ))}
                                 {tags.length > 3 && (
                                   <span className="px-1.5 py-0.5 rounded text-[10px] text-muted-foreground">
@@ -584,7 +652,7 @@ export default function Blog() {
                                 )}
                               </span>
                             )}
-                          </motion.button>
+                          </motion.div>
                         );
                       })}
                     </motion.div>

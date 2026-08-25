@@ -124,7 +124,9 @@
     "filters": {
       "all": "All",
       "technical": "Technical",
-      "planning": "Planning"
+      "planning": "Planning",
+      "byTag": "Show every post tagged {{tag}}",
+      "clearTag": "Stop filtering by {{tag}}"
     },
     "reading": {
       "back": "Back to blog",

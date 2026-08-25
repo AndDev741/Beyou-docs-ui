@@ -124,7 +124,9 @@
     "filters": {
       "all": "Todos",
       "technical": "Técnico",
-      "planning": "Planejamento"
+      "planning": "Planejamento",
+      "byTag": "Ver todos os posts com a tag {{tag}}",
+      "clearTag": "Parar de filtrar por {{tag}}"
     },
     "reading": {
       "back": "Voltar ao blog",

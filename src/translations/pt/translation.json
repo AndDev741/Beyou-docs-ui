@@ -569,6 +569,10 @@
         "high": "Alta",
         "medium": "Média",
         "low": "Baixa"
+      },
+      "status": {
+        "planned": "Planejado",
+        "done": "Feito"
       }
     },
     "nav": {

@@ -32,11 +32,14 @@ import {
 } from "lucide-react";
 
 type Priority = "high" | "medium" | "low";
+type IdeaStatus = "planned" | "done";
 
 interface FutureIdea {
   nameEn: string;
   namePt: string;
   priority: Priority;
+  /** Absent means "planned", so shipping one idea does not mean editing all of them. */
+  status?: IdeaStatus;
   descriptionEn: string;
   descriptionPt: string;
 }
@@ -88,8 +91,11 @@ const futureIdeas: FutureIdea[] = [
     nameEn: "New routine type without sections, just today's task",
     namePt: "Implementar novo tipo de rotina sem seções, apenas com a tarefa do dia",
     priority: "high",
-    descriptionEn: "",
-    descriptionPt: "",
+    status: "done",
+    descriptionEn:
+      "Shipped as the List routine: a flat, ordered checklist of habits and tasks with no sections and no times, ticked off at any point in the day.",
+    descriptionPt:
+      "Entregue como a rotina em lista: uma lista plana e ordenada de hábitos e tarefas, sem seções e sem horários, marcada a qualquer hora do dia.",
   },
   {
     nameEn: "Nested goals",
@@ -279,6 +285,11 @@ export default function GettingStarted() {
     high: { color: "text-rose-400", bg: "bg-rose-500/15" },
     medium: { color: "text-amber-400", bg: "bg-amber-500/15" },
     low: { color: "text-sky-400", bg: "bg-sky-500/15" },
+  };
+
+  const statusConfig: Record<IdeaStatus, { color: string; bg: string }> = {
+    planned: { color: "text-muted-foreground", bg: "bg-muted/30" },
+    done: { color: "text-emerald-400", bg: "bg-emerald-500/15" },
   };
 
   const seo = useStaticSeo("gettingStarted");
@@ -753,6 +764,9 @@ export default function GettingStarted() {
                   <th className="px-5 py-3 text-left font-medium text-muted-foreground uppercase text-xs tracking-wider w-24">
                     {t("gettingStarted.futureIdeas.columns.priority")}
                   </th>
+                  <th className="px-5 py-3 text-left font-medium text-muted-foreground uppercase text-xs tracking-wider w-24">
+                    {t("gettingStarted.futureIdeas.columns.status")}
+                  </th>
                   <th className="px-5 py-3 text-left font-medium text-muted-foreground uppercase text-xs tracking-wider">
                     {t("gettingStarted.futureIdeas.columns.description")}
                   </th>
@@ -761,6 +775,8 @@ export default function GettingStarted() {
               <tbody>
                 {futureIdeas.map((idea, i) => {
                   const cfg = priorityConfig[idea.priority];
+                  const status = idea.status ?? "planned";
+                  const statusCfg = statusConfig[status];
                   const name = isPt ? idea.namePt : idea.nameEn;
                   const desc = isPt ? idea.descriptionPt : idea.descriptionEn;
                   return (
@@ -777,6 +793,12 @@ export default function GettingStarted() {
                           {t(`gettingStarted.futureIdeas.priority.${idea.priority}`)}
                         </span>
                       </td>
+                      <td className="px-5 py-3">
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusCfg.bg} ${statusCfg.color}`}>
+                          {status === "done" && <Check className="w-3 h-3" aria-hidden="true" />}
+                          {t(`gettingStarted.futureIdeas.status.${status}`)}
+                        </span>
+                      </td>
                       <td className="px-5 py-3 text-muted-foreground">
                         {desc}
                       </td>
@@ -791,14 +813,24 @@ export default function GettingStarted() {
           <div className="md:hidden space-y-3">
             {futureIdeas.map((idea, i) => {
               const cfg = priorityConfig[idea.priority];
+              const status = idea.status ?? "planned";
+              const statusCfg = statusConfig[status];
               const name = isPt ? idea.namePt : idea.nameEn;
               const desc = isPt ? idea.descriptionPt : idea.descriptionEn;
               return (
                 <div key={i} className="glass-panel p-4">
                   <div className="flex items-start justify-between gap-3 mb-1.5">
                     <span className="text-sm font-medium text-foreground/90">{name}</span>
-                    <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${cfg.bg} ${cfg.color}`}>
-                      {t(`gettingStarted.futureIdeas.priority.${idea.priority}`)}
+                    <span className="shrink-0 flex items-center gap-1.5">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${cfg.bg} ${cfg.color}`}>
+                        {t(`gettingStarted.futureIdeas.priority.${idea.priority}`)}
+                      </span>
+                      {status === "done" && (
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusCfg.bg} ${statusCfg.color}`}>
+                          <Check className="w-3 h-3" aria-hidden="true" />
+                          {t("gettingStarted.futureIdeas.status.done")}
+                        </span>
+                      )}
                     </span>
                   </div>
                   {desc && (

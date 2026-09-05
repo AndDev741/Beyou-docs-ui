@@ -101,8 +101,11 @@ const futureIdeas: FutureIdea[] = [
     nameEn: "Nested goals",
     namePt: "Metas aninhadas",
     priority: "medium",
-    descriptionEn: "Big goals broken into medium and small ones leading to the big goal",
-    descriptionPt: "Grandes metas e diversas médias e pequenas até chegar na grande",
+    status: "done",
+    descriptionEn:
+      "Shipped: a goal can sit under another goal, three levels deep. Sub-goals fold under their main goal on the goals page, and a full-screen viewer walks the goals one at a time, ordered by status, category or deadline.",
+    descriptionPt:
+      "Entregue: uma meta pode ficar debaixo de outra, até três níveis. As submetas dobram-se debaixo da meta principal na página de metas, e uma vitrine em tela cheia percorre as metas uma de cada vez, por status, categoria ou prazo.",
   },
   {
     nameEn: "Achievements by level",

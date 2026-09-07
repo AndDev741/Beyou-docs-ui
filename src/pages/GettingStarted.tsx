@@ -113,9 +113,9 @@ const futureIdeas: FutureIdea[] = [
     priority: "medium",
     status: "done",
     descriptionEn:
-      "Shipped: one entry a day on a five-point scale, with optional journalling. A dashboard widget marks the day in one tap and draws the week; the diary page holds the writing, a month calendar and the past entries. No XP, and the assistant can read the levels but never the words.",
+      "Shipped: one entry a day on a five-point scale, with optional journalling. A dashboard widget marks the day in one tap and draws the week as faces. The diary page holds the writing, a month calendar and the past entries. No XP, and the assistant can read the levels but never the words.",
     descriptionPt:
-      "Entregue: um registo por dia numa escala de cinco pontos, com diário opcional. Um widget do dashboard marca o dia num toque e desenha a semana; a página do diário guarda o texto, um calendário do mês e os registos passados. Sem XP, e o assistente lê os níveis mas nunca as palavras.",
+      "Entregue: um registo por dia numa escala de cinco pontos, com diário opcional. Um widget do dashboard marca o dia num toque e desenha a semana em carinhas. A página do diário guarda o texto, um calendário do mês e os registos passados. Sem XP, e o assistente lê os níveis mas nunca as palavras.",
   },
   {
     nameEn: "Achievements by level",

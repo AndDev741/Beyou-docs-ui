@@ -108,6 +108,16 @@ const futureIdeas: FutureIdea[] = [
       "Entregue: uma meta pode ficar debaixo de outra, até três níveis. As submetas dobram-se debaixo da meta principal na página de metas, e uma vitrine em tela cheia percorre as metas uma de cada vez, por status, categoria ou prazo.",
   },
   {
+    nameEn: "Daily mood and a personal diary",
+    namePt: "Humor diário e diário pessoal",
+    priority: "medium",
+    status: "done",
+    descriptionEn:
+      "Shipped: one entry a day on a five-point scale, with optional journalling. A dashboard widget marks the day in one tap and draws the week; the diary page holds the writing, a month calendar and the past entries. No XP, and the assistant can read the levels but never the words.",
+    descriptionPt:
+      "Entregue: um registo por dia numa escala de cinco pontos, com diário opcional. Um widget do dashboard marca o dia num toque e desenha a semana; a página do diário guarda o texto, um calendário do mês e os registos passados. Sem XP, e o assistente lê os níveis mas nunca as palavras.",
+  },
+  {
     nameEn: "Achievements by level",
     namePt: "Conquistas por level",
     priority: "medium",

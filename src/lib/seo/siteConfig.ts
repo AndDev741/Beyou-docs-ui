@@ -15,6 +15,8 @@ export const ORGANIZATION_NAME = "Beyou";
 
 /** The app this site documents — used by the Organization/SoftwareApplication JSON-LD. */
 export const APP_URL = "https://app.beyouweb.com";
+/** The Android app on Google Play. */
+export const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.beyou.mobile";
 
 export const OG_IMAGE_PATH = "/og-cover.png";
 

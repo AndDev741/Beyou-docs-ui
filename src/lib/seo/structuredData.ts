@@ -1,4 +1,4 @@
-import { APP_URL, ORGANIZATION_NAME, SITE_NAME, absoluteUrl } from "./siteConfig";
+import { APP_URL, ORGANIZATION_NAME, PLAY_STORE_URL, SITE_NAME, absoluteUrl } from "./siteConfig";
 import type { CollectionSchemaType } from "./routes";
 
 /**
@@ -96,7 +96,7 @@ export function websiteSchema(siteUrl: string, locale: string, description: stri
       "@type": "Organization",
       name: ORGANIZATION_NAME,
       url: siteUrl,
-      sameAs: [APP_URL, "https://github.com/AndDev741"],
+      sameAs: [APP_URL, PLAY_STORE_URL, "https://github.com/AndDev741"],
     },
     about: {
       "@type": "SoftwareApplication",
@@ -104,6 +104,7 @@ export function websiteSchema(siteUrl: string, locale: string, description: stri
       applicationCategory: "LifestyleApplication",
       operatingSystem: "Web, Android",
       url: APP_URL,
+      installUrl: PLAY_STORE_URL,
     },
   };
 }

@@ -38,6 +38,7 @@ import {
   encodeTopicKey,
   type DocsCollection,
 } from "../src/lib/seo/routes.js";
+import { buildLocaleRedirects } from "../src/lib/seo/localeRedirects.js";
 import {
   OG_IMAGE_HEIGHT,
   OG_IMAGE_PATH,
@@ -98,6 +99,9 @@ interface WrittenPage {
 }
 
 const written: WrittenPage[] = [];
+
+/** Every page path written to disk, indexable or not. The locale redirects come from here. */
+const pagesOnDisk: string[] = [];
 
 /* ── html escaping ───────────────────────────────────────── */
 
@@ -398,10 +402,12 @@ function breadcrumbHtml(entries: { name: string; url: string }[]): string {
 
 async function writePage(relativePath: string, html: string): Promise<void> {
   // Directory + index.html rather than `<name>.html` so the canonical URL has no
-  // extension and nginx can serve it with a plain try_files.
+  // extension. Cloudflare serves it slash-less because wrangler.jsonc sets
+  // html_handling to drop-trailing-slash; nginx serves it with a plain try_files.
   const target = join(DIST, relativePath.replace(/^\//, ""), "index.html");
   await mkdir(dirname(target), { recursive: true });
   await writeFile(target, html, "utf8");
+  pagesOnDisk.push(relativePath);
 }
 
 /* ── main ────────────────────────────────────────────────── */
@@ -682,6 +688,9 @@ async function main(): Promise<void> {
   await writeFile(join(DIST, "robots.txt"), buildRobots(), "utf8");
   await writeFile(join(DIST, "llms.txt"), buildLlmsTxt(written), "utf8");
   await writeFile(join(DIST, "404.html"), buildNotFound(shell), "utf8");
+  // Read by Cloudflare at deploy time and never served as a file. nginx does
+  // the same job with its own `$needs_locale` map.
+  await writeFile(join(DIST, "_redirects"), buildLocaleRedirects(pagesOnDisk), "utf8");
 
   // A bare `/` has no language of its own, so it cannot be a real page. It ships
   // as a tiny redirect whose only job is to pick one and get out of the way,
@@ -692,7 +701,8 @@ async function main(): Promise<void> {
 }
 
 /**
- * Served by nginx with a real 404 status for any URL that has no page.
+ * Served with a real 404 status for any URL that has no page: by Cloudflare
+ * through `not_found_handling` in wrangler.jsonc, and by nginx's error_page.
  *
  * The alternative -- falling back to index.html with a 200 -- is a soft 404:
  * every mistyped URL becomes an indexable duplicate of the home page. This ships

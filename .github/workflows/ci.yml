@@ -9,7 +9,7 @@ on:
   # prerenderer reads it back through the API at build time, so a docs edit
   # changes the published site without changing a line of this repo. That repo
   # dispatches this event after its import runs, which is what turns a content
-  # commit into a rebuilt image.
+  # commit into a rebuilt and redeployed site.
   repository_dispatch:
     types: [docs-content-updated]
   workflow_dispatch:
@@ -20,7 +20,6 @@ concurrency:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
   verify:
@@ -58,12 +57,12 @@ jobs:
       # `build:spa`, not `build`: this job only needs to prove the bundle
       # compiles. The full build also prerenders, which spends about three
       # minutes pulling every topic from the live docs API -- worth it once, in
-      # the job that actually publishes an image, not on every pull request.
+      # the job that actually deploys, not on every pull request.
       - name: Build
         run: npm run build:spa
 
-  publish:
-    name: Publish image
+  deploy:
+    name: Deploy to Cloudflare
     runs-on: ubuntu-latest
     needs: verify
     if: github.event_name != 'pull_request'
@@ -73,38 +72,49 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Short SHA
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
+      # Wrangler 4 needs Node 22; the build is happy on it too.
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
 
       # SITE_URL is baked into every canonical, hreflang, og:url and sitemap
       # entry, so it has to be the real public origin.
       #
       # PRERENDER_API_URL is read by scripts/prerender.mts and must be reachable
-      # from the runner, which is why it is the public API host and not the
-      # internal container name. The step takes roughly three minutes: the docs
+      # from the runner. The step takes roughly three minutes: the docs
       # endpoints allow 30 requests a minute per IP and a full prerender is ~74,
       # so the script paces itself under that limit rather than being rejected.
-      - name: Build and push docs
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          target: nginx
-          push: true
-          build-args: |
-            SITE_URL=${{ vars.DOCS_SITE_URL || 'https://docs.beyouweb.com' }}
-            PRERENDER_API_URL=${{ vars.DOCS_PRERENDER_API_URL || 'https://api.beyouweb.com/api/v1' }}
-            # Same contract as the app image: build-time inline; missing key
-            # ships the site with analytics off. The Beyou PostHog project is
-            # EU-hosted, so the host variable must be set alongside the key.
-            VITE_POSTHOG_KEY=${{ vars.PROD_POSTHOG_KEY }}
-            VITE_POSTHOG_HOST=${{ vars.PROD_POSTHOG_HOST }}
-          tags: |
-            ghcr.io/anddev741/beyou-docs:latest
-            ghcr.io/anddev741/beyou-docs:sha-${{ env.SHORT_SHA }}
+      #
+      # VITE_BACKEND_URL points the pages' own API calls at the public API.
+      # Cloudflare serves files only, so the same-origin /api/v1/ the nginx
+      # image proxies does not exist there; the backend's CORS_ALLOWED_PATTERN
+      # has to list the docs origin instead.
+      - name: Build and prerender
+        run: npm run build
+        env:
+          SITE_URL: ${{ vars.DOCS_SITE_URL || 'https://docs.beyouweb.com' }}
+          VITE_SITE_URL: ${{ vars.DOCS_SITE_URL || 'https://docs.beyouweb.com' }}
+          PRERENDER_API_URL: ${{ vars.DOCS_PRERENDER_API_URL || 'https://api.beyouweb.com/api/v1' }}
+          VITE_BACKEND_URL: ${{ vars.DOCS_BACKEND_URL || 'https://api.beyouweb.com/api/v1' }}
+          # Same contract as the app: build-time inline; a missing key ships
+          # the site with analytics off. The Beyou PostHog project is
+          # EU-hosted, so the host variable must be set alongside the key.
+          VITE_POSTHOG_KEY: ${{ vars.PROD_POSTHOG_KEY }}
+          VITE_POSTHOG_HOST: ${{ vars.PROD_POSTHOG_HOST }}
+
+      # Uploads dist/ as the static assets of the `beyou-docs` Worker
+      # (wrangler.jsonc) and attaches docs.beyouweb.com to it. The token needs
+      # Workers Admin on the account (the first deploy creates the Worker) and
+      # Workers Routes Write on the beyouweb.com zone. Wrangler is pinned here
+      # rather than added to the lockfile, so the verify job keeps its install
+      # time.
+      - name: Deploy
+        run: npx --yes wrangler@4.151.0 deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

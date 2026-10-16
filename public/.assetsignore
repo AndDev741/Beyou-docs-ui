@@ -1,0 +1,6 @@
+# Read by wrangler: matching files in dist/ are never uploaded to Cloudflare.
+#
+# The build emits no source maps today. If one ever appears, uploading it would
+# publish the whole application source; nginx.conf refuses them for the same
+# reason.
+*.map

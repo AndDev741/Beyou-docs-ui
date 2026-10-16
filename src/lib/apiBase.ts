@@ -8,10 +8,14 @@
  * a 404. It went unnoticed because local development sets VITE_BACKEND_URL by
  * hand, and this app had never been deployed.
  *
- * In production the docs site is served by an nginx that proxies `/api/v1/` to
- * the backend container, so deriving the base from the current origin keeps
- * requests same-origin: no CORS entry to maintain, no preflights, and the image
- * is not pinned to one hostname the way a baked-in absolute URL would be.
+ * In production Cloudflare serves the site as static files (wrangler.jsonc) and
+ * proxies nothing, so the deploy job sets VITE_BACKEND_URL to the public API
+ * and the backend's CORS_ALLOWED_PATTERN lists the docs origin. The requests
+ * are plain GETs with no custom headers, so they need no preflight.
+ *
+ * Unset, the base comes from the current origin. That is the nginx image's
+ * case: its nginx proxies `/api/v1/` to the backend, which keeps requests
+ * same-origin and leaves the image unpinned to any one hostname.
  */
 
 const API_CONTEXT_PATH = "/api/v1";

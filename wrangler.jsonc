@@ -1,0 +1,29 @@
+// Production hosting for the docs site: a Cloudflare Worker that serves the
+// prerendered build as static assets, with no Worker code of its own. Static
+// asset requests are free and unlimited on the Workers Free plan, and nothing
+// here runs a script, so no request counts against the daily Workers quota.
+//
+// Deployed by the `deploy` job in .github/workflows/ci.yml. The pages call the
+// docs API at VITE_BACKEND_URL (api.beyouweb.com) directly, so this host serves
+// files only, and the backend's CORS_ALLOWED_PATTERN has to list this origin.
+{
+  "name": "beyou-docs",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // The prerender writes every page as <path>/index.html, while every
+    // canonical, hreflang and sitemap entry names the slash-less URL. This
+    // serves /en/blog/foo from en/blog/foo/index.html and sends /en/blog/foo/
+    // to it, so no canonical URL ever answers with a redirect.
+    "html_handling": "drop-trailing-slash",
+    // A real 404 status with dist/404.html, which still boots the SPA so the
+    // visitor gets the styled NotFound page. Falling back to index.html with a
+    // 200 would make every mistyped URL an indexable duplicate.
+    "not_found_handling": "404-page"
+  },
+  // A CI deploy creates this custom domain, replacing the DNS record that used
+  // to send docs.beyouweb.com to the Cloudflare Tunnel.
+  "routes": [{ "pattern": "docs.beyouweb.com", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false
+}
